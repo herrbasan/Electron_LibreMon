@@ -1,0 +1,10 @@
+/*!
+ * CustomBounce 3.2.6
+ * https://greensock.com
+ *
+ * @license Copyright 2008-2020, GreenSock. All rights reserved.
+ * Subject to the terms at https://greensock.com/standard-license or for
+ * Club GreenSock members, the agreement issued with that membership.
+ * @author: Jack Doyle, jack@greensock.com
+*/
+var gsap,_coreInitted,createCustomEase,_getGSAP=function(){return gsap||"undefined"!=typeof window&&(gsap=window.gsap)&&gsap.registerPlugin&&gsap},_initCore=function(e){gsap=_getGSAP(),(createCustomEase=gsap&&gsap.parseEase("_CE"))&&(_coreInitted=1,gsap.parseEase("bounce").config=function(e){return"object"==typeof e?_create("",e):_create("bounce("+e+")",{strength:+e})})},_normalizeX=function(e){var t,n=e.length,s=1/e[n-2];for(t=2;t<n;t+=2)e[t]=~~(e[t]*s*1e3)/1e3;e[n-2]=1},_bonusValidated=1,_create=function(e,t){if(_coreInitted||_initCore(1),t=t||{},_bonusValidated){var n,s,r,a,o,i,u,c=Math.min(.999,t.strength||.7),g=c,f=(t.squash||0)/100,p=f,_=1/.03,h=.2,d=1,C=.1,l=[0,0,.07,0,.1,1,.1,1],m=[0,0,0,0,.1,0,.1,0];for(o=0;o<200&&(i=C+(h*=g*((g+1)/2)),a=1-(d*=c*c),s=(r=C+.49*h)+.8*(r-(n=C+d/_)),f&&(C+=f,n+=f,r+=f,s+=f,i+=f,u=f/p,m.push(C-f,0,C-f,u,C-f/2,u,C,u,C,0,C,0,C,-.6*u,C+(i-C)/6,0,i,0),l.push(C-f,1,C,1,C,1),f*=c*c),l.push(C,1,n,a,r,a,s,a,i,1,i,1),c*=.95,_=d/(i-s),C=i,!(a>.999));o++);if(t.endAtStart&&"false"!==t.endAtStart){if(r=-.1,l.unshift(r,1,r,1,-.07,0),p)for(r-=f=2.5*p,l.unshift(r,1,r,1,r,1),m.splice(0,6),m.unshift(r,0,r,0,r,1,r+f/2,1,r+f,1,r+f,0,r+f,0,r+f,-.6,r+f+.033,0),o=0;o<m.length;o+=2)m[o]-=r;for(o=0;o<l.length;o+=2)l[o]-=r,l[o+1]=1-l[o+1]}return f&&(_normalizeX(m),m[2]="C"+m[2],createCustomEase(t.squashID||e+"-squash","M"+m.join(","))),_normalizeX(l),l[2]="C"+l[2],createCustomEase(e,"M"+l.join(","))}};export var CustomBounce=function(){function e(e,t){this.ease=_create(e,t)}return e.create=function(e,t){return _create(e,t)},e.register=function(e){gsap=e,_initCore()},e}();_getGSAP()&&gsap.registerPlugin(CustomBounce),CustomBounce.version="3.2.6";export{CustomBounce as default};

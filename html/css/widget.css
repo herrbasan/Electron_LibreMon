@@ -1,0 +1,19 @@
+body {
+    background-color: transparent;
+}
+
+.sysmon {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    transition: background 0.2s;
+}
+
+.sysmon .sysmon_pc.nui-card {
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+} 
+.sysmon .sysmon_pc .head {
+    -webkit-app-region: drag;
+}

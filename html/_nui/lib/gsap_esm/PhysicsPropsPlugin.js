@@ -1,0 +1,10 @@
+/*!
+ * PhysicsPropsPlugin 3.2.6
+ * https://greensock.com
+ *
+ * @license Copyright 2008-2020, GreenSock. All rights reserved.
+ * Subject to the terms at https://greensock.com/standard-license or for
+ * Club GreenSock members, the agreement issued with that membership.
+ * @author: Jack Doyle, jack@greensock.com
+*/
+var gsap,_coreInitted,_getUnit,_getGSAP=function(){return gsap||"undefined"!=typeof window&&(gsap=window.gsap)&&gsap.registerPlugin&&gsap},_round=function(t){return Math.round(1e4*t)/1e4},_bonusValidated=1,_initCore=function(t){gsap=t||_getGSAP(),_coreInitted||(_getUnit=gsap.utils.getUnit,_coreInitted=1)},PhysicsProp=function(t,s,e,i,r,n){var o=t._gsap,a=o.get(t,s);this.p=s,this.set=o.set(t,s),this.s=this.val=parseFloat(a),this.u=_getUnit(a)||0,this.vel=e||0,this.v=this.vel/n,i||0===i?(this.acc=i,this.a=this.acc/(n*n)):this.acc=this.a=0,this.fr=1-(r||0)};export var PhysicsPropsPlugin={version:"3.2.6",name:"physicsProps",register:_initCore,init:function(t,s,e){_coreInitted||_initCore();var i,r=this;for(i in r.target=t,r.tween=e,r.step=0,r.sps=30,r.vProps=[],s){var n=s[i],o=n.velocity,a=n.acceleration,p=n.friction;(o||a)&&(r.vProps.push(new PhysicsProp(t,i,o,a,p,r.sps)),r._props.push(i),p&&(r.hasFr=1))}},render:function(t,s){var e,i,r,n,o,a=s.vProps,p=s.tween,c=s.target,g=s.step,u=s.hasFr,v=s.sps,h=a.length,l=p._from?p._dur-p._time:p._time;if(u){if(r=(l*=v)%1,(i=(0|l)-g)>=0)for(;h--;){for(e=a[h],n=i;n--;)e.v+=e.a,e.v*=e.fr,e.val+=e.v;e.set(c,e.p,_round(e.val+e.v*r)+e.u)}else for(;h--;){for(e=a[h],n=-i;n--;)e.val-=e.v,e.v/=e.fr,e.v-=e.a;e.set(c,e.p,_round(e.val+e.v*r)+e.u)}s.step+=i}else for(o=l*l*.5;h--;)(e=a[h]).set(c,e.p,_round(e.s+e.vel*l+e.acc*o)+e.u)},kill:function(t){for(var s=this.vProps,e=s.length;e--;)s[e].p===t&&s.splice(e,1)}};_getGSAP()&&gsap.registerPlugin(PhysicsPropsPlugin);export{PhysicsPropsPlugin as default};

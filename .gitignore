@@ -1,0 +1,8 @@
+# Trashcan
+/_old
+
+# Output dir of Electron Forge
+/out
+
+# Node
+/node_modules

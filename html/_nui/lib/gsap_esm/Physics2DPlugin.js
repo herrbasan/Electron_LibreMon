@@ -1,0 +1,10 @@
+/*!
+ * Physics2DPlugin 3.2.6
+ * https://greensock.com
+ *
+ * @license Copyright 2008-2020, GreenSock. All rights reserved.
+ * Subject to the terms at https://greensock.com/standard-license or for
+ * Club GreenSock members, the agreement issued with that membership.
+ * @author: Jack Doyle, jack@greensock.com
+*/
+var gsap,_coreInitted,_getUnit,_DEG2RAD=Math.PI/180,_getGSAP=function(){return gsap||"undefined"!=typeof window&&(gsap=window.gsap)&&gsap.registerPlugin&&gsap},_round=function(t){return Math.round(1e4*t)/1e4},_bonusValidated=1,_initCore=function(t){gsap=t||_getGSAP(),_coreInitted||(_getUnit=gsap.utils.getUnit,_coreInitted=1)},PhysicsProp=function(t,i,s,e,n){var a=t._gsap,r=a.get(t,i);this.p=i,this.set=a.set(t,i),this.s=this.val=parseFloat(r),this.u=_getUnit(r)||0,this.vel=s||0,this.v=this.vel/n,e||0===e?(this.acc=e,this.a=this.acc/(n*n)):this.acc=this.a=0};export var Physics2DPlugin={version:"3.2.6",name:"physics2D",register:_initCore,init:function(t,i,s){_coreInitted||_initCore();var e=this,n=+i.angle||0,a=+i.velocity||0,r=+i.acceleration||0,p=i.xProp||"x",o=i.yProp||"y",c=i.accelerationAngle||0===i.accelerationAngle?+i.accelerationAngle:n;e.target=t,e.tween=s,e.step=0,e.sps=30,i.gravity&&(r=+i.gravity,c=90),n*=_DEG2RAD,c*=_DEG2RAD,e.fr=1-(+i.friction||0),e._props.push(p,o),e.xp=new PhysicsProp(t,p,Math.cos(n)*a,Math.cos(c)*r,e.sps),e.yp=new PhysicsProp(t,o,Math.sin(n)*a,Math.sin(c)*r,e.sps),e.skipX=e.skipY=0},render:function(t,i){var s,e,n,a,r,p,o=i.xp,c=i.yp,v=i.tween,g=i.target,l=i.step,h=i.sps,u=i.fr,_=i.skipX,P=i.skipY,f=v._from?v._dur-v._time:v._time;if(1===i.fr)n=f*f*.5,s=o.s+(o.vel*f+o.acc*n),e=c.s+(c.vel*f+c.acc*n);else{if(a=p=(0|(f*=h))-l,r=f%1,p>=0)for(;p--;)o.v+=o.a,c.v+=c.a,o.v*=u,c.v*=u,o.val+=o.v,c.val+=c.v;else for(p=-p;p--;)o.val-=o.v,c.val-=c.v,o.v/=u,c.v/=u,o.v-=o.a,c.v-=c.a;s=o.val+o.v*r,e=c.val+c.v*r,i.step+=a}_||o.set(g,o.p,_round(s)+o.u),P||c.set(g,c.p,_round(e)+c.u)},kill:function(t){this.xp.p===t&&(this.skipX=1),this.yp.p===t&&(this.skipY=1)}};_getGSAP()&&gsap.registerPlugin(Physics2DPlugin);export{Physics2DPlugin as default};

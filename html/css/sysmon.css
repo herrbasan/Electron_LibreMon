@@ -1,0 +1,156 @@
+.sysmon {
+	position: relative;
+    font-size: 1rem;
+	padding: 2rem;
+}
+
+.sysmon .wol .list{
+	display: flex;
+	flex-wrap: wrap;
+	gap:1rem;
+	margin-top: 1rem;
+}
+
+.sysmon .wol .list button{
+	width: 10rem;
+	margin-bottom: 0;
+	margin-right: 0;
+}
+.sysmon .sysmon_pc{
+	padding: 2rem;
+	margin-bottom: 1rem;
+}
+
+.sysmon .sysmon_pc .head {
+	display: flex;
+	gap: 2rem;
+	margin-bottom: 2rem;
+	justify-content: flex-start;
+	align-items: baseline;
+}
+
+.sysmon .sysmon_pc .head .name,
+.sysmon .wol .label{
+	font-size: 2rem;
+	font-weight: 200;
+	text-transform: uppercase;
+    color: var(--color-text-dim);
+}
+
+.sysmon .sysmon_pc .head .os{
+	
+}
+
+.sysmon .sysmon_pc .hardware {
+	display: grid;
+	grid-template-columns: auto 16rem;
+	gap: 2rem;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.sysmon .sysmon_pc .hardware .top{
+	display: flex;
+	gap: 2rem;
+	justify-content:flex-start;
+  	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.sysmon .sysmon_pc .hardware .bot{
+	display: flex;
+	gap: 1rem;
+	justify-content:flex-start;
+  	flex-wrap: wrap;
+	/*margin-top: 2rem;
+	padding-top: 2rem;
+	border-top: solid thin rgba(180,180,180,0.3);*/
+}
+
+.sysmon .sysmon_pc.online .hardware .top,
+.sysmon .sysmon_pc.online .hardware .bot {
+	
+}
+
+.sysmon .sysmon_pc .hardware .top .device{
+	min-width: 30rem;
+	flex-grow: 1;
+}
+
+.sysmon .sysmon_pc .hardware .bot .device{
+	min-width: 15rem;
+	flex-grow: 1;
+}
+
+
+.sysmon .sysmon_pc.online .hardware .top {
+	opacity: 1;
+}
+
+
+.sysmon .sysmon_pc .device{
+	
+}
+
+.sysmon .sysmon_pc .device > .name{
+	color: var(--color-highlight);
+    margin-bottom: 0.3rem;
+}
+.sysmon .sysmon_pc .device .sensor_type > .name{
+	font-size: 0.6rem;
+	text-transform: uppercase;
+	opacity: 0.5;
+	display: none;
+}
+
+.sysmon .sysmon_pc .top .device .sensor{
+	display: grid;
+	grid-template-columns: 10rem 6rem auto;
+    height: 2rem;
+    margin-bottom: 0.3rem;
+    align-items: center;
+}
+
+.sysmon .sysmon_pc .bot .device .sensor{
+	display: grid;
+	grid-template-columns: 10rem 6rem;
+    height: 1rem;
+    margin-bottom: 0.3rem;
+    align-items: center;
+}
+
+.sysmon .sysmon_pc .device .sensor .data{
+	font-weight: 700;
+	color:white;
+}
+.sysmon .sysmon_pc .device .sensor .plot{
+    height: 100%;
+    background-color: rgba(180,180,180,0.1);
+	/*border: solid thin rgba(180,180,180,0.3);*/
+}
+
+
+@media only screen and (max-width: 1300px) {
+	.sysmon .sysmon_pc .hardware {
+		display: grid;
+		grid-template-columns: auto;
+	}
+	.sysmon .sysmon_pc .hardware .bot{
+		margin-top: 2rem;
+		padding-top: 2rem;
+		border-top: solid thin rgba(180,180,180,0.3);
+	}
+}
+
+@media only screen and (min-width: 2100px) {
+	.sysmon .sysmon_pc .hardware {
+		display: grid;
+		grid-template-columns: 100%;
+	}
+	.sysmon .sysmon_pc .hardware .bot{
+		margin-top: 2rem;
+		padding-top: 2rem;
+		border-top: solid thin rgba(180,180,180,0.3);
+	}
+}

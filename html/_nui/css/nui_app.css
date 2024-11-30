@@ -1,0 +1,178 @@
+:root {
+    --nui-app: "nui_app_1.0.1";
+}
+
+.nui-app {
+	--app-window-statusbar-height: 2rem;
+	--app-window-titlebar-height: 3rem;
+	--app-window-background:rgb(220,220,220);
+	--app-window-titlebar-color: rgb(255,255,255);
+	--app-window-titlebar-background: rgb(120,120,120);
+	--app-window-statusbar-background: rgb(200,200,200);
+	--app-window-statusbar-color: rgb(180,180,180);
+	--app-window-border: solid thin rgb(150,150,150);
+	position: absolute;
+	inset: 0;
+	background-color: var(--app-window-background);
+	transition: all 0.2s;
+}
+
+/*
+.focus .nui-app {
+	--app-window-titlebar-color: rgb(255,255,255);
+	--app-window-titlebar-background: rgb(120,120,120);
+	--app-window-statusbar-background: rgb(200,200,200);
+	--app-window-statusbar-color: rgb(180,180,180);
+}*/
+
+.dark .nui-app {
+	--app-window-background: rgb(50,50,50);
+	--app-window-titlebar-color: rgb(180,180,180);
+	--app-window-titlebar-background: rgb(40,40,40);
+	--app-window-statusbar-height: 2rem;
+	--app-window-statusbar-background: rgb(35,35,35);
+	--app-window-statusbar-color: rgb(100,100,100);
+	--app-window-border: solid thin rgb(70,70,70);
+}
+
+/*
+.focus.dark .nui-app {
+	--app-window-titlebar-color: rgb(200,200,200);
+	--app-window-titlebar-background: rgb(40,40,40);
+}*/
+
+.nui-app > .nui-app-content {
+	display: block;
+	padding: 0;
+	position: absolute;
+	top: var(--app-window-titlebar-height);
+	left:0;
+	right: 0;
+	bottom: var(--app-window-statusbar-height);
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+
+.nui-app .nui-app-content > .nui-app-main{
+	display: block;
+	padding: 0;
+	position: absolute;
+	inset: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.nui-app.nofoot .nui-app-content{
+	bottom:0;
+}
+
+.nui-app .nui-status-bar {
+	position: absolute;
+	bottom:0;
+	left:0;
+	right: 0;
+	height: var(--app-window-statusbar-height);
+	background-color: var(--app-window-statusbar-background);
+	border-top: var(--app-window-border);
+	display: flex;
+	align-items: center;
+	padding-left: 1rem;
+	color: var(--app-window-statusbar-color);
+}
+
+.nui-app .nui-status-bar::after {
+	content: '';
+	display: block;
+	height: 0.5rem;
+	background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%);
+	position: absolute;
+	width: 100%;
+	left:0;
+	top: -0.5rem;
+	margin-top: -1px;
+	pointer-events: none;
+}
+
+.nui-app .nui-title-bar {
+	position: absolute;
+	top:0;
+	left:0;
+	right: 0;
+	padding-top:0.5px;
+	height: var(--app-window-titlebar-height);
+	background-color: var(--app-window-titlebar-background);
+	border-bottom: var(--app-window-border);
+	display: grid;
+	grid-template-columns: auto auto;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-app-region: drag;
+	z-index: 1;
+}
+
+.nui-app .nui-title-bar::after {
+	content: '';
+	display: block;
+	height: 0.5rem;
+	background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+	position: absolute;
+	width: 100%;
+	left:0;
+	bottom: -0.5rem;
+	margin-top: 1px;
+	pointer-events: none;
+}
+
+.nui-app .nui-title-bar .title{
+	color: var(--app-window-titlebar-color);
+	height: 100%;
+	display: flex;
+	align-items: center;
+	font-size: 0.9rem;
+	line-height: 0.9rem;
+	text-transform: uppercase;
+}
+
+.nui-app .nui-title-bar .title .label{
+	margin-top: 0.1rem; 
+}
+
+.nui-app .nui-title-bar .controls{
+	display: flex;
+	justify-content: flex-end;
+}
+
+.nui-app .nui-title-bar .nui-icon-container{
+	width: 4rem;
+	height: 100%;
+	cursor: pointer;
+	-webkit-app-region: no-drag;
+}
+
+.nui-app .nui-title-bar .nui-icon-container.close:hover{
+	background-color: var(--palette-alert-hi);
+	color: white;
+	fill: white;
+}
+.nui-app .nui-title-bar .nui-icon-container.close:hover .nui-icon{
+	color: white;
+	fill: white;
+}
+
+.nui-app .nui-title-bar .title .nui-icon-container .nui-icon,
+.nui-app .nui-title-bar .controls i,
+.nui-app .nui-title-bar .controls .nui-icon {
+	fill: var(--app-window-titlebar-color);
+	color: var(--app-window-titlebar-color);
+}
+
+.nui-title-bar,
+.nui-status-bar {
+	opacity: 0.6;
+	transition: opacity 0.2s;
+}
+
+.focus .nui-title-bar,
+.focus .nui-status-bar {
+	opacity: 1;
+}
