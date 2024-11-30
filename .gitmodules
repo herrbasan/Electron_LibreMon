@@ -1,0 +1,6 @@
+[submodule "js/electron_helper"]
+	path = js/electron_helper
+	url = https://github.com/herrbasan/electron_helper.git
+[submodule "html/nui"]
+	path = html/nui
+	url = https://github.com/herrbasan/nui.git
