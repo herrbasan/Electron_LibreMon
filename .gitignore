@@ -6,3 +6,6 @@
 
 # Node
 /node_modules
+
+# Generated Temp File
+temp.json
