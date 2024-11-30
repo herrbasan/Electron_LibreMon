@@ -7,10 +7,10 @@
                         "SensorId": "/lpc/nct6798d/0/voltage/0",
                         "name": "Vcore",
                         "data": {
-                            "value": 1.144,
+                            "value": 1.176,
                             "type": "V",
-                            "max": 1.224,
-                            "min": 1.104
+                            "max": 1.232,
+                            "min": 0.856
                         }
                     },
                     "voltage_2": {
@@ -29,8 +29,8 @@
                         "data": {
                             "value": 3.408,
                             "type": "V",
-                            "max": 3.408,
-                            "min": 3.408
+                            "max": 3.424,
+                            "min": 3.392
                         }
                     },
                     "33v": {
@@ -39,8 +39,8 @@
                         "data": {
                             "value": 3.296,
                             "type": "V",
-                            "max": 3.408,
-                            "min": 3.28
+                            "max": 3.296,
+                            "min": 3.264
                         }
                     },
                     "voltage_5": {
@@ -50,16 +50,16 @@
                             "value": 1.008,
                             "type": "V",
                             "max": 1.008,
-                            "min": 1
+                            "min": 0.992
                         }
                     },
                     "voltage_6": {
                         "SensorId": "/lpc/nct6798d/0/voltage/5",
                         "name": "Voltage #6",
                         "data": {
-                            "value": 1.04,
+                            "value": 0.6,
                             "type": "V",
-                            "max": 1.208,
+                            "max": 1.216,
                             "min": 0.008
                         }
                     },
@@ -80,16 +80,16 @@
                             "value": 3.408,
                             "type": "V",
                             "max": 3.408,
-                            "min": 3.408
+                            "min": 3.392
                         }
                     },
                     "cmos_battery": {
                         "SensorId": "/lpc/nct6798d/0/voltage/8",
                         "name": "CMOS Battery",
                         "data": {
-                            "value": 3.168,
+                            "value": 3.184,
                             "type": "V",
-                            "max": 3.184,
+                            "max": 3.408,
                             "min": 3.168
                         }
                     },
@@ -117,9 +117,9 @@
                         "SensorId": "/lpc/nct6798d/0/voltage/11",
                         "name": "Voltage #12",
                         "data": {
-                            "value": 0.6,
+                            "value": 0.304,
                             "type": "V",
-                            "max": 0.6,
+                            "max": 0.608,
                             "min": 0.008
                         }
                     },
@@ -130,7 +130,7 @@
                             "value": 1.056,
                             "type": "V",
                             "max": 1.056,
-                            "min": 1.056
+                            "min": 1.048
                         }
                     },
                     "voltage_14": {
@@ -139,7 +139,7 @@
                         "data": {
                             "value": 0.52,
                             "type": "V",
-                            "max": 0.528,
+                            "max": 1.056,
                             "min": 0.52
                         }
                     },
@@ -149,7 +149,7 @@
                         "data": {
                             "value": 0.888,
                             "type": "V",
-                            "max": 0.896,
+                            "max": 0.904,
                             "min": 0.888
                         }
                     },
@@ -160,20 +160,20 @@
                         "SensorId": "/lpc/nct6798d/0/temperature/1",
                         "name": "Temperature #1",
                         "data": {
-                            "value": 40,
+                            "value": 41.5,
                             "type": "°C",
-                            "max": 41,
-                            "min": 39
+                            "max": 53.5,
+                            "min": 37
                         }
                     },
                     "temperature_2": {
                         "SensorId": "/lpc/nct6798d/0/temperature/2",
                         "name": "Temperature #2",
                         "data": {
-                            "value": 40,
+                            "value": 42,
                             "type": "°C",
-                            "max": 40,
-                            "min": 39
+                            "max": 54,
+                            "min": 28
                         }
                     },
                     "temperature_4": {
@@ -190,10 +190,10 @@
                         "SensorId": "/lpc/nct6798d/0/temperature/5",
                         "name": "Temperature #5",
                         "data": {
-                            "value": 16,
+                            "value": 15,
                             "type": "°C",
-                            "max": 122,
-                            "min": 15
+                            "max": 125,
+                            "min": 14
                         }
                     },
                     "temperature_6": {
@@ -203,7 +203,7 @@
                             "value": 32,
                             "type": "°C",
                             "max": 32,
-                            "min": 32
+                            "min": 5
                         }
                     },
                     "name": "Temperatures"
@@ -223,30 +223,30 @@
                         "SensorId": "/lpc/nct6798d/0/fan/1",
                         "name": "Fan #2",
                         "data": {
-                            "value": 932,
+                            "value": 1016,
                             "type": "RPM",
-                            "max": 1396,
-                            "min": 699
+                            "max": 1762,
+                            "min": 696
                         }
                     },
                     "fan_3": {
                         "SensorId": "/lpc/nct6798d/0/fan/2",
                         "name": "Fan #3",
                         "data": {
-                            "value": 1129,
+                            "value": 1134,
                             "type": "RPM",
-                            "max": 1259,
-                            "min": 1118
+                            "max": 3277,
+                            "min": 1120
                         }
                     },
                     "fan_4": {
                         "SensorId": "/lpc/nct6798d/0/fan/3",
                         "name": "Fan #4",
                         "data": {
-                            "value": 1123,
+                            "value": 1118,
                             "type": "RPM",
-                            "max": 1251,
-                            "min": 1107
+                            "max": 2123,
+                            "min": 1103
                         }
                     },
                     "fan_5": {
@@ -263,20 +263,20 @@
                         "SensorId": "/lpc/nct6798d/0/fan/5",
                         "name": "Fan #6",
                         "data": {
-                            "value": 1409,
+                            "value": 1424,
                             "type": "RPM",
-                            "max": 1467,
-                            "min": 1403
+                            "max": 2153,
+                            "min": 1398
                         }
                     },
                     "fan_7": {
                         "SensorId": "/lpc/nct6798d/0/fan/6",
                         "name": "Fan #7",
                         "data": {
-                            "value": 2528,
+                            "value": 2519,
                             "type": "RPM",
-                            "max": 2872,
-                            "min": 2486
+                            "max": 2891,
+                            "min": 2477
                         }
                     },
                     "name": "Fans"
@@ -296,9 +296,9 @@
                         "SensorId": "/lpc/nct6798d/0/control/1",
                         "name": "Fan #2",
                         "data": {
-                            "value": 39.6,
+                            "value": 41.2,
                             "type": "%",
-                            "max": 66.7,
+                            "max": 84.7,
                             "min": 30.2
                         }
                     },
@@ -308,7 +308,7 @@
                         "data": {
                             "value": 30.2,
                             "type": "%",
-                            "max": 38,
+                            "max": 68.2,
                             "min": 30.2
                         }
                     },
@@ -318,7 +318,7 @@
                         "data": {
                             "value": 30.2,
                             "type": "%",
-                            "max": 38,
+                            "max": 68.2,
                             "min": 30.2
                         }
                     },
@@ -338,7 +338,7 @@
                         "data": {
                             "value": 40,
                             "type": "%",
-                            "max": 43.9,
+                            "max": 68.6,
                             "min": 40
                         }
                     },
@@ -365,170 +365,170 @@
                         "SensorId": "/intelcpu/0/voltage/0",
                         "name": "CPU Core",
                         "data": {
-                            "value": 1.275,
+                            "value": 1.306,
                             "type": "V",
-                            "max": 1.377,
-                            "min": 1.247
+                            "max": 1.388,
+                            "min": 1.239
                         }
                     },
                     "cpu_core_1": {
                         "SensorId": "/intelcpu/0/voltage/1",
                         "name": "CPU Core #1",
                         "data": {
-                            "value": 1.28,
+                            "value": 1.311,
                             "type": "V",
-                            "max": 1.379,
-                            "min": 1.247
+                            "max": 1.384,
+                            "min": 1.236
                         }
                     },
                     "cpu_core_2": {
                         "SensorId": "/intelcpu/0/voltage/2",
                         "name": "CPU Core #2",
                         "data": {
-                            "value": 1.29,
+                            "value": 1.311,
                             "type": "V",
-                            "max": 1.38,
-                            "min": 1.247
+                            "max": 1.383,
+                            "min": 1.211
                         }
                     },
                     "cpu_core_3": {
                         "SensorId": "/intelcpu/0/voltage/3",
                         "name": "CPU Core #3",
                         "data": {
-                            "value": 1.28,
+                            "value": 1.277,
                             "type": "V",
-                            "max": 1.371,
-                            "min": 1.242
+                            "max": 1.383,
+                            "min": 1.186
                         }
                     },
                     "cpu_core_4": {
                         "SensorId": "/intelcpu/0/voltage/4",
                         "name": "CPU Core #4",
                         "data": {
-                            "value": 1.28,
+                            "value": 1.281,
                             "type": "V",
-                            "max": 1.376,
-                            "min": 1.249
+                            "max": 1.387,
+                            "min": 1.194
                         }
                     },
                     "cpu_core_5": {
                         "SensorId": "/intelcpu/0/voltage/5",
                         "name": "CPU Core #5",
                         "data": {
-                            "value": 1.272,
+                            "value": 1.298,
                             "type": "V",
-                            "max": 1.375,
-                            "min": 1.245
+                            "max": 1.387,
+                            "min": 1.186
                         }
                     },
                     "cpu_core_6": {
                         "SensorId": "/intelcpu/0/voltage/6",
                         "name": "CPU Core #6",
                         "data": {
-                            "value": 1.272,
+                            "value": 1.298,
                             "type": "V",
-                            "max": 1.382,
-                            "min": 1.245
+                            "max": 1.383,
+                            "min": 1.193
                         }
                     },
                     "cpu_core_7": {
                         "SensorId": "/intelcpu/0/voltage/7",
                         "name": "CPU Core #7",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.298,
                             "type": "V",
-                            "max": 1.369,
-                            "min": 1.239
+                            "max": 1.382,
+                            "min": 1.183
                         }
                     },
                     "cpu_core_8": {
                         "SensorId": "/intelcpu/0/voltage/8",
                         "name": "CPU Core #8",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.29,
                             "type": "V",
-                            "max": 1.37,
-                            "min": 1.241
+                            "max": 1.38,
+                            "min": 1.193
                         }
                     },
                     "cpu_core_9": {
                         "SensorId": "/intelcpu/0/voltage/9",
                         "name": "CPU Core #9",
                         "data": {
-                            "value": 1.297,
+                            "value": 1.315,
                             "type": "V",
-                            "max": 1.376,
-                            "min": 1.25
+                            "max": 1.38,
+                            "min": 1.208
                         }
                     },
                     "cpu_core_10": {
                         "SensorId": "/intelcpu/0/voltage/10",
                         "name": "CPU Core #10",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.315,
                             "type": "V",
-                            "max": 1.371,
-                            "min": 1.245
+                            "max": 1.38,
+                            "min": 1.208
                         }
                     },
                     "cpu_core_11": {
                         "SensorId": "/intelcpu/0/voltage/11",
                         "name": "CPU Core #11",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.315,
                             "type": "V",
-                            "max": 1.367,
-                            "min": 1.247
+                            "max": 1.378,
+                            "min": 1.201
                         }
                     },
                     "cpu_core_12": {
                         "SensorId": "/intelcpu/0/voltage/12",
                         "name": "CPU Core #12",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.315,
                             "type": "V",
-                            "max": 1.362,
-                            "min": 1.247
+                            "max": 1.378,
+                            "min": 1.201
                         }
                     },
                     "cpu_core_13": {
                         "SensorId": "/intelcpu/0/voltage/13",
                         "name": "CPU Core #13",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.315,
                             "type": "V",
-                            "max": 1.381,
-                            "min": 1.245
+                            "max": 1.371,
+                            "min": 1.201
                         }
                     },
                     "cpu_core_14": {
                         "SensorId": "/intelcpu/0/voltage/14",
                         "name": "CPU Core #14",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.31,
                             "type": "V",
-                            "max": 1.372,
-                            "min": 1.238
+                            "max": 1.381,
+                            "min": 1.211
                         }
                     },
                     "cpu_core_15": {
                         "SensorId": "/intelcpu/0/voltage/15",
                         "name": "CPU Core #15",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.31,
                             "type": "V",
-                            "max": 1.37,
-                            "min": 1.245
+                            "max": 1.377,
+                            "min": 1.198
                         }
                     },
                     "cpu_core_16": {
                         "SensorId": "/intelcpu/0/voltage/16",
                         "name": "CPU Core #16",
                         "data": {
-                            "value": 1.277,
+                            "value": 1.31,
                             "type": "V",
-                            "max": 1.369,
-                            "min": 1.247
+                            "max": 1.374,
+                            "min": 1.198
                         }
                     },
                     "name": "Voltages"
@@ -538,10 +538,10 @@
                         "SensorId": "/intelcpu/0/power/0",
                         "name": "CPU Package",
                         "data": {
-                            "value": 40.2,
+                            "value": 40.4,
                             "type": "W",
-                            "max": 138.3,
-                            "min": 23.6
+                            "max": 266.9,
+                            "min": 20.9
                         }
                     },
                     "cpu_cores": {
@@ -550,8 +550,8 @@
                         "data": {
                             "value": 32.1,
                             "type": "W",
-                            "max": 128.3,
-                            "min": 15.6
+                            "max": 257.6,
+                            "min": 13.1
                         }
                     },
                     "cpu_memory": {
@@ -594,7 +594,7 @@
                             "value": 5327.5,
                             "type": "MHz",
                             "max": 5327.7,
-                            "min": 5327.5
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_2": {
@@ -604,7 +604,7 @@
                             "value": 5327.5,
                             "type": "MHz",
                             "max": 5327.7,
-                            "min": 5327.5
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_3": {
@@ -614,7 +614,7 @@
                             "value": 5327.5,
                             "type": "MHz",
                             "max": 5327.7,
-                            "min": 5327.5
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_4": {
@@ -624,7 +624,7 @@
                             "value": 5327.5,
                             "type": "MHz",
                             "max": 5327.7,
-                            "min": 5327.5
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_5": {
@@ -633,8 +633,8 @@
                         "data": {
                             "value": 5327.5,
                             "type": "MHz",
-                            "max": 5428,
-                            "min": 5327.5
+                            "max": 5428.2,
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_6": {
@@ -643,8 +643,8 @@
                         "data": {
                             "value": 5327.5,
                             "type": "MHz",
-                            "max": 5428,
-                            "min": 5327.5
+                            "max": 5428.2,
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_7": {
@@ -654,7 +654,7 @@
                             "value": 5327.5,
                             "type": "MHz",
                             "max": 5327.7,
-                            "min": 5327.5
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_8": {
@@ -664,7 +664,7 @@
                             "value": 5327.5,
                             "type": "MHz",
                             "max": 5327.7,
-                            "min": 5327.5
+                            "min": 5327.2
                         }
                     },
                     "cpu_core_9": {
@@ -674,17 +674,17 @@
                             "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_10": {
                         "SensorId": "/intelcpu/0/clock/10",
                         "name": "CPU Core #10",
                         "data": {
-                            "value": 4121.2,
+                            "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_11": {
@@ -694,17 +694,17 @@
                             "value": 4121.2,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_12": {
                         "SensorId": "/intelcpu/0/clock/12",
                         "name": "CPU Core #12",
                         "data": {
-                            "value": 4121.2,
+                            "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_13": {
@@ -714,7 +714,7 @@
                             "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_14": {
@@ -724,7 +724,7 @@
                             "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_15": {
@@ -734,17 +734,17 @@
                             "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "cpu_core_16": {
                         "SensorId": "/intelcpu/0/clock/16",
                         "name": "CPU Core #16",
                         "data": {
-                            "value": 4121.2,
+                            "value": 4221.8,
                             "type": "MHz",
                             "max": 4222,
-                            "min": 4121.2
+                            "min": 4121
                         }
                     },
                     "name": "Clocks"
@@ -754,350 +754,350 @@
                         "SensorId": "/intelcpu/0/temperature/0",
                         "name": "Core Max",
                         "data": {
-                            "value": 44,
+                            "value": 48,
                             "type": "°C",
-                            "max": 75,
-                            "min": 41
+                            "max": 96,
+                            "min": 39
                         }
                     },
                     "core_average": {
                         "SensorId": "/intelcpu/0/temperature/1",
                         "name": "Core Average",
                         "data": {
-                            "value": 41.6,
+                            "value": 44.1,
                             "type": "°C",
-                            "max": 64.8,
-                            "min": 39
+                            "max": 82.9,
+                            "min": 37.4
                         }
                     },
                     "cpu_core_1": {
                         "SensorId": "/intelcpu/0/temperature/2",
                         "name": "CPU Core #1",
                         "data": {
-                            "value": 43,
+                            "value": 45,
                             "type": "°C",
-                            "max": 68,
-                            "min": 38
+                            "max": 87,
+                            "min": 37
                         }
                     },
                     "cpu_core_2": {
                         "SensorId": "/intelcpu/0/temperature/3",
                         "name": "CPU Core #2",
                         "data": {
-                            "value": 41,
+                            "value": 48,
                             "type": "°C",
-                            "max": 64,
-                            "min": 37
+                            "max": 86,
+                            "min": 35
                         }
                     },
                     "cpu_core_3": {
                         "SensorId": "/intelcpu/0/temperature/4",
                         "name": "CPU Core #3",
                         "data": {
-                            "value": 41,
+                            "value": 43,
                             "type": "°C",
-                            "max": 69,
-                            "min": 37
+                            "max": 90,
+                            "min": 34
                         }
                     },
                     "cpu_core_4": {
                         "SensorId": "/intelcpu/0/temperature/5",
                         "name": "CPU Core #4",
                         "data": {
-                            "value": 40,
+                            "value": 43,
                             "type": "°C",
-                            "max": 65,
-                            "min": 35
+                            "max": 92,
+                            "min": 34
                         }
                     },
                     "cpu_core_5": {
                         "SensorId": "/intelcpu/0/temperature/6",
                         "name": "CPU Core #5",
                         "data": {
-                            "value": 44,
+                            "value": 46,
                             "type": "°C",
-                            "max": 73,
-                            "min": 37
+                            "max": 87,
+                            "min": 35
                         }
                     },
                     "cpu_core_6": {
                         "SensorId": "/intelcpu/0/temperature/7",
                         "name": "CPU Core #6",
                         "data": {
-                            "value": 42,
+                            "value": 47,
                             "type": "°C",
-                            "max": 69,
-                            "min": 36
+                            "max": 96,
+                            "min": 34
                         }
                     },
                     "cpu_core_7": {
                         "SensorId": "/intelcpu/0/temperature/8",
                         "name": "CPU Core #7",
                         "data": {
-                            "value": 43,
+                            "value": 44,
                             "type": "°C",
-                            "max": 68,
-                            "min": 37
+                            "max": 87,
+                            "min": 35
                         }
                     },
                     "cpu_core_8": {
                         "SensorId": "/intelcpu/0/temperature/9",
                         "name": "CPU Core #8",
                         "data": {
-                            "value": 40,
+                            "value": 41,
                             "type": "°C",
-                            "max": 75,
-                            "min": 36
+                            "max": 94,
+                            "min": 33
                         }
                     },
                     "cpu_core_9": {
                         "SensorId": "/intelcpu/0/temperature/10",
                         "name": "CPU Core #9",
                         "data": {
-                            "value": 42,
+                            "value": 43,
                             "type": "°C",
-                            "max": 62,
-                            "min": 39
+                            "max": 77,
+                            "min": 38
                         }
                     },
                     "cpu_core_10": {
                         "SensorId": "/intelcpu/0/temperature/11",
                         "name": "CPU Core #10",
                         "data": {
-                            "value": 42,
+                            "value": 43,
                             "type": "°C",
-                            "max": 62,
-                            "min": 39
+                            "max": 77,
+                            "min": 38
                         }
                     },
                     "cpu_core_11": {
                         "SensorId": "/intelcpu/0/temperature/12",
                         "name": "CPU Core #11",
                         "data": {
-                            "value": 42,
+                            "value": 43,
                             "type": "°C",
-                            "max": 62,
-                            "min": 39
+                            "max": 77,
+                            "min": 38
                         }
                     },
                     "cpu_core_12": {
                         "SensorId": "/intelcpu/0/temperature/13",
                         "name": "CPU Core #12",
                         "data": {
-                            "value": 42,
+                            "value": 43,
                             "type": "°C",
-                            "max": 62,
-                            "min": 39
+                            "max": 77,
+                            "min": 38
                         }
                     },
                     "cpu_core_13": {
                         "SensorId": "/intelcpu/0/temperature/14",
                         "name": "CPU Core #13",
                         "data": {
-                            "value": 41,
+                            "value": 44,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 78,
+                            "min": 37
                         }
                     },
                     "cpu_core_14": {
                         "SensorId": "/intelcpu/0/temperature/15",
                         "name": "CPU Core #14",
                         "data": {
-                            "value": 41,
+                            "value": 44,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 78,
+                            "min": 37
                         }
                     },
                     "cpu_core_15": {
                         "SensorId": "/intelcpu/0/temperature/16",
                         "name": "CPU Core #15",
                         "data": {
-                            "value": 41,
+                            "value": 44,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 78,
+                            "min": 37
                         }
                     },
                     "cpu_core_16": {
                         "SensorId": "/intelcpu/0/temperature/17",
                         "name": "CPU Core #16",
                         "data": {
-                            "value": 41,
+                            "value": 44,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 78,
+                            "min": 37
                         }
                     },
                     "cpu_package": {
                         "SensorId": "/intelcpu/0/temperature/18",
                         "name": "CPU Package",
                         "data": {
-                            "value": 47,
+                            "value": 48,
                             "type": "°C",
-                            "max": 75,
-                            "min": 42
+                            "max": 96,
+                            "min": 41
                         }
                     },
                     "cpu_core_1_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/19",
                         "name": "CPU Core #1 Distance to TjMax",
                         "data": {
-                            "value": 57,
+                            "value": 55,
                             "type": "°C",
-                            "max": 62,
-                            "min": 32
+                            "max": 63,
+                            "min": 13
                         }
                     },
                     "cpu_core_2_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/20",
                         "name": "CPU Core #2 Distance to TjMax",
                         "data": {
-                            "value": 59,
+                            "value": 52,
                             "type": "°C",
-                            "max": 63,
-                            "min": 36
+                            "max": 65,
+                            "min": 14
                         }
                     },
                     "cpu_core_3_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/21",
                         "name": "CPU Core #3 Distance to TjMax",
                         "data": {
-                            "value": 59,
+                            "value": 57,
                             "type": "°C",
-                            "max": 63,
-                            "min": 31
+                            "max": 66,
+                            "min": 10
                         }
                     },
                     "cpu_core_4_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/22",
                         "name": "CPU Core #4 Distance to TjMax",
                         "data": {
-                            "value": 60,
+                            "value": 57,
                             "type": "°C",
-                            "max": 65,
-                            "min": 35
+                            "max": 66,
+                            "min": 8
                         }
                     },
                     "cpu_core_5_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/23",
                         "name": "CPU Core #5 Distance to TjMax",
                         "data": {
-                            "value": 56,
+                            "value": 54,
                             "type": "°C",
-                            "max": 63,
-                            "min": 27
+                            "max": 65,
+                            "min": 13
                         }
                     },
                     "cpu_core_6_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/24",
                         "name": "CPU Core #6 Distance to TjMax",
                         "data": {
-                            "value": 58,
+                            "value": 53,
                             "type": "°C",
-                            "max": 64,
-                            "min": 31
+                            "max": 66,
+                            "min": 4
                         }
                     },
                     "cpu_core_7_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/25",
                         "name": "CPU Core #7 Distance to TjMax",
                         "data": {
-                            "value": 57,
+                            "value": 56,
                             "type": "°C",
-                            "max": 63,
-                            "min": 32
+                            "max": 65,
+                            "min": 13
                         }
                     },
                     "cpu_core_8_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/26",
                         "name": "CPU Core #8 Distance to TjMax",
                         "data": {
-                            "value": 60,
+                            "value": 59,
                             "type": "°C",
-                            "max": 64,
-                            "min": 25
+                            "max": 67,
+                            "min": 6
                         }
                     },
                     "cpu_core_9_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/27",
                         "name": "CPU Core #9 Distance to TjMax",
                         "data": {
-                            "value": 58,
+                            "value": 57,
                             "type": "°C",
-                            "max": 61,
-                            "min": 38
+                            "max": 62,
+                            "min": 23
                         }
                     },
                     "cpu_core_10_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/28",
                         "name": "CPU Core #10 Distance to TjMax",
                         "data": {
-                            "value": 58,
+                            "value": 57,
                             "type": "°C",
-                            "max": 61,
-                            "min": 38
+                            "max": 62,
+                            "min": 23
                         }
                     },
                     "cpu_core_11_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/29",
                         "name": "CPU Core #11 Distance to TjMax",
                         "data": {
-                            "value": 58,
+                            "value": 57,
                             "type": "°C",
-                            "max": 61,
-                            "min": 38
+                            "max": 62,
+                            "min": 23
                         }
                     },
                     "cpu_core_12_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/30",
                         "name": "CPU Core #12 Distance to TjMax",
                         "data": {
-                            "value": 58,
+                            "value": 57,
                             "type": "°C",
-                            "max": 61,
-                            "min": 38
+                            "max": 62,
+                            "min": 23
                         }
                     },
                     "cpu_core_13_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/31",
                         "name": "CPU Core #13 Distance to TjMax",
                         "data": {
-                            "value": 59,
+                            "value": 56,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 63,
+                            "min": 22
                         }
                     },
                     "cpu_core_14_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/32",
                         "name": "CPU Core #14 Distance to TjMax",
                         "data": {
-                            "value": 59,
+                            "value": 56,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 63,
+                            "min": 22
                         }
                     },
                     "cpu_core_15_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/33",
                         "name": "CPU Core #15 Distance to TjMax",
                         "data": {
-                            "value": 59,
+                            "value": 56,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 63,
+                            "min": 22
                         }
                     },
                     "cpu_core_16_distance_to_tjmax": {
                         "SensorId": "/intelcpu/0/temperature/34",
                         "name": "CPU Core #16 Distance to TjMax",
                         "data": {
-                            "value": 59,
+                            "value": 56,
                             "type": "°C",
-                            "max": 61,
-                            "min": 39
+                            "max": 63,
+                            "min": 22
                         }
                     },
                     "name": "Temperatures"
@@ -1107,9 +1107,9 @@
                         "SensorId": "/intelcpu/0/load/0",
                         "name": "CPU Total",
                         "data": {
-                            "value": 5.7,
+                            "value": 4.7,
                             "type": "%",
-                            "max": 59.8,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1117,19 +1117,19 @@
                         "SensorId": "/intelcpu/0/load/1",
                         "name": "CPU Core Max",
                         "data": {
-                            "value": 28.6,
+                            "value": 38.9,
                             "type": "%",
-                            "max": 84.5,
-                            "min": 7.8
+                            "max": 100,
+                            "min": 4.3
                         }
                     },
                     "cpu_core_1_thread_1": {
                         "SensorId": "/intelcpu/0/load/2",
                         "name": "CPU Core #1 Thread #1",
                         "data": {
-                            "value": 4.9,
+                            "value": 0,
                             "type": "%",
-                            "max": 84.5,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1139,7 +1139,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 38.2,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1147,9 +1147,9 @@
                         "SensorId": "/intelcpu/0/load/4",
                         "name": "CPU Core #2 Thread #1",
                         "data": {
-                            "value": 0,
+                            "value": 15.1,
                             "type": "%",
-                            "max": 65.9,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1159,7 +1159,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 66.2,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1167,9 +1167,9 @@
                         "SensorId": "/intelcpu/0/load/6",
                         "name": "CPU Core #3 Thread #1",
                         "data": {
-                            "value": 10.7,
+                            "value": 8.7,
                             "type": "%",
-                            "max": 64.2,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1179,7 +1179,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 40.7,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1187,9 +1187,9 @@
                         "SensorId": "/intelcpu/0/load/8",
                         "name": "CPU Core #4 Thread #1",
                         "data": {
-                            "value": 5.7,
+                            "value": 9.5,
                             "type": "%",
-                            "max": 69,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1199,7 +1199,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 37.1,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1207,9 +1207,9 @@
                         "SensorId": "/intelcpu/0/load/10",
                         "name": "CPU Core #5 Thread #1",
                         "data": {
-                            "value": 26.1,
+                            "value": 32,
                             "type": "%",
-                            "max": 82,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1219,7 +1219,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 75.1,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1227,9 +1227,9 @@
                         "SensorId": "/intelcpu/0/load/12",
                         "name": "CPU Core #6 Thread #1",
                         "data": {
-                            "value": 28.6,
+                            "value": 38.9,
                             "type": "%",
-                            "max": 80.9,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1237,9 +1237,9 @@
                         "SensorId": "/intelcpu/0/load/13",
                         "name": "CPU Core #6 Thread #2",
                         "data": {
-                            "value": 1.1,
+                            "value": 0,
                             "type": "%",
-                            "max": 81.6,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1249,7 +1249,7 @@
                         "data": {
                             "value": 2.5,
                             "type": "%",
-                            "max": 67.5,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1259,7 +1259,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 69.9,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1267,9 +1267,9 @@
                         "SensorId": "/intelcpu/0/load/16",
                         "name": "CPU Core #8 Thread #1",
                         "data": {
-                            "value": 1.1,
+                            "value": 0,
                             "type": "%",
-                            "max": 64.5,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1279,7 +1279,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 41.6,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1287,9 +1287,9 @@
                         "SensorId": "/intelcpu/0/load/18",
                         "name": "CPU Core #9",
                         "data": {
-                            "value": 15.5,
+                            "value": 0,
                             "type": "%",
-                            "max": 67.3,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1297,9 +1297,9 @@
                         "SensorId": "/intelcpu/0/load/19",
                         "name": "CPU Core #10",
                         "data": {
-                            "value": 3.8,
+                            "value": 0,
                             "type": "%",
-                            "max": 68.5,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1307,9 +1307,9 @@
                         "SensorId": "/intelcpu/0/load/20",
                         "name": "CPU Core #11",
                         "data": {
-                            "value": 2.3,
+                            "value": 12.2,
                             "type": "%",
-                            "max": 65.2,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1317,9 +1317,9 @@
                         "SensorId": "/intelcpu/0/load/21",
                         "name": "CPU Core #12",
                         "data": {
-                            "value": 1.3,
+                            "value": 1.1,
                             "type": "%",
-                            "max": 64.9,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1327,9 +1327,9 @@
                         "SensorId": "/intelcpu/0/load/22",
                         "name": "CPU Core #13",
                         "data": {
-                            "value": 22.4,
+                            "value": 2.9,
                             "type": "%",
-                            "max": 66.6,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1337,9 +1337,9 @@
                         "SensorId": "/intelcpu/0/load/23",
                         "name": "CPU Core #14",
                         "data": {
-                            "value": 14.6,
+                            "value": 0.5,
                             "type": "%",
-                            "max": 65.9,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1347,9 +1347,9 @@
                         "SensorId": "/intelcpu/0/load/24",
                         "name": "CPU Core #15",
                         "data": {
-                            "value": 2.4,
+                            "value": 1.2,
                             "type": "%",
-                            "max": 70.6,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1357,9 +1357,9 @@
                         "SensorId": "/intelcpu/0/load/25",
                         "name": "CPU Core #16",
                         "data": {
-                            "value": 0,
+                            "value": 4.3,
                             "type": "%",
-                            "max": 78.7,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1376,20 +1376,20 @@
                         "SensorId": "/ram/load/0",
                         "name": "Memory",
                         "data": {
-                            "value": 21.5,
+                            "value": 21.9,
                             "type": "%",
-                            "max": 26.2,
-                            "min": 20.4
+                            "max": 98.8,
+                            "min": 13.9
                         }
                     },
                     "virtual_memory": {
                         "SensorId": "/ram/load/1",
                         "name": "Virtual Memory",
                         "data": {
-                            "value": 21.6,
+                            "value": 23.7,
                             "type": "%",
-                            "max": 25.4,
-                            "min": 20.7
+                            "max": 95,
+                            "min": 18.8
                         }
                     },
                     "name": "Load"
@@ -1399,40 +1399,40 @@
                         "SensorId": "/ram/data/0",
                         "name": "Memory Used",
                         "data": {
-                            "value": 13.7,
+                            "value": 13.9,
                             "type": "GB",
-                            "max": 16.7,
-                            "min": 13
+                            "max": 63,
+                            "min": 8.9
                         }
                     },
                     "memory_available": {
                         "SensorId": "/ram/data/1",
                         "name": "Memory Available",
                         "data": {
-                            "value": 50.1,
+                            "value": 49.8,
                             "type": "GB",
-                            "max": 50.7,
-                            "min": 47
+                            "max": 54.9,
+                            "min": 0.7
                         }
                     },
                     "virtual_memory_used": {
                         "SensorId": "/ram/data/2",
                         "name": "Virtual Memory Used",
                         "data": {
-                            "value": 21.8,
+                            "value": 23.9,
                             "type": "GB",
-                            "max": 25.6,
-                            "min": 20.9
+                            "max": 99.6,
+                            "min": 18.9
                         }
                     },
                     "virtual_memory_available": {
                         "SensorId": "/ram/data/3",
                         "name": "Virtual Memory Available",
                         "data": {
-                            "value": 79,
+                            "value": 76.9,
                             "type": "GB",
-                            "max": 79.9,
-                            "min": 75.2
+                            "max": 81.9,
+                            "min": 5.1
                         }
                     },
                     "name": "Data"
@@ -1449,10 +1449,10 @@
                         "SensorId": "/gpu-nvidia/0/power/0",
                         "name": "GPU Package",
                         "data": {
-                            "value": 53,
+                            "value": 54.1,
                             "type": "W",
-                            "max": 58.3,
-                            "min": 52.2
+                            "max": 448.8,
+                            "min": 48.7
                         }
                     },
                     "name": "Powers"
@@ -1464,7 +1464,7 @@
                         "data": {
                             "value": 2520,
                             "type": "MHz",
-                            "max": 2520,
+                            "max": 2940,
                             "min": 2520
                         }
                     },
@@ -1474,8 +1474,8 @@
                         "data": {
                             "value": 10502,
                             "type": "MHz",
-                            "max": 10702,
-                            "min": 10452
+                            "max": 10502,
+                            "min": 10252
                         }
                     },
                     "name": "Clocks"
@@ -1485,20 +1485,20 @@
                         "SensorId": "/gpu-nvidia/0/temperature/0",
                         "name": "GPU Core",
                         "data": {
-                            "value": 39,
+                            "value": 41,
                             "type": "°C",
-                            "max": 39,
-                            "min": 39
+                            "max": 80,
+                            "min": 37
                         }
                     },
                     "gpu_hot_spot": {
                         "SensorId": "/gpu-nvidia/0/temperature/2",
                         "name": "GPU Hot Spot",
                         "data": {
-                            "value": 49.5,
+                            "value": 51.7,
                             "type": "°C",
-                            "max": 49.7,
-                            "min": 49.1
+                            "max": 97.8,
+                            "min": 46.3
                         }
                     },
                     "name": "Temperatures"
@@ -1510,7 +1510,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 13,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -1518,9 +1518,9 @@
                         "SensorId": "/gpu-nvidia/0/load/1",
                         "name": "GPU Memory Controller",
                         "data": {
-                            "value": 1,
+                            "value": 0,
                             "type": "%",
-                            "max": 3,
+                            "max": 67,
                             "min": 0
                         }
                     },
@@ -1530,7 +1530,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 11,
+                            "max": 42,
                             "min": 0
                         }
                     },
@@ -1538,10 +1538,10 @@
                         "SensorId": "/gpu-nvidia/0/load/3",
                         "name": "GPU Memory",
                         "data": {
-                            "value": 10,
+                            "value": 11.6,
                             "type": "%",
-                            "max": 14.3,
-                            "min": 8.8
+                            "max": 99.9,
+                            "min": 4
                         }
                     },
                     "gpu_bus": {
@@ -1550,7 +1550,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 4,
+                            "max": 49,
                             "min": 0
                         }
                     },
@@ -1558,20 +1558,20 @@
                         "SensorId": "/gpu-nvidia/0/load/4",
                         "name": "GPU Power",
                         "data": {
-                            "value": 11.7,
+                            "value": 12,
                             "type": "%",
-                            "max": 13.2,
-                            "min": 11.4
+                            "max": 104.5,
+                            "min": 10.7
                         }
                     },
                     "gpu_board_power": {
                         "SensorId": "/gpu-nvidia/0/load/5",
                         "name": "GPU Board Power",
                         "data": {
-                            "value": 11.9,
+                            "value": 12.1,
                             "type": "%",
-                            "max": 13.8,
-                            "min": 11.3
+                            "max": 109.5,
+                            "min": 10.7
                         }
                     },
                     "d3d_3d": {
@@ -1590,7 +1590,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 5.6,
+                            "max": 65,
                             "min": 0
                         }
                     },
@@ -1620,7 +1620,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 9.1,
+                            "max": 11,
                             "min": 0
                         }
                     },
@@ -1661,20 +1661,20 @@
                         "SensorId": "/gpu-nvidia/0/fan/1",
                         "name": "GPU Fan 1",
                         "data": {
-                            "value": 1109,
+                            "value": 1110,
                             "type": "RPM",
-                            "max": 1112,
-                            "min": 1106
+                            "max": 2370,
+                            "min": 1105
                         }
                     },
                     "gpu_fan_2": {
                         "SensorId": "/gpu-nvidia/0/fan/2",
                         "name": "GPU Fan 2",
                         "data": {
-                            "value": 1107,
+                            "value": 1109,
                             "type": "RPM",
-                            "max": 1108,
-                            "min": 1101
+                            "max": 2371,
+                            "min": 1091
                         }
                     },
                     "name": "Fans"
@@ -1686,7 +1686,7 @@
                         "data": {
                             "value": 30,
                             "type": "%",
-                            "max": 30,
+                            "max": 72,
                             "min": 30
                         }
                     },
@@ -1696,7 +1696,7 @@
                         "data": {
                             "value": 30,
                             "type": "%",
-                            "max": 30,
+                            "max": 72,
                             "min": 30
                         }
                     },
@@ -1707,20 +1707,20 @@
                         "SensorId": "/gpu-nvidia/0/smalldata/0",
                         "name": "GPU Memory Free",
                         "data": {
-                            "value": 22117,
+                            "value": 21720,
                             "type": "MB",
-                            "max": 22407,
-                            "min": 21041
+                            "max": 23587,
+                            "min": 24
                         }
                     },
                     "gpu_memory_used": {
                         "SensorId": "/gpu-nvidia/0/smalldata/1",
                         "name": "GPU Memory Used",
                         "data": {
-                            "value": 2446,
+                            "value": 2843,
                             "type": "MB",
-                            "max": 3522,
-                            "min": 2156
+                            "max": 24539,
+                            "min": 976
                         }
                     },
                     "gpu_memory_total": {
@@ -1737,20 +1737,20 @@
                         "SensorId": "/gpu-nvidia/0/smalldata/3",
                         "name": "D3D Dedicated Memory Used",
                         "data": {
-                            "value": 2033,
+                            "value": 2429.9,
                             "type": "MB",
-                            "max": 3110.8,
-                            "min": 1743.5
+                            "max": 24137.1,
+                            "min": 560.8
                         }
                     },
                     "d3d_shared_memory_used": {
                         "SensorId": "/gpu-nvidia/0/smalldata/4",
                         "name": "D3D Shared Memory Used",
                         "data": {
-                            "value": 110.5,
+                            "value": 104.1,
                             "type": "MB",
-                            "max": 543.8,
-                            "min": 69.2
+                            "max": 18571,
+                            "min": 60.3
                         }
                     },
                     "name": "Data"
@@ -1760,9 +1760,9 @@
                         "SensorId": "/gpu-nvidia/0/throughput/0",
                         "name": "GPU PCIe Rx",
                         "data": {
-                            "value": 150,
+                            "value": 700,
                             "type": "KB/s",
-                            "max": 758.2,
+                            "max": 4095.5,
                             "min": 50
                         }
                     },
@@ -1770,9 +1770,9 @@
                         "SensorId": "/gpu-nvidia/0/throughput/1",
                         "name": "GPU PCIe Tx",
                         "data": {
-                            "value": 1,
-                            "type": "MB/s",
-                            "max": 660.4,
+                            "value": 400,
+                            "type": "KB/s",
+                            "max": 4061.6,
                             "min": 50
                         }
                     },
@@ -1789,9 +1789,9 @@
                         "SensorId": "/nvme/2/temperature/0",
                         "name": "Temperature",
                         "data": {
-                            "value": 45,
+                            "value": 47,
                             "type": "°C",
-                            "max": 45,
+                            "max": 59,
                             "min": 0
                         }
                     },
@@ -1799,9 +1799,9 @@
                         "SensorId": "/nvme/2/temperature/6",
                         "name": "Temperature 1",
                         "data": {
-                            "value": 45,
+                            "value": 47,
                             "type": "°C",
-                            "max": 45,
+                            "max": 59,
                             "min": 0
                         }
                     },
@@ -1809,9 +1809,9 @@
                         "SensorId": "/nvme/2/temperature/7",
                         "name": "Temperature 2",
                         "data": {
-                            "value": 52,
+                            "value": 54,
                             "type": "°C",
-                            "max": 52,
+                            "max": 66,
                             "min": 0
                         }
                     },
@@ -1822,9 +1822,9 @@
                         "SensorId": "/nvme/2/load/0",
                         "name": "Used Space",
                         "data": {
-                            "value": 48.4,
+                            "value": 48.8,
                             "type": "%",
-                            "max": 48.4,
+                            "max": 48.8,
                             "min": 48.4
                         }
                     },
@@ -1844,7 +1844,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 2.9,
+                            "max": 24.7,
                             "min": 0
                         }
                     },
@@ -1898,9 +1898,9 @@
                         "SensorId": "/nvme/2/data/4",
                         "name": "Data Read",
                         "data": {
-                            "value": 30660,
+                            "value": 30664,
                             "type": "GB",
-                            "max": 30660,
+                            "max": 30664,
                             "min": 0
                         }
                     },
@@ -1908,9 +1908,9 @@
                         "SensorId": "/nvme/2/data/5",
                         "name": "Data Written",
                         "data": {
-                            "value": 8633,
+                            "value": 8643,
                             "type": "GB",
-                            "max": 8633,
+                            "max": 8643,
                             "min": 0
                         }
                     },
@@ -1923,7 +1923,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 187,
+                            "max": 416,
                             "min": 0
                         }
                     },
@@ -1933,7 +1933,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 17.3,
+                            "max": 1079.6,
                             "min": 0
                         }
                     },
@@ -1979,7 +1979,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 0,
+                            "max": 8.4,
                             "min": 0
                         }
                     },
@@ -1989,7 +1989,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 0,
+                            "max": 27.5,
                             "min": 0
                         }
                     },
@@ -2012,7 +2012,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 8.4,
+                            "max": 7,
                             "min": 0
                         }
                     },
@@ -2022,7 +2022,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 15.8,
+                            "max": 88.7,
                             "min": 0
                         }
                     },
@@ -2043,9 +2043,9 @@
                         "SensorId": "/nvme/3/temperature/0",
                         "name": "Temperature",
                         "data": {
-                            "value": 47,
+                            "value": 49,
                             "type": "°C",
-                            "max": 47,
+                            "max": 61,
                             "min": 0
                         }
                     },
@@ -2053,9 +2053,9 @@
                         "SensorId": "/nvme/3/temperature/6",
                         "name": "Temperature 1",
                         "data": {
-                            "value": 47,
+                            "value": 49,
                             "type": "°C",
-                            "max": 47,
+                            "max": 61,
                             "min": 0
                         }
                     },
@@ -2063,9 +2063,9 @@
                         "SensorId": "/nvme/3/temperature/7",
                         "name": "Temperature 2",
                         "data": {
-                            "value": 53,
+                            "value": 56,
                             "type": "°C",
-                            "max": 54,
+                            "max": 68,
                             "min": 0
                         }
                     },
@@ -2078,8 +2078,8 @@
                         "data": {
                             "value": 62.1,
                             "type": "%",
-                            "max": 62.1,
-                            "min": 62
+                            "max": 63.4,
+                            "min": 62.1
                         }
                     },
                     "read_activity": {
@@ -2088,7 +2088,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 59.2,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -2096,9 +2096,9 @@
                         "SensorId": "/nvme/3/load/32",
                         "name": "Write Activity",
                         "data": {
-                            "value": 0.5,
+                            "value": 0.3,
                             "type": "%",
-                            "max": 15.1,
+                            "max": 60.4,
                             "min": 0
                         }
                     },
@@ -2106,7 +2106,7 @@
                         "SensorId": "/nvme/3/load/33",
                         "name": "Total Activity",
                         "data": {
-                            "value": 1,
+                            "value": 1.7,
                             "type": "%",
                             "max": 100,
                             "min": 0
@@ -2152,9 +2152,9 @@
                         "SensorId": "/nvme/3/data/4",
                         "name": "Data Read",
                         "data": {
-                            "value": 29142,
+                            "value": 29169,
                             "type": "GB",
-                            "max": 29142,
+                            "max": 29169,
                             "min": 0
                         }
                     },
@@ -2162,9 +2162,9 @@
                         "SensorId": "/nvme/3/data/5",
                         "name": "Data Written",
                         "data": {
-                            "value": 53459,
+                            "value": 53474,
                             "type": "GB",
-                            "max": 53459,
+                            "max": 53474,
                             "min": 0
                         }
                     },
@@ -2177,7 +2177,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 75.1,
+                            "max": 621.8,
                             "min": 0
                         }
                     },
@@ -2185,9 +2185,9 @@
                         "SensorId": "/nvme/3/throughput/35",
                         "name": "Write Rate",
                         "data": {
-                            "value": 4.5,
-                            "type": "MB/s",
-                            "max": 27.3,
+                            "value": 416.3,
+                            "type": "KB/s",
+                            "max": 617.2,
                             "min": 0
                         }
                     },
@@ -2208,10 +2208,10 @@
                         "SensorId": "/ssd/1/temperature/0",
                         "name": "Temperature",
                         "data": {
-                            "value": 34,
+                            "value": 37,
                             "type": "°C",
-                            "max": 34,
-                            "min": 34
+                            "max": 41,
+                            "min": 33
                         }
                     },
                     "name": "Temperatures"
@@ -2233,7 +2233,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 0.2,
+                            "max": 19.2,
                             "min": 0
                         }
                     },
@@ -2243,7 +2243,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 0.3,
+                            "max": 15.8,
                             "min": 0
                         }
                     },
@@ -2264,9 +2264,9 @@
                         "SensorId": "/ssd/1/data/0",
                         "name": "Total Bytes Written",
                         "data": {
-                            "value": 8749,
+                            "value": 8749.1,
                             "type": "GB",
-                            "max": 8749,
+                            "max": 8749.1,
                             "min": 8749
                         }
                     },
@@ -2279,7 +2279,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 8.4,
+                            "max": 59.4,
                             "min": 0
                         }
                     },
@@ -2289,7 +2289,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 86.1,
+                            "max": 64.5,
                             "min": 0
                         }
                     },
@@ -2310,9 +2310,9 @@
                         "SensorId": "/nvme/4/temperature/0",
                         "name": "Temperature",
                         "data": {
-                            "value": 42,
+                            "value": 44,
                             "type": "°C",
-                            "max": 42,
+                            "max": 58,
                             "min": 0
                         }
                     },
@@ -2320,9 +2320,9 @@
                         "SensorId": "/nvme/4/temperature/6",
                         "name": "Temperature 1",
                         "data": {
-                            "value": 42,
+                            "value": 44,
                             "type": "°C",
-                            "max": 42,
+                            "max": 58,
                             "min": 0
                         }
                     },
@@ -2345,7 +2345,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 0.3,
+                            "max": 100,
                             "min": 0
                         }
                     },
@@ -2355,7 +2355,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 0.2,
+                            "max": 34.8,
                             "min": 0
                         }
                     },
@@ -2409,9 +2409,9 @@
                         "SensorId": "/nvme/4/data/4",
                         "name": "Data Read",
                         "data": {
-                            "value": 319,
+                            "value": 424,
                             "type": "GB",
-                            "max": 319,
+                            "max": 424,
                             "min": 0
                         }
                     },
@@ -2419,9 +2419,9 @@
                         "SensorId": "/nvme/4/data/5",
                         "name": "Data Written",
                         "data": {
-                            "value": 410,
+                            "value": 438,
                             "type": "GB",
-                            "max": 410,
+                            "max": 438,
                             "min": 0
                         }
                     },
@@ -2434,7 +2434,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 114.6,
+                            "max": 2313.7,
                             "min": 0
                         }
                     },
@@ -2444,7 +2444,7 @@
                         "data": {
                             "value": 0,
                             "type": "KB/s",
-                            "max": 92.1,
+                            "max": 1267.6,
                             "min": 0
                         }
                     },
@@ -2532,7 +2532,7 @@
                         "data": {
                             "value": 0,
                             "type": "%",
-                            "max": 95.7,
+                            "max": 95.9,
                             "min": 0
                         }
                     },
@@ -2543,20 +2543,20 @@
                         "SensorId": "/nic/%7BF1F36E58-0667-493A-85F7-50AC5A195FC1%7D/data/2",
                         "name": "Data Uploaded",
                         "data": {
-                            "value": 5.4,
+                            "value": 9,
                             "type": "GB",
-                            "max": 5.4,
-                            "min": 5.2
+                            "max": 9,
+                            "min": 5.7
                         }
                     },
                     "data_downloaded": {
                         "SensorId": "/nic/%7BF1F36E58-0667-493A-85F7-50AC5A195FC1%7D/data/3",
                         "name": "Data Downloaded",
                         "data": {
-                            "value": 57.8,
+                            "value": 62.6,
                             "type": "GB",
-                            "max": 57.8,
-                            "min": 57.4
+                            "max": 62.6,
+                            "min": 57.8
                         }
                     },
                     "name": "Data"
@@ -2566,9 +2566,9 @@
                         "SensorId": "/nic/%7BF1F36E58-0667-493A-85F7-50AC5A195FC1%7D/throughput/7",
                         "name": "Upload Speed",
                         "data": {
-                            "value": 7.4,
+                            "value": 0.6,
                             "type": "KB/s",
-                            "max": 113.5,
+                            "max": 113.7,
                             "min": 0
                         }
                     },
@@ -2576,9 +2576,9 @@
                         "SensorId": "/nic/%7BF1F36E58-0667-493A-85F7-50AC5A195FC1%7D/throughput/8",
                         "name": "Download Speed",
                         "data": {
-                            "value": 9.5,
+                            "value": 0.7,
                             "type": "KB/s",
-                            "max": 106.6,
+                            "max": 96,
                             "min": 0
                         }
                     },
@@ -2881,7 +2881,7 @@
                         "SensorId": "/nic/%7B02BC637F-0677-4AAE-8AEA-3979C4CCB744%7D/throughput/7",
                         "name": "Upload Speed",
                         "data": {
-                            "value": 0.7,
+                            "value": 0,
                             "type": "KB/s",
                             "max": 2.4,
                             "min": 0
@@ -2944,7 +2944,7 @@
                         "SensorId": "/nic/%7B6788CCD9-81AD-4A2F-9F03-462B08923806%7D/throughput/7",
                         "name": "Upload Speed",
                         "data": {
-                            "value": 0.7,
+                            "value": 0,
                             "type": "KB/s",
                             "max": 2.4,
                             "min": 0
@@ -3283,19 +3283,19 @@
         ],
         "memory": {
             "total": 68448022528,
-            "free": 53792870400,
-            "used": 14655152128,
-            "active": 14655152128,
-            "available": 53792870400,
+            "free": 53486866432,
+            "used": 14961156096,
+            "active": 14961156096,
+            "available": 53486866432,
             "buffers": 0,
             "cached": 0,
             "slab": 0,
             "buffcache": 0,
             "swaptotal": 39755710464,
-            "swapused": 4047503360,
-            "swapfree": 35708207104
+            "swapused": 5406457856,
+            "swapfree": 34349252608
         },
-        "took": 3484
+        "took": 3723
     },
-    "took": 18
+    "took": 28
 }
