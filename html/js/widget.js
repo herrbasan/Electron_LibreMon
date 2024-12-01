@@ -1,6 +1,6 @@
 'use strict';
 import ut from '../nui/nui_ut.js';
-import { sysmon_poll } from './sysmon_poll.js';
+import { sysmon_poll } from '../nui/nui_sysmon_poll.js';
 
 
 function init(){
@@ -14,7 +14,7 @@ async function render(data){
         isVisible = await window.electron_widget.helper.window.isVisible();
     }
     if(isVisible){
-        console.log('render');
+        //console.log('render');
         sysmon_poll.push({type:'computer_stats', ip:'local:local', stats:JSON.stringify(data)});
     }
 }
