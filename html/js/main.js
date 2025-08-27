@@ -1,6 +1,6 @@
 'use strict';
 import ut from '../nui/nui_ut.js';
-import { sensorFormatter } from '../../js/sensor_formatter.js';
+import { sysmon_poll } from '../nui/nui_sysmon_poll.js';
 let g = { hardwareType:{}, all:[] };
 
 
@@ -70,7 +70,7 @@ function renderSensor(target, type, data){
         if(!target.sensor[id]){
             let slug = ut.slugify(data.name) + data.SensorId;
             // Format value for display based on sensor type
-            let displayValue = sensorFormatter.formatSensorValue(data.data.value, data.data.type);
+            let displayValue = sysmon_poll.formatSensorValue(data.data.value, data.data.type);
             let html = ut.htmlObject(/*html*/ `
                 <div class="hm_sensor ${type}">
                     <div class="nui-checkbox">
@@ -92,7 +92,7 @@ function renderSensor(target, type, data){
             g.all.push(html.checkbox);
         }
         // Format value for display based on sensor type
-        let displayValue = sensorFormatter.formatSensorValue(data.data.value, data.data.type);
+        let displayValue = sysmon_poll.formatSensorValue(data.data.value, data.data.type);
         target.sensor[id].num.innerText = displayValue;
     }
 }
