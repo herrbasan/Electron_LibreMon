@@ -24,6 +24,7 @@ async function init(){
 	
     tools.versionInfo();
     window.addEventListener("keydown", onKey);
+	
 
 	appStart();
 	//ut.el('.nui-title-bar .close').addEventListener('click', hideApp);
@@ -31,17 +32,24 @@ async function init(){
 	ipcRenderer.on('stats', stats);
 	win.hook_event('focus', winEvents);
 	win.hook_event('blur', winEvents);
+	win.hook_event('move', winEvents);
+	win.hook_event('resize', winEvents);
 	win.getId().then(console.log);
 }
+
+
 
 function winEvents(sender, e){
 	if(e.type == 'focus'){
 		console.log('focus');
 		ut.el('.sysmon').style.backgroundColor = 'rgba(0,0,0,0.2)';
 	}
-	if(e.type == 'blur'){
+	else if(e.type == 'blur'){
 		console.log('blur');
 		ut.el('.sysmon').style.backgroundColor = null;
+	}
+	else {
+		console.log(e);
 	}
 }
 function stats(e, req){

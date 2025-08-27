@@ -44,8 +44,8 @@ async function init(){
 	fb('Chrome Version: ' + process.versions.chrome);
 	fb('--------------------------------------');
 	
-	ipcMain.on('fb', (e, req) => console.log(req));
-	ipcMain.on('selection_change', (e, req) => {selection_change = req; console.log(selection_change)});
+	ipcMain.handle('fb', (e, req) => console.log(req));
+	ipcMain.handle('selection_change', (e, req) => {selection_change = req; console.log(selection_change)});
 	ipcMain.handle('change_timestamp', (e, req) => { return selection_change; })
 	app.whenReady().then(appStart).catch((err) => { throw err});
 }

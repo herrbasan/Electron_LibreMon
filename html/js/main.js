@@ -1,5 +1,6 @@
 'use strict';
 import ut from '../nui/nui_ut.js';
+import { sensorFormatter } from '../../js/sensor_formatter.js';
 let g = { hardwareType:{}, all:[] };
 
 
@@ -68,13 +69,15 @@ function renderSensor(target, type, data){
         if(!target.sensor) { target.sensor = {}; }
         if(!target.sensor[id]){
             let slug = ut.slugify(data.name) + data.SensorId;
+            // Format value for display based on sensor type
+            let displayValue = sensorFormatter.formatSensorValue(data.data.value, data.data.type);
             let html = ut.htmlObject(/*html*/ `
                 <div class="hm_sensor ${type}">
                     <div class="nui-checkbox">
                         <input type="checkbox" id="check_${slug}" name="checkbox" value="">
                         <label for="check_${slug}">${data.name}</label>
                     </div>
-                    <div class="value">${data.data.value}</div>
+                    <div class="value">${displayValue}</div>
                 </div>
             `);
             html.num = html.el('.value');
@@ -88,7 +91,9 @@ function renderSensor(target, type, data){
             target.appendChild(target.sensor[id]);
             g.all.push(html.checkbox);
         }
-        target.sensor[id].num.innerText = data.data.value + ' ' + data.data.type;
+        // Format value for display based on sensor type
+        let displayValue = sensorFormatter.formatSensorValue(data.data.value, data.data.type);
+        target.sensor[id].num.innerText = displayValue;
     }
 }
 
