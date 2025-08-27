@@ -4,3 +4,6 @@
 [submodule "html/nui"]
 	path = html/nui
 	url = https://github.com/herrbasan/nui.git
+[submodule "js/drivers.gpu.control-library"]
+	path = js/drivers.gpu.control-library
+	url = https://github.com/herrbasan/drivers.gpu.control-library.git
