@@ -2,7 +2,7 @@
 if(require('electron-squirrel-startup')) return;
 const path = require('path');
 const {app, Menu, Tray, ipcMain, protocol, globalShortcut} = require('electron');
-const helper = require('./electron_helper/helper.js');
+const helper = require('./electron_helper/helper_new.js');
 
 const {spawn, execFile, execSync} = require("child_process");
 const _fs = require('fs');

@@ -1,7 +1,7 @@
 'use strict';
 const { ipcRenderer } = require( "electron" );
 const path = require('path');
-const helper = require('./electron_helper/helper.js');
+const helper = require('./electron_helper/helper_new.js');
 const libreHardwareMonitor = require('./libre_hardware_monitor_web.js');
 const intelArcPoller = require('./intel_arc_poller.js');
 const si = require('systeminformation');
