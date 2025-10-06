@@ -1,8 +1,8 @@
 'use strict';
-if(require('electron-squirrel-startup')) return;
 const path = require('path');
 const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('electron');
 const helper = require('./electron_helper/helper_new.js');
+const squirrel_startup = require('./squirrel_startup.js');
 
 const {spawn, execFile, execSync} = require("child_process");
 const _fs = require('fs');
@@ -12,6 +12,7 @@ const fs = _fs.promises;
 //app.commandLine.appendSwitch('force-device-scale-factor', '1');
 //app.commandLine.appendSwitch('--js-flags', '--experimental-module');
 
+squirrel_startup().then(({ret, cmd}) => { if(ret) { app.quit(); return; } init(cmd); });
 
 let main_env = {};
 let stage;
@@ -25,10 +26,46 @@ let libreRunning = false;
 let libreTimeout;
 let proc;
 let selection_change = 0;
+let userConfigMain;
 
+function getLoginItemOptions(){
+	let loginPath = process.execPath;
+	let args = [];
+	if(process.platform === 'win32' && isPackaged){
+		const updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
+		if(_fs.existsSync(updateExe)){
+			loginPath = updateExe;
+			args = ['--processStart', path.basename(process.execPath)];
+		}
+	}
+	return { path: loginPath, args };
+}
 
-init();
-async function init(){
+function isLoginItemEnabled(){
+	const opts = getLoginItemOptions();
+	let info = app.getLoginItemSettings({ path: opts.path, args: opts.args });
+	return info.openAtLogin;
+}
+
+function setLoginItemEnabled(enabled){
+	const opts = getLoginItemOptions();
+	const settings = {
+		openAtLogin: enabled,
+		openAsHidden: true,
+		path: opts.path,
+		args: opts.args
+	};
+	app.setLoginItemSettings(settings);
+	fb('Login item settings updated:', settings);
+	if(userConfigMain){
+		const currentConfig = userConfigMain.get() || {};
+		if(currentConfig.start_at_login !== enabled){
+			userConfigMain.set({ ...currentConfig, start_at_login: enabled });
+		}
+	}
+}
+
+async function init(cmd){
 	fb('APP SET_ENV');
 	main_env = await helper.tools.readJSON(path.join(app_path, 'env.json'));
 	
@@ -51,13 +88,23 @@ async function init(){
 }
 
 async function appStart(){
-    await helper.config.initMain('config', {
+    userConfigMain = await helper.config.initMain('config', {
         "ingest_server": "http://192.168.0.100:4440/computer_stats",
         "poll_rate": 1000,
 		"intel_arc": false,
         "sensor_selection": [],
-        "widget_bounds": { "width": 1200, "height": 800 }
+        "widget_bounds": { "width": 1200, "height": 800 },
+		"start_at_login": true
     });
+
+	const cfg = userConfigMain.get() || {};
+	const desiredAutoStart = cfg.start_at_login !== false;
+	if(cfg.start_at_login === undefined){
+		userConfigMain.set({ ...cfg, start_at_login: desiredAutoStart });
+	}
+	if(desiredAutoStart !== isLoginItemEnabled()){
+		setLoginItemEnabled(desiredAutoStart);
+	}
 
 	await initApp();
 	await initWidget();
@@ -128,15 +175,10 @@ function initApp(){
 			{ 
                 label: 'Start at Login', 
                 type: 'checkbox',
-                checked: app.getLoginItemSettings().openAtLogin,
-                click: (menuItem) => {
-                    const settings = { openAtLogin: menuItem.checked };
-                    if (menuItem.checked && process.platform === 'win32') {
-                        settings.path = process.execPath;
-                    }
-                    app.setLoginItemSettings(settings);
-                    fb('Login item settings updated:', settings);
-                }
+				checked: isLoginItemEnabled(),
+				click: (menuItem) => {
+					setLoginItemEnabled(menuItem.checked);
+				}
             },
 			{ label: 'Reset Widget Position', click: (e) => { 
 				if (!widget) return;

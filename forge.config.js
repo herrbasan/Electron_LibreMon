@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   packagerConfig: {
     asar:true,
@@ -6,18 +7,18 @@ module.exports = {
     executableName: 'libremon',
     win32metadata: {
       'requested-execution-level':'requireAdministrator'
-    }
+    },
+    icon: path.join(__dirname, "assets","sysmon_icon.ico"),
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        setupIcon: './sysmon_icon.ico',
-        iconUrl: 'https://raw.githubusercontent.com/herrbasan/Electron_LibreMon/main/sysmon_icon.ico',
-        loadingGif: undefined,
-        noMsi: true,
-        shortcutName: 'LibreMon System Monitor'
+        name: "libremon",
+        setupExe: 'libremon_Setup.exe',
+        setupIcon: './assets/sysmon_icon.ico',
+        iconUrl: 'https://raum.com/update/libremon/sysmon_icon.ico'
       }
     }
   ],
