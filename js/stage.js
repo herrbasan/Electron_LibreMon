@@ -59,8 +59,10 @@ function hideApp(){
 }
 
 async function appStart(e, data){
-	g.loader.progress('Initializing Intel Arc');
-	await intelArcPoller.initialize(); // Initialize Intel Arc detection/polling (Robust)
+	if(g.config.intel_arc === true){
+		g.loader.progress('Initializing Intel Arc');
+		await intelArcPoller.initialize();
+	}
 	g.loader.progress('Poll Start');
 	g.loader.kill(1000);
 	pollStart();

@@ -84,13 +84,13 @@
         </member>
         <member name="M:LibreHardwareMonitor.Hardware.Computer.Open">
             <summary>
-            If hasn't been opened before, opens <see cref="P:LibreHardwareMonitor.Hardware.Computer.SMBios" />, <see cref="T:LibreHardwareMonitor.Hardware.Ring0" />, <see cref="T:LibreHardwareMonitor.Hardware.OpCode" /> and triggers the private <see cref="M:LibreHardwareMonitor.Hardware.Computer.AddGroups" /> method depending on which categories are
+            If hasn't been opened before, opens <see cref="P:LibreHardwareMonitor.Hardware.Computer.SMBios" />, <see cref="T:LibreHardwareMonitor.Hardware.OpCode" /> and triggers the private <see cref="M:LibreHardwareMonitor.Hardware.Computer.AddGroups" /> method depending on which categories are
             enabled.
             </summary>
         </member>
         <member name="M:LibreHardwareMonitor.Hardware.Computer.Close">
             <summary>
-            If opened before, removes all <see cref="T:LibreHardwareMonitor.Hardware.IGroup" /> and triggers <see cref="M:LibreHardwareMonitor.Hardware.OpCode.Close" />, <see cref="M:LibreHardwareMonitor.Hardware.InpOut.Close" /> and <see cref="M:LibreHardwareMonitor.Hardware.Ring0.Close" />.
+            If opened before, removes all <see cref="T:LibreHardwareMonitor.Hardware.IGroup" /> and triggers <see cref="M:LibreHardwareMonitor.Hardware.OpCode.Close" />.
             </summary>
         </member>
         <member name="M:LibreHardwareMonitor.Hardware.Computer.Reset">
@@ -118,6 +118,12 @@
             Support for the KrakenZ devices.
             </summary>
         </member>
+        <member name="M:LibreHardwareMonitor.Hardware.Cpu.Amd0FCpu.Close">
+            <inheritdoc />
+        </member>
+        <member name="M:LibreHardwareMonitor.Hardware.Cpu.Amd17Cpu.Close">
+            <inheritdoc />
+        </member>
         <member name="M:LibreHardwareMonitor.Hardware.Cpu.CpuId.#ctor(System.Int32,System.Int32,LibreHardwareMonitor.Hardware.GroupAffinity)">
             <summary>
             Initializes a new instance of the <see cref="T:LibreHardwareMonitor.Hardware.Cpu.CpuId" /> class.
@@ -143,6 +149,9 @@
             <summary>
             Gets the CPU index.
             </summary>
+        </member>
+        <member name="M:LibreHardwareMonitor.Hardware.Cpu.IntelCpu.Close">
+            <inheritdoc />
         </member>
         <member name="P:LibreHardwareMonitor.Hardware.Gpu.AmdGpu.DeviceId">
             <inheritdoc />
@@ -196,6 +205,9 @@
             </summary>
         </member>
         <member name="P:LibreHardwareMonitor.Hardware.Gpu.IntelIntegratedGpu.DeviceId">
+            <inheritdoc />
+        </member>
+        <member name="M:LibreHardwareMonitor.Hardware.Gpu.IntelIntegratedGpu.Close">
             <inheritdoc />
         </member>
         <member name="P:LibreHardwareMonitor.Hardware.Gpu.NvidiaGpu.DeviceId">
@@ -796,6 +808,9 @@
         <member name="F:LibreHardwareMonitor.Hardware.Motherboard.Lpc.EC.EmbeddedController.ECSensor.TempCPU">
             <summary>CPU temperature [℃]</summary>
         </member>
+        <member name="F:LibreHardwareMonitor.Hardware.Motherboard.Lpc.EC.EmbeddedController.ECSensor.TempCPUPackage">
+            <summary>CPU Package temperature [℃]</summary>
+        </member>
         <member name="F:LibreHardwareMonitor.Hardware.Motherboard.Lpc.EC.EmbeddedController.ECSensor.TempMB">
             <summary>motherboard temperature [℃]</summary>
         </member>
@@ -848,30 +863,11 @@
             different for each motherboard model.
             </remarks>
         </member>
-        <member name="T:LibreHardwareMonitor.Hardware.Motherboard.Lpc.IsaBridgeGigabyteController">
-            <summary>
-            This is a controller present on some Gigabyte motherboards for both Intel and AMD, that is in custom firmware
-            loaded onto the 2nd ITE EC.
-            It can be accessed by using memory mapped IO, mapping its internal RAM onto main RAM via the ISA Bridge.
-            This class can disable it so that the regular IT87XX code can drive the fans.
-            </summary>
+        <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.F718XX.Close">
+            <inheritdoc />
         </member>
-        <member name="F:LibreHardwareMonitor.Hardware.Motherboard.Lpc.IsaBridgeGigabyteController._controllerBaseAddress">
-            <summary>
-            Base address in PCI RAM that maps to the EC's RAM
-            </summary>
-        </member>
-        <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.IsaBridgeGigabyteController.Enable(System.Boolean)">
-            <summary>
-            Enable/Disable Fan Control
-            </summary>
-            <param name="enabled"></param>
-            <returns>true on success</returns>
-        </member>
-        <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.IsaBridgeGigabyteController.Restore">
-            <summary>
-            Restore settings back to initial values
-            </summary>
+        <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.Ipmi.Close">
+            <inheritdoc />
         </member>
         <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.IT87XX.SelectBank(System.Byte)">
             <summary>
@@ -880,6 +876,12 @@
             Bank selection is reset after power cycle.
             </summary>
             <param name="bankIndex">New bank index. Can be a value of 0-3.</param>
+        </member>
+        <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.Nct677X.Close">
+            <inheritdoc />
+        </member>
+        <member name="M:LibreHardwareMonitor.Hardware.Motherboard.Lpc.W836XX.Close">
+            <inheritdoc />
         </member>
         <member name="T:LibreHardwareMonitor.Hardware.Motherboard.Motherboard">
             <summary>
@@ -2539,11 +2541,6 @@
             An public driver error occurred
             </summary>
         </member>
-        <member name="T:LibreHardwareMonitor.Interop.Ring0">
-            <summary>
-            Driver with access at kernel level.
-            </summary>
-        </member>
         <member name="T:LibreHardwareMonitor.Interop.WinNt">
             <summary>
             Contains Win32 definitions for Windows NT.
@@ -2557,6 +2554,21 @@
         <member name="T:LibreHardwareMonitor.Interop.WinNt.LARGE_INTEGER">
             <summary>
             Represents a 64-bit signed integer value.
+            </summary>
+        </member>
+        <member name="P:LibreHardwareMonitor.PawnIo.PawnIo.InstallPath">
+            <summary>
+            Gets the installation path of PawnIO, if it is installed on the system.
+            </summary>
+        </member>
+        <member name="P:LibreHardwareMonitor.PawnIo.PawnIo.IsInstalled">
+            <summary>
+            Gets a value indicating whether PawnIO is installed on the system.
+            </summary>
+        </member>
+        <member name="M:LibreHardwareMonitor.PawnIo.PawnIo.Version">
+            <summary>
+            Retrieves the version information for the underlying PawnIO library.
             </summary>
         </member>
         <member name="T:LibreHardwareMonitor.Software.OperatingSystem">
