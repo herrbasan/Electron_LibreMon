@@ -1,7 +1,7 @@
 'use strict';
 if(require('electron-squirrel-startup')) return;
 const path = require('path');
-const {app, Menu, Tray, ipcMain, protocol, globalShortcut} = require('electron');
+const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('electron');
 const helper = require('./electron_helper/helper_new.js');
 
 const {spawn, execFile, execSync} = require("child_process");
@@ -51,6 +51,14 @@ async function init(){
 }
 
 async function appStart(){
+    await helper.config.initMain('config', {
+        "ingest_server": "http://192.168.0.100:4440/computer_stats",
+        "poll_rate": 1000,
+		"intel_arc": false,
+        "sensor_selection": [],
+        "widget_bounds": { "width": 1200, "height": 800 }
+    });
+
 	await initApp();
 	await initWidget();
 	startLibre();
@@ -116,6 +124,28 @@ function initApp(){
 		const contextMenu = Menu.buildFromTemplate([
 			{ label: 'Show Settings', click: (e) => { stage.show() }},
 			{ label: 'Show Widget', click: (e) => { widget.show() }},
+			{ type: 'separator' },
+			{ 
+                label: 'Start at Login', 
+                type: 'checkbox',
+                checked: app.getLoginItemSettings().openAtLogin,
+                click: (menuItem) => {
+                    const settings = { openAtLogin: menuItem.checked };
+                    if (menuItem.checked && process.platform === 'win32') {
+                        settings.path = process.execPath;
+                    }
+                    app.setLoginItemSettings(settings);
+                    fb('Login item settings updated:', settings);
+                }
+            },
+			{ label: 'Reset Widget Position', click: (e) => { 
+				if (!widget) return;
+				const primaryDisplay = screen.getPrimaryDisplay();
+				const { width, height } = widget.getBounds();
+				const x = Math.floor(primaryDisplay.workArea.x + (primaryDisplay.workArea.width - width) / 2);
+				const y = Math.floor(primaryDisplay.workArea.y + (primaryDisplay.workArea.height - height) / 2);
+				widget.setPosition(x, y);
+			}},
 			{ label: 'Exit', role:'quit'}
 		])
 		tray.setToolTip('System Monitor')

@@ -8,6 +8,7 @@ const si = require('systeminformation');
 
 
 let g = {};
+let userConfig;
 
 let win = helper.window;
 let tools = helper.tools;
@@ -17,20 +18,18 @@ if(window) { window.electron_stage = {init:init, selectChange:selectChange} }
 
 async function init(){
 	console.log('App Init');
+
+    userConfig = await helper.config.initRenderer('config', (updatedConfig) => {
+        g.config = updatedConfig;
+        console.log('Stage config updated', updatedConfig);
+    });
+    g.config = userConfig.get();
+
 	g.main_env = await helper.global.get('main_env');
 	g.app_path = await helper.global.get('app_path');
 	g.base_path = await helper.global.get('base_path');
 	g.isPackaged = await helper.global.get('isPackaged');
 
-	
-	let config = await helper.config('user', {
-		"ingest_server": "http:\\\\192.168.0.100:4440\\computer_stats",
-		"poll_rate": 1000,
-		"sensor_selection": [
-		]
-	})
-
-	g.config = config.data;
 	console.log(g.config);
 
 	let main_change_timestamp = await ipcRenderer.invoke('change_timestamp');
@@ -77,7 +76,7 @@ async function pollStart(){
 		out.libre_info = await poll();
 		out.system_info = system_info;
 		out.took = Date.now() - bench;
-		await tools.writeJSON(path.join(g.base_path, 'temp.json'), out);
+		await tools.writeJSON(path.join(g.app_path, 'temp.json'), out);
 	}
 	window.poll = poll;
 	window.main(g.config);
@@ -105,7 +104,12 @@ async function loop(){
 async function sendToServer(data){
 	if(g.mute_fetch) { return; }
 	g.mute_fetch = true;
-	let ret = await ut.jfetch(g.config.ingest_server, {stats:JSON.stringify(data)}, {credentials: 'same-origin', method: 'POST', timeout:10000});
+	try {
+		await ut.jfetch(g.config.ingest_server, {stats:JSON.stringify(data)}, {credentials: 'same-origin', method: 'POST', timeout:10000});
+	}
+	catch(e){
+		// Fail quietly
+	}
 	data = null;
 	g.mute_fetch = false;
 }
@@ -234,7 +238,9 @@ function getSystemInfo(){
 
 async function selectChange(selection){
 	g.change_timestamp = Date.now();
-	g.config.sensor_selection = selection;
+    const currentConfig = userConfig.get();
+	currentConfig.sensor_selection = selection;
+    userConfig.set(currentConfig);
 	tools.sendToMain('selection_change', g.change_timestamp)
 }
 

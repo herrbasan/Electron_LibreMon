@@ -12,7 +12,13 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setupIcon: './sysmon_icon.ico',
+        iconUrl: 'https://raw.githubusercontent.com/herrbasan/Electron_LibreMon/main/sysmon_icon.ico',
+        loadingGif: undefined,
+        noMsi: true,
+        shortcutName: 'LibreMon System Monitor'
+      }
     }
   ],
 };

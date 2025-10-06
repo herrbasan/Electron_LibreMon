@@ -1,9 +1,10 @@
 'use strict';
 const { ipcRenderer } = require( "electron" );
 const path = require('path');
-const helper = require('./electron_helper/helper.js');
+const helper = require('./electron_helper/helper_new.js');
 
 let g = {};
+let userConfig;
 
 let win = helper.window;
 let tools = helper.tools;
@@ -12,13 +13,25 @@ if(window) { window.electron_widget = {init:init, helper:helper} }
 
 async function init(){
 	console.log('App Init');
+
+    userConfig = await helper.config.initRenderer('config', (updatedConfig) => {
+        console.log('Widget config updated', updatedConfig);
+    });
+    g.config = userConfig.get();
+
 	g.main_env = await helper.global.get('main_env');
 	g.app_path = await helper.global.get('app_path');
 	g.base_path = await helper.global.get('base_path');
 	g.isPackaged = await helper.global.get('isPackaged');
 
-    win.setSize(1200,800);
-    win.center();
+	if(!g.config.widget_bounds) { g.config.widget_bounds = { width:1200, height:800 }; }
+	if (g.config.widget_bounds.x && g.config.widget_bounds.y) {
+		win.setBounds(g.config.widget_bounds);
+	} else {
+		win.setSize(g.config.widget_bounds.width, g.config.widget_bounds.height);
+		win.center();
+	}
+
 	win.show();
 	win.focus();
 	
@@ -37,7 +50,7 @@ async function init(){
 	win.getId().then(console.log);
 }
 
-
+let resizeMoveTimeout;
 
 function winEvents(sender, e){
 	if(e.type == 'focus'){
@@ -48,10 +61,22 @@ function winEvents(sender, e){
 		console.log('blur');
 		ut.el('.sysmon').style.backgroundColor = null;
 	}
+	else if(e.type == 'move' || e.type == 'resize'){
+		clearTimeout(resizeMoveTimeout);
+		resizeMoveTimeout = setTimeout(storeWinPos, 500);
+	}
 	else {
 		console.log(e);
 	}
 }
+
+async function storeWinPos(){
+    const currentConfig = userConfig.get();
+	currentConfig.widget_bounds = await helper.window.getBounds();
+    userConfig.set(currentConfig);
+	console.log('Stored window position:', currentConfig.widget_bounds);
+}
+
 function stats(e, req){
 	if(window.renderWidget) { window.renderWidget(req)}
 }
