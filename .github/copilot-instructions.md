@@ -31,9 +31,9 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 - `js/app.js`: Main Electron process
   - Launches LibreHardwareMonitor.exe if not running
   - Creates system tray with menu (Show Settings, Show Widget, Exit)
-  - Manages widget and stage windows
+  - Manages widget and stage windows with enhanced restart logic
   - Handles IPC communication
-  - Restarts stage window every 10 minutes
+  - Restarts stage window every 10 minutes (only when hidden, prevents user interruption)
 
 #### Windows
 - **Widget Window**:
@@ -128,7 +128,12 @@ This codebase follows a **performance-first** development approach with minimal 
 - **Best For**: System-level applications where performance and resource usage are critical
 
 ### Known Issues & Optimizations
-- **Window Restart Hack**: The stage window restarts every 10 minutes in `js/app.js` to mitigate potential Electron memory leaks. This is a brittle workaround—test if leaks persist in current Electron versions and consider removing or optimizing for better robustness and slimness. Prioritize investigating this as it could improve performance without the restart overhead.
+- **Stage Window Restart**: The stage window restarts every 10 minutes to mitigate potential Electron renderer memory leaks. Enhanced with:
+  - Module-level timeout tracking to prevent duplicate restart timers (timer bug fix)
+  - Visibility check: only restarts when stage is hidden (prevents user interruption)
+  - Uses `stage.destroy()` for complete memory cleanup
+  - Reschedules if user has settings window open
+- **LibreHardwareMonitor Integration**: External process spawned with `detached:true`. Appears as separate application to user. Future consideration: research headless/tray-only mode to reduce visual footprint.
 
 ### Response Guidelines for AI Assistance
 - **Be Truthful and Direct**: Avoid politeness or sugar-coating. Provide blunt, factual feedback without softening criticism.
