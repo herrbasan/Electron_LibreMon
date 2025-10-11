@@ -27,6 +27,8 @@ let libreTimeout;
 let proc;
 let selection_change = 0;
 let userConfigMain;
+let stageRestartTimeout = null;
+let stageCreatedAt = null;
 
 function getLoginItemOptions(){
 	let loginPath = process.execPath;
@@ -109,16 +111,32 @@ async function appStart(){
 	await initApp();
 	await initWidget();
 	startLibre();
-	loop();
-}
-
-function loop(){
-	if(stage){ stage.close();}
-	stage = null;
 	initStage();
-	setTimeout(loop,600000);
 }
 
+function scheduleStageRestart() {
+	const RESTART_INTERVAL = 60 * 10 * 1000; // 10 minutes
+	
+	// Clear any existing timeout to prevent duplicate timers
+	if (stageRestartTimeout) {
+		clearTimeout(stageRestartTimeout);
+		stageRestartTimeout = null;
+	}
+	
+	stageRestartTimeout = setTimeout(() => {
+		// Only restart if stage window is not visible (user not actively using it)
+		if (stage && !stage.isVisible()) {
+			fb('Restarting stage window (scheduled maintenance)');
+			stage.destroy();
+			stage = null;
+			initStage();
+		} else {
+			// User is actively using settings - reschedule for later
+			fb('Stage restart delayed - window is visible');
+			scheduleStageRestart();
+		}
+	}, RESTART_INTERVAL);
+}
 
 function startLibre(){
 	fb('Check for LibreHardwareMonitor');
@@ -211,6 +229,11 @@ function initStage(){
 		fb('Init Stage');
 		stage = await helper.tools.browserWindow('frameless', { webPreferences:{preload:path.join(__dirname, 'stage.js')}, show:false, file:'./html/stage.html'})
 		if(!isPackaged){ stage.toggleDevTools(); }
+		stageCreatedAt = Date.now();
+		
+		// Schedule restart timer (clears any existing timer first)
+		scheduleStageRestart();
+		
 		resolve(stage);
 	})
 }
