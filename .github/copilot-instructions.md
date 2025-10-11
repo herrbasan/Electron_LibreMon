@@ -32,16 +32,22 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
   - Launches LibreHardwareMonitor.exe if not running
   - Creates system tray with menu (Show Settings, Show Widget, Exit)
   - Manages widget and stage windows with enhanced restart logic
-  - Handles IPC communication
+  - Handles IPC communication for sensor group updates
   - Restarts stage window every 10 minutes (only when hidden, prevents user interruption)
+  - Terminates LibreHardwareMonitor on app quit via `proc.kill()`
+  - Supports dynamic sensor group reconfiguration with LHM restart
 
 #### Windows
 - **Widget Window**:
   - `html/widget.html`: Minimal HTML with `.hm_widget` container
   - `js/widget.js`: Preload script handling IPC for stats and window events
+  - `html/js/widget.js`: ES module providing render and reset functions
+  - Exposes `window.resetWidget()` for complete DOM reinitialization on sensor group changes
 - **Stage Window**:
   - `html/stage.html`: Full NUI app layout with title bar, content, sidebar
   - `js/stage.js`: Preload script for settings, system info collection, configuration
+  - Includes sensor group configuration UI with live restart capability
+  - Updates widget via IPC when sensor groups change
 
 #### Hardware Monitoring
 - `js/libre_hardware_monitor_web.js`: Interfaces with LibreHardwareMonitor
@@ -52,6 +58,9 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 #### UI Framework
 - `html/nui/nui.js`: Core NUI framework for window management, sidebars, CSS variables
 - `html/nui/nui_ut.js`: Utility functions for DOM manipulation, environment detection
+- `html/nui/nui_sysmon_poll.js`: Hardware monitoring widget renderer with incremental DOM updates
+  - Maintains internal state for efficient re-rendering
+  - Clears state on re-initialization for sensor group changes
 - Various NUI components: graphs, lists, selects, etc. for building the interface
 
 #### Styling
@@ -77,6 +86,9 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 - **Data Transmission**: JSON-formatted sensor data sent via POST requests
 - **Polling Control**: Configurable poll rates (default 1000ms) for data transmission frequency
 - **Sensor Selection**: Users can choose which sensors to include in backend reports
+- **Sensor Groups**: Users can enable/disable entire hardware categories (CPU, GPU, Memory, Motherboard, Storage, Network, PSU, Battery, Fan Controller)
+  - Changes trigger LibreHardwareMonitor restart with updated XML configuration
+  - Widget and stage UI automatically refresh after sensor group changes
 - **Multi-Machine Monitoring**: Enables dashboard views of hardware stats across multiple computers
 - Requires administrator privileges (configured in forge.config.js)
 - Uses custom `raum://` protocol for file serving
@@ -98,6 +110,8 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 - **UI Components**: NUI framework for consistent, themeable interface
 - **Configuration**: JSON-based config with user preferences
 - **Lifecycle Management**: Proper startup/shutdown of external processes
+- **Sensor Group Management**: Dynamic reconfiguration of LibreHardwareMonitor via XML template modification
+- **Widget Reset Pattern**: `window.resetWidget()` exposed from ES module for complete DOM reinitialization
 
 ## Coding Style & Development Approach
 
