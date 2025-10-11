@@ -64,7 +64,173 @@ async function appStart(e, data){
 	}
 	g.loader.progress('Poll Start');
 	g.loader.kill(1000);
+	
+	// Create sensor groups UI before starting polling
+	createSensorGroupsUI();
+	
 	pollStart();
+}
+
+function createSensorGroupsUI(){
+	const settingsContainer = document.querySelector('.hm_settings');
+	
+	// Get current sensor groups from config (support both new and legacy format)
+	const sensorGroups = g.config.sensor_groups || g.config.sensors || {};
+	
+	const html = /*html*/`
+		<div class="sensor-groups-card">
+			<div class="hm_head">Hardware Sensor Groups</div>
+			<p style="font-size: 13px; opacity: 0.7; margin: 8px 0 12px 0;">
+				Configure which hardware types to monitor. Changes require restarting LibreHardwareMonitor (~3s interruption).
+			</p>
+			
+			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-cpu" ${sensorGroups.cpu !== false ? 'checked' : ''}>
+					<label for="sg-cpu">CPU</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-gpu" ${sensorGroups.gpu !== false ? 'checked' : ''}>
+					<label for="sg-gpu">GPU</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-memory" ${sensorGroups.memory !== false ? 'checked' : ''}>
+					<label for="sg-memory">Memory</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-motherboard" ${sensorGroups.motherboard !== false ? 'checked' : ''}>
+					<label for="sg-motherboard">Motherboard</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-storage" ${sensorGroups.storage !== false ? 'checked' : ''}>
+					<label for="sg-storage">Storage</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-network" ${sensorGroups.network !== false ? 'checked' : ''}>
+					<label for="sg-network">Network</label>
+				</div>
+			</div>
+			
+			<button id="sg-apply-btn" class="nui_button primary" style="width: 100%; padding: 10px; margin-top: 8px;" disabled>
+				Apply Changes
+			</button>
+			
+			<div id="sg-status" style="margin-top: 12px; padding: 8px 12px; border-radius: 4px; font-size: 13px; display: none;"></div>
+		</div>
+		<div style="border-bottom: solid thin var(--color-text-shade0); margin: 16px 0;"></div>
+	`;
+	
+	settingsContainer.insertAdjacentHTML('afterbegin', html);
+	
+	// Store original state for change detection
+	g.originalSensorGroups = {...sensorGroups};
+	
+	// Add change listeners to all checkboxes
+	const checkboxes = settingsContainer.querySelectorAll('[id^="sg-"]');
+	checkboxes.forEach(cb => {
+		if(cb.type === 'checkbox') {
+			cb.addEventListener('change', onSensorGroupChange);
+		}
+	});
+	
+	// Add apply button listener
+	const applyBtn = settingsContainer.querySelector('#sg-apply-btn');
+	applyBtn.addEventListener('click', applySensorGroupChanges);
+}
+
+function onSensorGroupChange(){
+	const settingsContainer = document.querySelector('.hm_settings');
+	const applyBtn = settingsContainer.querySelector('#sg-apply-btn');
+	
+	// Check if any changes were made
+	const current = {
+		cpu: document.getElementById('sg-cpu').checked,
+		gpu: document.getElementById('sg-gpu').checked,
+		memory: document.getElementById('sg-memory').checked,
+		motherboard: document.getElementById('sg-motherboard').checked,
+		storage: document.getElementById('sg-storage').checked,
+		network: document.getElementById('sg-network').checked
+	};
+	
+	const changed = JSON.stringify(current) !== JSON.stringify(g.originalSensorGroups);
+	applyBtn.disabled = !changed;
+}
+
+async function applySensorGroupChanges(){
+	const settingsContainer = document.querySelector('.hm_settings');
+	const applyBtn = settingsContainer.querySelector('#sg-apply-btn');
+	const statusDiv = settingsContainer.querySelector('#sg-status');
+	
+	// Collect current checkbox states
+	const sensorGroups = {
+		cpu: document.getElementById('sg-cpu').checked,
+		gpu: document.getElementById('sg-gpu').checked,
+		memory: document.getElementById('sg-memory').checked,
+		motherboard: document.getElementById('sg-motherboard').checked,
+		storage: document.getElementById('sg-storage').checked,
+		network: document.getElementById('sg-network').checked,
+		psu: g.config.sensor_groups?.psu || false,
+		battery: g.config.sensor_groups?.battery || false,
+		fanController: g.config.sensor_groups?.fanController || false
+	};
+	
+	// Show loading state
+	applyBtn.disabled = true;
+	applyBtn.innerText = 'Applying...';
+	statusDiv.style.display = 'block';
+	statusDiv.style.background = 'rgba(255, 152, 0, 0.2)';
+	statusDiv.style.border = '1px solid rgba(255, 152, 0, 0.5)';
+	statusDiv.style.color = '#FF9800';
+	statusDiv.innerText = 'Restarting LibreHardwareMonitor... (~3 seconds)';
+	
+	try {
+		// Call IPC handler to update sensor groups
+		const result = await ipcRenderer.invoke('update_sensor_groups', sensorGroups);
+		
+		if(result.success) {
+			// Update stored original state
+			g.originalSensorGroups = {...sensorGroups};
+			g.config.sensor_groups = sensorGroups;
+			
+			// Refresh sensors list immediately
+			let sensors = await poll(g.config.sensor_selection);
+			let data = { 
+				uuid:system_info.system.uuid,
+				name:system_info.os.hostname,
+				os:system_info.os.distro,
+				ram:system_info.memory.total,
+				sensors:sensors,
+				time:Date.now(),
+				change:g.change_timestamp, 
+			}
+			tools.sendToId(1, 'stats', data);
+			tools.sendToId(1, 'reset_widget');
+			
+			// Show success message
+			statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+			statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.5)';
+			statusDiv.style.color = '#4CAF50';
+			statusDiv.innerText = '✓ Sensor groups updated successfully!';
+			
+			applyBtn.innerText = 'Apply Changes';
+			
+			// Hide success message after 3 seconds
+			setTimeout(() => {
+				statusDiv.style.display = 'none';
+			}, 3000);
+		} else {
+			throw new Error(result.error || 'Unknown error');
+		}
+	} catch(err) {
+		// Show error message
+		statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+		statusDiv.style.border = '1px solid rgba(244, 67, 54, 0.5)';
+		statusDiv.style.color = '#F44336';
+		statusDiv.innerText = '✗ Error: ' + err.message;
+		
+		applyBtn.innerText = 'Apply Changes';
+		applyBtn.disabled = false;
+	}
 }
 
 async function pollStart(){

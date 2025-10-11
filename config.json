@@ -2,6 +2,21 @@
     "ingest_server": "http:\\\\192.168.0.100:4440\\computer_stats",
     "poll_rate": 1000,
     "intel_arc": false,
-    "sensor_selection": [
-    ]
+    "sensor_selection": [],
+    "sensor_groups": {
+        "cpu": true,
+        "gpu": true,
+        "memory": true,
+        "motherboard": true,
+        "storage": false,
+        "network": true,
+        "psu": false,
+        "battery": false,
+        "fanController": false
+    },
+    "widget_bounds": {
+        "width": 1200,
+        "height": 800
+    },
+    "start_at_login": true
 }

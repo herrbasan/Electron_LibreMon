@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Sensor Groups UI Mockup</title>
+        <link media="all" rel="stylesheet" type="text/css" href="./nui/css/nui_main.css">
+        <link media="all" rel="stylesheet" type="text/css" href="./nui/css/nui_app.css">
+        <link media="all" rel="stylesheet" type="text/css" href="./css/main.css">
+        <style>
+    
+            .mockup-container {
+                max-width: 600px;
+                margin: 40px auto;
+                padding: 20px;
+            }
+
+            .nui-card {
+                margin-bottom: 20px;
+            }
+
+            .checkbox-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-top: 12px;
+            }
+
+            .setting-item {
+                margin-bottom: 16px;
+            }
+
+            .setting-item .hm_head {
+                padding-bottom: 0.5rem;
+                margin-bottom: 0.5rem;
+                border-bottom: solid thin var(--color-text-shade0);
+            }
+
+            .description {
+                margin: 8px 0;
+                font-size: 13px;
+                opacity: 0.7;
+            }
+
+            .apply-btn {
+                width: 100%;
+                padding: 10px;
+                margin-top: 12px;
+            }
+
+            .status-message {
+                margin-top: 12px;
+                padding: 8px 12px;
+                border-radius: 4px;
+                font-size: 13px;
+                display: none;
+            }
+
+            .status-message.success {
+                background: rgba(76, 175, 80, 0.2);
+                border: 1px solid rgba(76, 175, 80, 0.5);
+                color: #4CAF50;
+            }
+
+            .status-message.warning {
+                background: rgba(255, 152, 0, 0.2);
+                border: 1px solid rgba(255, 152, 0, 0.5);
+                color: #FF9800;
+            }
+        </style>
+    </head>
+    <body class="dark">
+        <div class="mockup-container">
+            <h1>Sensor Groups Configuration</h1>
+            <p class="description">Configure which hardware sensors LibreHardwareMonitor should poll. Disabling unused sensors reduces CPU usage and prevents unnecessary disk access.</p>
+
+            <div class="nui-card">
+                <div class="nui-card-header">Hardware Sensor Groups</div>
+                <div class="nui-card-content">
+                    
+                    <div class="setting-item">
+                        <div class="hm_head">Hardware Categories</div>
+                        <p class="description">Select which hardware types to monitor. Changes require restarting LibreHardwareMonitor (~3s interruption).</p>
+                        
+                        <div class="checkbox-grid">
+                            <div class="nui-checkbox">
+                                <input type="checkbox" id="hw-cpu" checked onchange="checkChanges()">
+                                <label for="hw-cpu">CPU</label>
+                            </div>
+
+                            <div class="nui-checkbox">
+                                <input type="checkbox" id="hw-gpu" checked onchange="checkChanges()">
+                                <label for="hw-gpu">GPU</label>
+                            </div>
+
+                            <div class="nui-checkbox">
+                                <input type="checkbox" id="hw-memory" checked onchange="checkChanges()">
+                                <label for="hw-memory">Memory</label>
+                            </div>
+
+                            <div class="nui-checkbox">
+                                <input type="checkbox" id="hw-motherboard" onchange="checkChanges()">
+                                <label for="hw-motherboard">Motherboard</label>
+                            </div>
+
+                            <div class="nui-checkbox">
+                                <input type="checkbox" id="hw-storage" checked onchange="checkChanges()">
+                                <label for="hw-storage">Storage</label>
+                            </div>
+
+                            <div class="nui-checkbox">
+                                <input type="checkbox" id="hw-network" onchange="checkChanges()">
+                                <label for="hw-network">Network</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="apply-btn" class="nui_button primary apply-btn" onclick="applyChanges()" disabled>
+                        Apply Changes
+                    </button>
+
+                    <div id="status-message" class="status-message"></div>
+                </div>
+            </div>
+
+            <div class="nui-card">
+                <div class="nui-card-header">Usage Notes</div>
+                <div class="nui-card-content">
+                    <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
+                        <li><strong>CPU, GPU, Memory:</strong> Core monitoring sensors, typically always enabled</li>
+                        <li><strong>Motherboard:</strong> Voltage, fan speed sensors - enable if you need PSU monitoring</li>
+                        <li><strong>Storage:</strong> ⚠️ Polls HDDs every second - disable to reduce wear on mechanical drives</li>
+                        <li><strong>Network:</strong> Bandwidth monitoring - disable if you don't need network stats</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let originalState = {};
+            let currentState = {};
+
+            // Initialize state on load
+            window.addEventListener('DOMContentLoaded', () => {
+                captureState();
+                originalState = {...currentState};
+            });
+
+            function captureState() {
+                currentState = {
+                    cpu: document.getElementById('hw-cpu').checked,
+                    gpu: document.getElementById('hw-gpu').checked,
+                    memory: document.getElementById('hw-memory').checked,
+                    motherboard: document.getElementById('hw-motherboard').checked,
+                    storage: document.getElementById('hw-storage').checked,
+                    network: document.getElementById('hw-network').checked
+                };
+            }
+
+            function checkChanges() {
+                captureState();
+                
+                const hasChanges = Object.keys(currentState).some(
+                    key => currentState[key] !== originalState[key]
+                );
+
+                const applyBtn = document.getElementById('apply-btn');
+                applyBtn.disabled = !hasChanges;
+                
+                if (hasChanges) {
+                    applyBtn.textContent = 'Apply Changes (Restart Required)';
+                } else {
+                    applyBtn.textContent = 'No Changes';
+                }
+            }
+
+            function applyChanges() {
+                const statusMsg = document.getElementById('status-message');
+                const applyBtn = document.getElementById('apply-btn');
+
+                // Show applying status
+                statusMsg.className = 'status-message warning';
+                statusMsg.style.display = 'block';
+                statusMsg.textContent = '⏳ Restarting LibreHardwareMonitor with new sensor configuration...';
+                applyBtn.disabled = true;
+
+                // Simulate restart delay
+                setTimeout(() => {
+                    statusMsg.className = 'status-message success';
+                    statusMsg.textContent = '✓ Sensor groups updated successfully!';
+                    
+                    // Update original state
+                    originalState = {...currentState};
+                    checkChanges();
+
+                    // Hide message after 3 seconds
+                    setTimeout(() => {
+                        statusMsg.style.display = 'none';
+                    }, 3000);
+                }, 3000);
+            }
+        </script>
+    </body>
+</html>

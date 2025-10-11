@@ -4,9 +4,11 @@ const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('el
 const helper = require('./electron_helper/helper_new.js');
 const squirrel_startup = require('./squirrel_startup.js');
 
-const {spawn, execFile, execSync} = require("child_process");
+const {spawn, execSync} = require("child_process");
 const _fs = require('fs');
 const fs = _fs.promises;
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 //app.commandLine.appendSwitch('high-dpi-support', 'false');
 //app.commandLine.appendSwitch('force-device-scale-factor', '1');
@@ -86,18 +88,47 @@ async function init(cmd){
 	ipcMain.handle('fb', (e, req) => console.log(req));
 	ipcMain.handle('selection_change', (e, req) => {selection_change = req; console.log(selection_change)});
 	ipcMain.handle('change_timestamp', (e, req) => { return selection_change; })
+	ipcMain.handle('get_config', (e) => { return userConfigMain ? userConfigMain.get() : null; })
+	
+	ipcMain.handle('update_sensor_groups', async (e, sensorGroups) => {
+		try {
+			fb('Updating sensor groups...');
+			
+			// Kill existing LHM instance before applying changes
+			if (killLibreProcess()) {
+				fb('Existing LibreHardwareMonitor instance terminated');
+			} else {
+				fb('No running LibreHardwareMonitor instance detected');
+			}
+			
+			// Update user config
+			const cfg = userConfigMain.get();
+			cfg.sensor_groups = sensorGroups;
+			userConfigMain.set(cfg);
+			fb('Sensor groups updated in config');
+			
+			// Wait briefly for process cleanup
+			await wait(500);
+			
+			// Respawn with new config
+			spawnExe();
+			fb('LibreHardwareMonitor restarted with new sensor groups');
+			
+			return { success: true };
+		} catch (err) {
+			fb('Error updating sensor groups: ' + err.message);
+			return { success: false, error: err.message };
+		}
+	})
+	
 	app.whenReady().then(appStart).catch((err) => { throw err});
 }
 
 async function appStart(){
-    userConfigMain = await helper.config.initMain('config', {
-        "ingest_server": "http://192.168.0.100:4440/computer_stats",
-        "poll_rate": 1000,
-		"intel_arc": false,
-        "sensor_selection": [],
-        "widget_bounds": { "width": 1200, "height": 800 },
-		"start_at_login": true
-    });
+	// Load default config from config.json (single source of truth)
+	const defaultConfig = await helper.tools.readJSON(path.join(app_path, 'config.json'));
+	
+	userConfigMain = await helper.config.initMain('config', defaultConfig);
 
 	const cfg = userConfigMain.get() || {};
 	const desiredAutoStart = cfg.start_at_login !== false;
@@ -141,34 +172,125 @@ function scheduleStageRestart() {
 function startLibre(){
 	fb('Check for LibreHardwareMonitor');
 	clearTimeout(libreTimeout);
-	libreRunning = false;
 
-    try {
-        execSync("tasklist | findstr \"LibreHardwareMonitor.exe\"")
-		libreRunning = true;
-    } catch(err) {
-        libreRunning = false;
-    };
+	try {
+		const result = execSync("tasklist /FI \"IMAGENAME eq LibreHardwareMonitor.exe\"", {stdio: 'pipe', encoding: 'utf8'});
+		libreRunning = result.includes('LibreHardwareMonitor.exe');
+	} catch(err) {
+		libreRunning = false;
+	}
 
     if(!libreRunning){
         fb('Launching LibreHardwareMonitor');
-        spawnExe().then(success => { if(success) { fb('Libre Running') } else { startUpFail(); }})
+        spawnExe().then(success => { 
+			if(success) { 
+				fb('Libre Running');
+			} else { 
+				startUpFail(); 
+			}
+		});
     }
     else {
-        fb('LibreHardwareMonitor allready running')
+        fb('LibreHardwareMonitor already running - reusing existing instance');
     }
+}
+
+function killLibreProcess(){
+	if (!proc) {
+		return false;
+	}
+
+	try {
+		proc.kill();
+		proc = null;
+		libreRunning = false;
+		return true;
+	} catch (err) {
+		fb('proc.kill failed: ' + err.message);
+		return false;
+	}
 }
 
 function spawnExe(){
     return new Promise(async (resolve, reject) => {
 		let defaults_fp = path.join(base_path, 'bin', 'libre_defaults.xml');
 		let config_fp = path.join(base_path, 'bin', 'LibreHardwareMonitor', 'LibreHardwareMonitor.config');
-		let temp = await fs.readFile(defaults_fp);
-		let copy = await fs.writeFile(config_fp, temp);
-        proc = spawn(path.join(base_path, 'bin', 'LibreHardwareMonitor', 'LibreHardwareMonitor.exe'), {detached:true});
-        proc.once('error', () => resolve(false))
-        proc.once('spawn', () => resolve(true))
+		
+		fb('Reading template: ' + defaults_fp);
+		
+		// Read default XML template
+		let xmlContent = await fs.readFile(defaults_fp, 'utf8');
+		
+		// Modify XML with sensor group settings from user config
+		xmlContent = applySensorGroupsToXml(xmlContent);
+		
+		fb('Writing config: ' + config_fp);
+		
+		// Write modified XML to LHM config location
+		await fs.writeFile(config_fp, xmlContent, 'utf8');
+		
+		const exePath = path.join(base_path, 'bin', 'LibreHardwareMonitor', 'LibreHardwareMonitor.exe');
+		fb('Spawning: ' + exePath);
+		
+		proc = spawn(exePath, [], {
+			detached: true,
+			stdio: 'ignore',
+			shell: false,
+			windowsHide: true
+		});
+		
+		proc.unref();
+		
+        proc.once('error', (err) => {
+			fb('Spawn error: ' + err.message);
+			resolve(false);
+		});
+        proc.once('spawn', async () => {
+			fb('Spawn success');
+			resolve(true);
+		});
     })
+}
+
+function applySensorGroupsToXml(xmlContent) {
+	const cfg = userConfigMain ? userConfigMain.get() : {};
+	// Support both new 'sensor_groups' and legacy 'sensors' property
+	const sensorGroups = cfg.sensor_groups || cfg.sensors || {};
+	
+	// Default to true if not specified (backward compatibility for existing installations)
+	const groups = {
+		cpu: sensorGroups.cpu !== false,
+		gpu: sensorGroups.gpu !== false,
+		memory: sensorGroups.memory !== false,
+		motherboard: sensorGroups.motherboard !== false,
+		storage: sensorGroups.storage !== false,
+		network: sensorGroups.network !== false,
+		psu: sensorGroups.psu === true,
+		battery: sensorGroups.battery === true,
+		fanController: (sensorGroups.fanController || sensorGroups.controller) === true
+	};
+	
+	// Map config keys to XML MenuItem keys
+	const menuItemMap = {
+		cpu: 'cpuMenuItem',
+		gpu: 'gpuMenuItem',
+		memory: 'ramMenuItem',
+		motherboard: 'mainboardMenuItem',
+		storage: 'hddMenuItem',
+		network: 'nicMenuItem',
+		psu: 'psuMenuItem',
+		battery: 'batteryMenuItem',
+		fanController: 'fanControllerMenuItem'
+	};
+	
+	// Replace each menuItem value in XML
+	for (const [configKey, menuItemKey] of Object.entries(menuItemMap)) {
+		const enabled = groups[configKey];
+		const pattern = new RegExp(`<add key="${menuItemKey}" value="(true|false)" />`, 'g');
+		xmlContent = xmlContent.replace(pattern, `<add key="${menuItemKey}" value="${enabled}" />`);
+	}
+	
+	return xmlContent;
 }
 
 function startUpFail(){

@@ -43,6 +43,9 @@ async function init(){
 	//ut.el('.nui-title-bar .close').addEventListener('click', hideApp);
 	ipcRenderer.on('fb', fb);
 	ipcRenderer.on('stats', stats);
+	ipcRenderer.on('reset_widget', () => { 
+		if(window.resetWidget) window.resetWidget();
+	});
 	win.hook_event('focus', winEvents);
 	win.hook_event('blur', winEvents);
 	win.hook_event('move', winEvents);
