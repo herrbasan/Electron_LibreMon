@@ -3,9 +3,9 @@
 ## Project Overview
 Electron LibreMon is an Electron-based desktop application that serves two primary purposes:
 
-1. **Local System Monitoring**: Provides a customizable desktop widget and settings interface for displaying real-time hardware statistics (CPU, GPU, RAM, etc.) locally on the user's machine
+1. **Local System Monitoring**: Provides a customizable desktop widget and settings interface for displaying real-time hardware statistics (CPU, GPU, RAM, etc.) locally on the user's machine. The widget is a transparent, frameless overlay showing hardware metrics with live graphs for CPU, GPU, memory, and network stats. The settings window displays detailed sensor information organized by hardware type (motherboard voltages/temperatures, individual sensor readings).
 
-2. **Centralized Data Reporting**: Collects and reports hardware sensor data to a backend server, enabling centralized monitoring and display of all machines running this application
+2. **Centralized Data Reporting**: Collects and reports hardware sensor data to a backend server, enabling centralized monitoring and display of all machines running this application. The developer maintains a Node.js server that aggregates data from multiple machines and displays them in a unified dashboard view, showing all systems side-by-side with their respective hardware metrics.
 
 The application integrates LibreHardwareMonitor to collect hardware data, allows users to configure which sensors to monitor, and handles both local display and remote data transmission.
 
@@ -141,13 +141,14 @@ This codebase follows a **performance-first** development approach with minimal 
 - **Cons**: Higher development complexity, more manual implementation required
 - **Best For**: System-level applications where performance and resource usage are critical
 
-### Known Issues & Optimizations
-- **Stage Window Restart**: The stage window restarts every 10 minutes to mitigate potential Electron renderer memory leaks. Enhanced with:
-  - Module-level timeout tracking to prevent duplicate restart timers (timer bug fix)
-  - Visibility check: only restarts when stage is hidden (prevents user interruption)
-  - Uses `stage.destroy()` for complete memory cleanup
-  - Reschedules if user has settings window open
-- **LibreHardwareMonitor Integration**: External process spawned with `detached:true`. Appears as separate application to user. Future consideration: research headless/tray-only mode to reduce visual footprint.
+### Performance Characteristics
+- **CPU Usage**: Typically stays below 0.5% with peaks occurring less than once per minute
+- **Memory Usage**: Stable ceiling around 210MB for the main process
+- **Polling Efficiency**: Incremental DOM updates outperform native N-API addon approaches
+- **No External Framework Overhead**: Custom NUI framework eliminates React/Vue/Angular bundle costs
+- **Stage Window Restart**: 10-minute restart cycle mitigates potential Electron renderer memory leaks (only when hidden)
+
+The application achieves excellent performance through direct DOM manipulation, efficient data structure operations, and minimal abstraction layers. Performance-first design decisions consistently prioritize speed and resource efficiency over developer convenience.
 
 ### Response Guidelines for AI Assistance
 - **Be Truthful and Direct**: Avoid politeness or sugar-coating. Provide blunt, factual feedback without softening criticism.
