@@ -109,6 +109,18 @@ function createSensorGroupsUI(){
 					<input type="checkbox" id="sg-network" ${sensorGroups.network !== false ? 'checked' : ''}>
 					<label for="sg-network">Network</label>
 				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-psu" ${sensorGroups.psu === true ? 'checked' : ''}>
+					<label for="sg-psu">PSU</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-battery" ${sensorGroups.battery === true ? 'checked' : ''}>
+					<label for="sg-battery">Battery</label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="sg-fanController" ${sensorGroups.fanController === true ? 'checked' : ''}>
+					<label for="sg-fanController">Fan Controller</label>
+				</div>
 			</div>
 			
 			<button id="sg-apply-btn" class="nui_button primary" style="width: 100%; padding: 10px; margin-top: 8px;" disabled>
@@ -149,7 +161,10 @@ function onSensorGroupChange(){
 		memory: document.getElementById('sg-memory').checked,
 		motherboard: document.getElementById('sg-motherboard').checked,
 		storage: document.getElementById('sg-storage').checked,
-		network: document.getElementById('sg-network').checked
+		network: document.getElementById('sg-network').checked,
+		psu: document.getElementById('sg-psu').checked,
+		battery: document.getElementById('sg-battery').checked,
+		fanController: document.getElementById('sg-fanController').checked
 	};
 	
 	const changed = JSON.stringify(current) !== JSON.stringify(g.originalSensorGroups);
@@ -169,9 +184,9 @@ async function applySensorGroupChanges(){
 		motherboard: document.getElementById('sg-motherboard').checked,
 		storage: document.getElementById('sg-storage').checked,
 		network: document.getElementById('sg-network').checked,
-		psu: g.config.sensor_groups?.psu || false,
-		battery: g.config.sensor_groups?.battery || false,
-		fanController: g.config.sensor_groups?.fanController || false
+		psu: document.getElementById('sg-psu').checked,
+		battery: document.getElementById('sg-battery').checked,
+		fanController: document.getElementById('sg-fanController').checked
 	};
 	
 	// Show loading state
