@@ -7,15 +7,19 @@ Electron LibreMon is an Electron-based desktop application that serves two prima
 
 2. **Centralized Data Reporting**: Collects and reports hardware sensor data to a backend server, enabling centralized monitoring and display of all machines running this application. The developer maintains a Node.js server that aggregates data from multiple machines and displays them in a unified dashboard view, showing all systems side-by-side with their respective hardware metrics.
 
-The application integrates LibreHardwareMonitor to collect hardware data, allows users to configure which sensors to monitor, and handles both local display and remote data transmission.
+The application integrates LibreHardwareMonitor via a **native N-API addon**, allowing direct hardware access without spawning external processes. Users can configure which sensors to monitor, and the application handles both local display and remote data transmission.
+
+**Development Requirement**: VS Code must be run as Administrator. LibreHardwareMonitor requires elevated privileges to access hardware sensors. If encountering access errors, remind the user to restart VS Code as Administrator.
 
 ## Architecture
 
 ### Main Components
-- **Electron Main Process** (`js/app.js`): Manages application lifecycle, spawns LibreHardwareMonitor.exe, creates tray icon and windows
+- **Electron Main Process** (`js/app.js`): Manages application lifecycle, creates tray icon and windows, caches system information
 - **Widget Window** (`html/widget.html`, `js/widget.js`): Transparent, frameless desktop widget displaying hardware stats
 - **Stage Window** (`html/stage.html`, `js/stage.js`): Settings/configuration window with detailed hardware information
-- **LibreHardwareMonitor Integration** (`js/libre_hardware_monitor_web.js`): Polls data from LibreHardwareMonitor's web server
+- **N-API Native Addon** (`js/libre_hardware_addon/`): Pre-built native module for direct LibreHardwareMonitor access
+- **Native Monitor Wrapper** (`js/libre_hardware_monitor_native.js`): Loads and manages N-API addon lifecycle
+- **Hardware Monitor Interface** (`js/libre_hardware_monitor_web.js`): Polls data from N-API addon and transforms to application format
 - **NUI Framework** (`html/nui/`): Custom UI component library for consistent styling and interactions
 - **Helper Library** (`js/electron_helper/helper.js`): Comprehensive Electron utilities for window management, IPC, etc.
 
@@ -29,13 +33,12 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 
 #### Main Application
 - `js/app.js`: Main Electron process
-  - Launches LibreHardwareMonitor.exe if not running
   - Creates system tray with menu (Show Settings, Show Widget, Exit)
   - Manages widget and stage windows with enhanced restart logic
-  - Handles IPC communication for sensor group updates
+  - Handles IPC communication for sensor group updates and system info caching
   - Restarts stage window every 10 minutes (only when hidden, prevents user interruption)
-  - Terminates LibreHardwareMonitor on app quit via `proc.kill()`
-  - Supports dynamic sensor group reconfiguration with LHM restart
+  - Caches system information on first request to avoid re-polling on stage restarts
+  - Supports dynamic sensor group reconfiguration with stage window restart
 
 #### Windows
 - **Widget Window**:
@@ -50,10 +53,17 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
   - Updates widget via IPC when sensor groups change
 
 #### Hardware Monitoring
-- `js/libre_hardware_monitor_web.js`: Interfaces with LibreHardwareMonitor
-  - Polls `http://localhost:8085/data.json` for hardware data
+- `js/libre_hardware_monitor_native.js`: N-API addon loader
+  - Loads pre-built librehardwaremonitor_native.node from libre_hardware_addon/
+  - Detects dev vs packaged mode using __dirname.includes('.asar')
+  - Provides init(config), poll(options), and shutdown() methods
+  - Handles .NET 9.0 runtime initialization (one-time per process)
+- `js/libre_hardware_monitor_web.js`: Hardware data interface
+  - Initializes N-API addon with sensor group configuration from config
+  - Polls hardware data via nativeMonitor.poll() (~400ms)
   - Parses and structures data by hardware type (cpu, gpu, memory, etc.)
   - Handles different sensor types and groupings
+  - Note: Cannot reinit addon in same process due to .NET CLR limitation
 
 #### UI Framework
 - `html/nui/nui.js`: Core NUI framework for window management, sidebars, CSS variables
@@ -70,8 +80,12 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 - `html/nui/css/`: NUI framework stylesheets
 
 #### Binaries
-- `bin/LibreHardwareMonitor/`: LibreHardwareMonitor executable and dependencies
-- `bin/libre_defaults.xml`: Default configuration for LibreHardwareMonitor
+- `js/libre_hardware_addon/`: N-API native addon and dependencies
+  - `librehardwaremonitor_native.node`: Pre-built N-API addon
+  - `.NET 9.0 runtime DLLs`: coreclr.dll, hostfxr.dll, nethost.dll, etc.
+  - `LibreHardwareMonitorLib.dll`: Hardware monitoring library
+  - `200+ System.*.dll files`: .NET Base Class Library
+- `bin/libre_defaults.xml`: XML template for LibreHardwareMonitor configuration (legacy, not used with N-API)
 
 #### Helper Utilities
 - `js/electron_helper/helper.js`: Extensive Electron helper library
@@ -83,12 +97,12 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 
 ## Backend Integration
 - **Ingest Server**: Configurable HTTP endpoint for centralized data collection
-- **Data Transmission**: JSON-formatted sensor data sent via POST requests
+- **Data Transmission**: JSON-formatted sensor data sent via POST requests (fire-and-forget, non-blocking)
 - **Polling Control**: Configurable poll rates (default 1000ms) for data transmission frequency
 - **Sensor Selection**: Users can choose which sensors to include in backend reports
 - **Sensor Groups**: Users can enable/disable entire hardware categories (CPU, GPU, Memory, Motherboard, Storage, Network, PSU, Battery, Fan Controller)
-  - Changes trigger LibreHardwareMonitor restart with updated XML configuration
-  - Widget and stage UI automatically refresh after sensor group changes
+  - Changes trigger stage window restart to reinitialize N-API addon with updated configuration
+  - Widget UI automatically refreshes after sensor group changes
 - **Multi-Machine Monitoring**: Enables dashboard views of hardware stats across multiple computers
 - Requires administrator privileges (configured in forge.config.js)
 - Uses custom `raum://` protocol for file serving
@@ -100,18 +114,20 @@ The application integrates LibreHardwareMonitor to collect hardware data, allows
 ## Build and Packaging
 - Uses Electron Forge for building
 - Packages with ASAR
-- Includes bin/ directory as extra resource
+- N-API addon directory excluded from ASAR and placed in extraResource
 - Generates Windows installer with Squirrel
+- Requires administrator privileges (configured in forge.config.js)
 
 ## Key Concepts for AI Assistance
 - **IPC Communication**: Main process ↔ renderer processes for data and events
 - **Window Management**: Custom window behaviors (frameless, transparent, always-on-top)
-- **Hardware Polling**: Real-time data fetching from external monitoring tool
+- **Hardware Polling**: Real-time data fetching via N-API native addon
 - **UI Components**: NUI framework for consistent, themeable interface
 - **Configuration**: JSON-based config with user preferences
-- **Lifecycle Management**: Proper startup/shutdown of external processes
-- **Sensor Group Management**: Dynamic reconfiguration of LibreHardwareMonitor via XML template modification
+- **Lifecycle Management**: Proper startup/shutdown of N-API addon
+- **Sensor Group Management**: Dynamic reconfiguration via stage window restart
 - **Widget Reset Pattern**: `window.resetWidget()` exposed from ES module for complete DOM reinitialization
+- **System Info Caching**: Main process caches systeminformation data to avoid re-polling on stage restarts
 
 ## Coding Style & Development Approach
 
@@ -143,10 +159,11 @@ This codebase follows a **performance-first** development approach with minimal 
 
 ### Performance Characteristics
 - **CPU Usage**: Typically stays below 0.5% with peaks occurring less than once per minute
-- **Memory Usage**: Stable ceiling around 210MB for the main process
-- **Polling Efficiency**: Incremental DOM updates outperform native N-API addon approaches
+- **Memory Usage**: Stable ceiling around 200MB total (main + renderers)
+- **Polling Efficiency**: N-API direct calls (~400ms) outperform web server polling (500ms+)
 - **No External Framework Overhead**: Custom NUI framework eliminates React/Vue/Angular bundle costs
 - **Stage Window Restart**: 10-minute restart cycle mitigates potential Electron renderer memory leaks (only when hidden)
+- **System Info Caching**: Avoids expensive systeminformation re-polling on stage restarts
 
 The application achieves excellent performance through direct DOM manipulation, efficient data structure operations, and minimal abstraction layers. Performance-first design decisions consistently prioritize speed and resource efficiency over developer convenience.
 

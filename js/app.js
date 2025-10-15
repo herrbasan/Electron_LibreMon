@@ -3,6 +3,7 @@ const path = require('path');
 const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('electron');
 const helper = require('./electron_helper/helper_new.js');
 const squirrel_startup = require('./squirrel_startup.js');
+const si = require('systeminformation');
 
 const {spawn, execSync} = require("child_process");
 const _fs = require('fs');
@@ -26,11 +27,13 @@ if (isPackaged) { base_path = path.dirname(base_path); }
 
 let libreRunning = false;
 let libreTimeout;
+let libreRestartTimeout = null;
 let proc;
 let selection_change = 0;
 let userConfigMain;
 let stageRestartTimeout = null;
 let stageCreatedAt = null;
+let systemInfoCache = null; // Cache system info, only poll once per app start
 
 function getLoginItemOptions(){
 	let loginPath = process.execPath;
@@ -90,16 +93,37 @@ async function init(cmd){
 	ipcMain.handle('change_timestamp', (e, req) => { return selection_change; })
 	ipcMain.handle('get_config', (e) => { return userConfigMain ? userConfigMain.get() : null; })
 	
+	ipcMain.handle('get_system_info', async (e) => {
+		if (!systemInfoCache) {
+			fb('Collecting system info (first time)...');
+			const info = {};
+			info.system = await si.system();
+			info.os = await si.osInfo();
+			info.disks = await si.diskLayout();
+			info.volumes = await si.blockDevices();
+			info.memory = await si.mem();
+			
+			// Match volume names with disk names
+			for(let i=0; i<info.volumes.length; i++){
+				let item = info.volumes[i];
+				if(item.physical == 'Local'){
+					for(let n=0; n < info.disks.length; n++){
+						if(info.disks[n].device == item.device){
+							item.device_name = info.disks[n].name;
+						}
+					}
+				}
+			}
+			
+			systemInfoCache = info;
+			fb('System info cached');
+		}
+		return systemInfoCache;
+	})
+	
 	ipcMain.handle('update_sensor_groups', async (e, sensorGroups) => {
 		try {
 			fb('Updating sensor groups...');
-			
-			// Kill existing LHM instance before applying changes
-			if (killLibreProcess()) {
-				fb('Existing LibreHardwareMonitor instance terminated');
-			} else {
-				fb('No running LibreHardwareMonitor instance detected');
-			}
 			
 			// Update user config
 			const cfg = userConfigMain.get();
@@ -107,12 +131,14 @@ async function init(cmd){
 			userConfigMain.set(cfg);
 			fb('Sensor groups updated in config');
 			
-			// Wait briefly for process cleanup
-			await wait(500);
-			
-			// Respawn with new config
-			spawnExe();
-			fb('LibreHardwareMonitor restarted with new sensor groups');
+			// Restart stage window to reinitialize N-API addon with new config
+			// (N-API addon can only init once per process - .NET CLR limitation)
+			if (stage) {
+				fb('Restarting stage window to apply sensor group changes');
+				stage.destroy();
+				stage = null;
+				initStage();
+			}
 			
 			return { success: true };
 		} catch (err) {
@@ -141,12 +167,13 @@ async function appStart(){
 
 	await initApp();
 	await initWidget();
-	startLibre();
-	initStage();
+	await initStage();
+	// N-API addon handles hardware monitoring directly - no need to spawn LibreHardwareMonitor.exe
+	// startLibre();
 }
 
 function scheduleStageRestart() {
-	const RESTART_INTERVAL = 60 * 10 * 1000; // 10 minutes
+	const RESTART_INTERVAL = 10 * 60 * 1000; // 10 minutes
 	
 	// Clear any existing timeout to prevent duplicate timers
 	if (stageRestartTimeout) {
@@ -169,6 +196,34 @@ function scheduleStageRestart() {
 	}, RESTART_INTERVAL);
 }
 
+function scheduleLibreRestart() {
+	const RESTART_INTERVAL = 10 * 60 * 1000; // 10 minutes
+	const OFFSET = 5 * 60 * 1000; // 5 minute offset
+	
+	// Clear any existing timeout to prevent duplicate timers
+	if (libreRestartTimeout) {
+		clearTimeout(libreRestartTimeout);
+		libreRestartTimeout = null;
+	}
+	
+	libreRestartTimeout = setTimeout(() => {
+		fb('Restarting LibreHardwareMonitor (scheduled maintenance)');
+		killLibreProcess();
+		// Wait briefly for cleanup
+		setTimeout(() => {
+			spawnExe().then(success => {
+				if (success) {
+					fb('LibreHardwareMonitor restarted successfully');
+					scheduleLibreRestart();
+				} else {
+					fb('LibreHardwareMonitor restart failed, retrying in 15s');
+					setTimeout(scheduleLibreRestart, 15000);
+				}
+			});
+		}, 1000);
+	}, RESTART_INTERVAL + OFFSET);
+}
+
 function startLibre(){
 	fb('Check for LibreHardwareMonitor');
 	clearTimeout(libreTimeout);
@@ -185,13 +240,32 @@ function startLibre(){
         spawnExe().then(success => { 
 			if(success) { 
 				fb('Libre Running');
+				scheduleLibreRestart();
 			} else { 
 				startUpFail(); 
 			}
 		});
     }
     else {
-        fb('LibreHardwareMonitor already running - reusing existing instance');
+        fb('LibreHardwareMonitor already running - killing it to spawn our own instance');
+		// Kill existing instance so we can spawn our own and have a proc reference
+		try {
+			execSync('taskkill /F /IM LibreHardwareMonitor.exe', {stdio: 'pipe'});
+			fb('Existing LHM instance killed');
+		} catch(err) {
+			fb('Failed to kill existing LHM: ' + err.message);
+		}
+		// Wait briefly then spawn our own
+		setTimeout(() => {
+			spawnExe().then(success => { 
+				if(success) { 
+					fb('Libre Running (respawned)');
+					scheduleLibreRestart();
+				} else { 
+					startUpFail(); 
+				}
+			});
+		}, 500);
     }
 }
 
@@ -229,19 +303,16 @@ function spawnExe(){
 		// Write modified XML to LHM config location
 		await fs.writeFile(config_fp, xmlContent, 'utf8');
 		
-		const exePath = path.join(base_path, 'bin', 'LibreHardwareMonitor', 'LibreHardwareMonitor.exe');
-		fb('Spawning: ' + exePath);
-		
-		proc = spawn(exePath, [], {
-			detached: true,
-			stdio: 'ignore',
-			shell: false,
-			windowsHide: true
-		});
-		
-		proc.unref();
-		
-        proc.once('error', (err) => {
+	const exePath = path.join(base_path, 'bin', 'LibreHardwareMonitor', 'LibreHardwareMonitor.exe');
+	fb('Spawning: ' + exePath);
+	
+	proc = spawn(exePath, [], {
+		detached: true,
+		stdio: 'ignore',
+		shell: false
+	});
+	
+	proc.unref();        proc.once('error', (err) => {
 			fb('Spawn error: ' + err.message);
 			resolve(false);
 		});
@@ -356,6 +427,7 @@ function initStage(){
 		// Schedule restart timer (clears any existing timer first)
 		scheduleStageRestart();
 		
+		fb('Stage ready');
 		resolve(stage);
 	})
 }

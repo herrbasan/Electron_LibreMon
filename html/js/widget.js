@@ -20,7 +20,6 @@ async function render(data){
         isVisible = await window.electron_widget.helper.window.isVisible();
     }
     if(isVisible){
-        console.log('render');
         sysmon_poll.push({type:'computer_stats', ip:'local:local', stats:JSON.stringify(data)});
     }
 }

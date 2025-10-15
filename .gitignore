@@ -9,3 +9,9 @@
 
 # Generated Temp File
 temp.json
+
+# LibreHardwareMonitor Source
+/LibreHardwareMonitor_Source
+
+# N-API Integration Test Repo
+/LibreHardwareMonitor_NativeNodeIntegration

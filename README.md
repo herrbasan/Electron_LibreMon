@@ -13,16 +13,16 @@ Desktop hardware monitoring widget and settings interface using LibreHardwareMon
 
 ## Architecture
 
-- **Performance-First**: Minimal dependencies, custom UI framework, direct DOM manipulation
+- **Performance-First**: Minimal dependencies, custom UI framework, direct native hardware access
 - **Electron-based**: Native Windows desktop application
-- **LibreHardwareMonitor Integration**: Polls hardware data via HTTP (localhost:8085)
+- **N-API Native Integration**: Direct LibreHardwareMonitor access via native addon (no external processes)
 - **Custom NUI Framework**: Lightweight UI components without React/Vue/Angular overhead
-- **Low-Footprint**: Incremental DOM updates, efficient polling, minimal memory usage
+- **Low-Footprint**: <200MB total memory, ~400ms poll time, efficient data processing
 
 ## Requirements
 
-- Windows (admin privileges required for hardware sensor access)
-- LibreHardwareMonitor (bundled in `bin/` directory)
+- Windows 10/11 (admin privileges required for hardware sensor access)
+- .NET 9.0 Runtime (bundled with N-API addon)
 
 ## Installation
 
@@ -61,17 +61,26 @@ Toggle entire hardware categories in the settings window:
 - **Battery** - Laptop battery level and charge rate
 - **Fan Controller** - Custom fan controller sensors
 
-Changes trigger automatic LibreHardwareMonitor restart with updated configuration.
+Changes trigger automatic stage window restart to reinitialize the N-API addon with updated configuration.
 
 ## Development
 
 Built with:
 - **Electron** - Desktop application framework
-- **LibreHardwareMonitor** - Hardware sensor data collection
+- **N-API Native Addon** - Direct LibreHardwareMonitor integration via native module
+- **LibreHardwareMonitorLib.dll** - Hardware sensor data collection library
 - **systeminformation** - System info (OS, hardware details)
 - **Custom NUI Framework** - Lightweight UI components
 
 Project follows **Fast, Robust, Slim** philosophy with minimal dependencies and optimized performance.
+
+### Development Notes
+
+- **Administrator Privileges Required**: VS Code must run as Administrator for hardware sensor access
+- **N-API Addon**: Pre-built native module in `js/libre_hardware_addon/` with bundled .NET 9.0 runtime
+- **Path Detection**: Uses `__dirname.includes('.asar')` to differentiate dev vs packaged modes
+- **Memory Management**: 10-minute stage window restart cycle (only when hidden) for memory stability
+- **System Info Caching**: Main process caches systeminformation data to avoid re-polling on restarts
 
 ## License
 

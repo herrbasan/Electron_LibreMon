@@ -4,7 +4,6 @@ const path = require('path');
 const helper = require('./electron_helper/helper_new.js');
 const libreHardwareMonitor = require('./libre_hardware_monitor_web.js');
 const intelArcPoller = require('./intel_arc_poller.js');
-const si = require('systeminformation');
 
 
 let g = {};
@@ -29,6 +28,12 @@ async function init(){
 	g.app_path = await helper.global.get('app_path');
 	g.base_path = await helper.global.get('base_path');
 	g.isPackaged = await helper.global.get('isPackaged');
+	
+	// Listen for hardware monitor resets from main process
+	ipcRenderer.on('reset_hardware_monitor', () => {
+		console.log('Resetting hardware monitor initialization');
+		libreHardwareMonitor.resetInitialized();
+	});
 
 	console.log(g.config);
 
@@ -44,7 +49,7 @@ async function init(){
 	
     window.addEventListener("keydown", onKey);
 	g.loader = nui.loaderShow(ut.el('.nui-app .content'), 'Collecting System Info');
-	system_info = await getSystemInfo(); 
+	system_info = await ipcRenderer.invoke('get_system_info'); // Get cached system info from main process
 	console.log(system_info);
 	appStart();
 	ut.el('.nui-title-bar .close').addEventListener('click', hideApp);
@@ -207,7 +212,7 @@ async function applySensorGroupChanges(){
 			g.originalSensorGroups = {...sensorGroups};
 			g.config.sensor_groups = sensorGroups;
 			
-			// Refresh sensors list immediately
+			// Refresh sensors list immediately with new filter
 			let sensors = await poll(g.config.sensor_selection);
 			let data = { 
 				uuid:system_info.system.uuid,
@@ -277,9 +282,9 @@ async function loop(){
 		change:g.change_timestamp, 
 	}
 	tools.sendToId(1, 'stats', data);
-	sendToServer(data);
+	sendToServer(data); // Fire and forget
 	clearTimeout(g.poll_timeout);
-	g.poll_timeout = setTimeout(loop,g.config.poll_rate);
+	g.poll_timeout = setTimeout(loop, g.config.poll_rate);
 }
 
 async function sendToServer(data){
@@ -391,30 +396,6 @@ function filterData(_data, selection){
         }
     }
 	return data;
-}
-
-function getSystemInfo(){
-	return new Promise(async (resolve, reject) => {
-		let bench = Date.now();
-		let info = {};
-		info.system = await si.system();
-		info.os = await si.osInfo();
-		info.disks = await si.diskLayout();
-		info.volumes = await si.blockDevices();
-		info.memory = await si.mem();
-		info.took = Date.now() - bench;
-		for(let i=0; i<info.volumes.length; i++){
-			let item = info.volumes[i];
-			if(item.physical == 'Local'){
-				for(let n=0; n < info.disks.length; n++){
-					if(info.disks[n].device == item.device){
-						item.device_name = info.disks[n].name;
-					}
-				}
-			}
-		}
-		resolve(info);
-	});
 }
 
 async function selectChange(selection){

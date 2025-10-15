@@ -1,15 +1,57 @@
 'use strict';
 
+const nativeMonitor = require('./libre_hardware_monitor_native.js');
+const { ipcRenderer } = require('electron');
 
 let report = console.log;
 let proc;
+let initialized = false;
 
-function poll(){
+// Initialize on first use with sensor groups from config
+async function ensureInitialized() {
+	if (initialized) return true;
+	
+	try {
+		// Get sensor groups from config
+		const config = await ipcRenderer.invoke('get_config');
+		const sensorGroups = config?.sensor_groups || {
+			cpu: true,
+			gpu: true,
+			memory: true,
+			motherboard: true,
+			storage: true,
+			network: true,
+			psu: false,
+			controller: false,
+			battery: false
+		};
+		
+		// Initialize N-API addon with ONLY the enabled sensors
+		// This prevents hardware polling for disabled groups (critical for HDD wear)
+		await nativeMonitor.init(sensorGroups);
+		initialized = true;
+		return true;
+	} catch(err) {
+		console.error('Failed to initialize native monitor:', err);
+		return false;
+	}
+}
+
+let poll = function(selected_ids){
 	return new Promise(async (resolve, reject) => {
 		let data;
-		try {
-			let req = await fetch('http://localhost:8085/data.json');
-        	data = await req.json();
+		try{
+			// Initialize if needed
+			if (!await ensureInitialized()) {
+				resolve(false);
+				return;
+			}
+			
+			// Poll from native addon
+			data = await nativeMonitor.poll({
+				filterVirtualNics: true,
+				filterDIMMs: true
+			});
 		}
 		catch(err){
 			console.log(err);
@@ -94,6 +136,5 @@ function parseValue(item){
 	num = parseFloat(num);
 	return {value:num, type:type};
 }
-
 
 module.exports.poll = poll;
