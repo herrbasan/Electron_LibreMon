@@ -3,6 +3,43 @@
 const nativeMonitor = require('./libre_hardware_monitor_native.js');
 const { ipcRenderer } = require('electron');
 
+const DEFAULT_SENSOR_GROUPS = {
+	cpu: true,
+	gpu: true,
+	memory: true,
+	motherboard: true,
+	storage: true,
+	network: true,
+	psu: false,
+	controller: false,
+	fanController: false,
+	battery: false
+};
+
+function resolveSensorGroups(config) {
+	const rawGroups = (config && typeof config === 'object') ? (config.sensor_groups || config.sensors) : null;
+	const normalized = { ...DEFAULT_SENSOR_GROUPS };
+
+	if (!rawGroups || typeof rawGroups !== 'object') {
+		return normalized;
+	}
+
+	normalized.cpu = rawGroups.cpu !== false;
+	normalized.gpu = rawGroups.gpu !== false;
+	normalized.memory = rawGroups.memory !== false;
+	normalized.motherboard = rawGroups.motherboard !== false;
+	normalized.storage = rawGroups.storage !== false;
+	normalized.network = rawGroups.network !== false;
+	normalized.psu = rawGroups.psu === true;
+	normalized.battery = rawGroups.battery === true;
+
+	const controllerEnabled = rawGroups.controller === true || rawGroups.fanController === true;
+	normalized.controller = controllerEnabled;
+	normalized.fanController = controllerEnabled;
+
+	return normalized;
+}
+
 let report = console.log;
 let proc;
 let initialized = false;
@@ -14,17 +51,10 @@ async function ensureInitialized() {
 	try {
 		// Get sensor groups from config
 		const config = await ipcRenderer.invoke('get_config');
-		const sensorGroups = config?.sensor_groups || {
-			cpu: true,
-			gpu: true,
-			memory: true,
-			motherboard: true,
-			storage: true,
-			network: true,
-			psu: false,
-			controller: false,
-			battery: false
-		};
+		console.log('Full config from IPC:', config);
+		const sensorGroups = resolveSensorGroups(config);
+		
+		console.log('Sensor groups for N-API init:', sensorGroups);
 		
 		// Initialize N-API addon with ONLY the enabled sensors
 		// This prevents hardware polling for disabled groups (critical for HDD wear)
