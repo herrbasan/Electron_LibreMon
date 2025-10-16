@@ -1,31 +1,63 @@
+
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 
 let nativeAddon = null;
 let initialized = false;
 
+const ADDON_FILENAME = 'librehardwaremonitor_native.node';
+let resolvedAddonPath = null;
+
+function buildAddonCandidatePaths() {
+    const candidates = [];
+    const seen = new Set();
+
+    const pushCandidate = candidate => {
+        if (!candidate || seen.has(candidate)) {
+            return;
+        }
+        seen.add(candidate);
+        candidates.push(candidate);
+    };
+
+    if (process && process.resourcesPath) {
+        pushCandidate(path.join(process.resourcesPath, 'NativeLibremon_NAPI', ADDON_FILENAME));
+        pushCandidate(path.join(process.resourcesPath, 'libre_hardware_addon', ADDON_FILENAME));
+    }
+
+    const repoRoot = path.resolve(__dirname, '..');
+    pushCandidate(path.join(repoRoot, 'LibreHardwareMonitor_NativeNodeIntegration', 'dist', 'NativeLibremon_NAPI', ADDON_FILENAME));
+    pushCandidate(path.join(__dirname, 'libre_hardware_addon', ADDON_FILENAME));
+
+    return candidates;
+}
+
 function loadAddon() {
     if (!nativeAddon) {
-        try {
-            // In dev: load from js/libre_hardware_addon
-            // In packaged: load from extraResource (resources/libre_hardware_addon)
-            let addonPath;
-            
-            // Check if running from ASAR (packaged) by looking at __dirname
-            const isPackaged = __dirname.includes('.asar');
-            
-            if (isPackaged) {
-                // Packaged app - load from extraResource
-                addonPath = path.join(process.resourcesPath, 'libre_hardware_addon', 'librehardwaremonitor_native.node');
-            } else {
-                // Dev mode - load from source
-                addonPath = path.join(__dirname, 'libre_hardware_addon', 'librehardwaremonitor_native.node');
+        const candidates = buildAddonCandidatePaths();
+        const errors = [];
+
+        for (const candidate of candidates) {
+            if (!fs.existsSync(candidate)) {
+                errors.push(candidate + ' (missing)');
+                continue;
             }
-            nativeAddon = require(addonPath);
-        } catch (err) {
+
+            try {
+                nativeAddon = require(candidate);
+                resolvedAddonPath = candidate;
+                break;
+            } catch (err) {
+                errors.push(candidate + ' (' + err.message + ')');
+            }
+        }
+
+        if (!nativeAddon) {
             throw new Error(
-                'Failed to load native addon.\nError: ' + err.message
+                'Failed to load native addon. Checked paths:\n' +
+                errors.join('\n')
             );
         }
     }
@@ -47,6 +79,8 @@ async function init(config = {}) {
         controller: config.controller === true,
         battery: config.battery === true
     };
+    
+    console.log('N-API init config:', fullConfig);
     
     try {
         await addon.init(fullConfig);
