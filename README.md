@@ -27,7 +27,13 @@ Desktop hardware monitoring widget and settings interface using LibreHardwareMon
 ## Installation
 
 ```bash
-# Install dependencies
+# Clone repository with submodules
+git clone --recurse-submodules https://github.com/herrbasan/Electron_LibreMon.git
+
+# Or if already cloned, initialize submodules
+git submodule update --init --recursive
+
+# Install dependencies (automatically initializes submodules via postinstall script)
 npm install
 
 # Run in development mode
