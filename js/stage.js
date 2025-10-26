@@ -83,6 +83,7 @@ async function appStart(e, data){
 function createGeneralSettingsUI(){
 	createSensorGroupsUI();
 	createIngestServerUI();
+	createIntelArcUI();
 }
 
 function createSensorGroupsUI(){
@@ -423,6 +424,100 @@ async function saveIngestSettings(){
 			setTimeout(() => {
 				statusDiv.style.display = 'none';
 			}, 3000);
+		} else {
+			throw new Error(result.error || 'Failed to save settings');
+		}
+	} catch(err) {
+		// Show error message
+		statusDiv.style.display = 'block';
+		statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+		statusDiv.style.border = '1px solid rgba(244, 67, 54, 0.5)';
+		statusDiv.style.color = '#F44336';
+		statusDiv.innerText = '✗ Error: ' + err.message;
+		
+		saveBtn.innerText = 'Save Settings';
+		saveBtn.disabled = false;
+	}
+}
+
+function createIntelArcUI(){
+	const settingsContainer = document.querySelector('.hm_general_settings');
+	
+	const intelArcEnabled = g.config.intel_arc === true;
+	
+	const html = /*html*/`
+		<div style="border-bottom: solid thin var(--color-text-shade0); margin: 16px 0;"></div>
+		<div class="intel-arc-card">
+			<div class="hm_head">Intel Arc Support</div>
+			<p style="font-size: 13px; opacity: 0.7; margin: 8px 0 12px 0;">
+				Enable additional Intel Arc GPU sensor polling (requires Intel Arc GPU).
+			</p>
+			
+			<div class="nui-checkbox" style="margin-bottom: 12px;">
+				<input type="checkbox" id="intel-arc-enable" ${intelArcEnabled ? 'checked' : ''}>
+				<label for="intel-arc-enable">Enable Intel Arc polling</label>
+			</div>
+			
+			<button id="intel-arc-save-btn" class="nui_button primary" style="width: 100%; padding: 10px;" disabled>
+				Save Settings
+			</button>
+			
+			<div id="intel-arc-status" style="margin-top: 12px; padding: 8px 12px; border-radius: 4px; font-size: 13px; display: none;"></div>
+		</div>
+	`;
+	
+	settingsContainer.insertAdjacentHTML('beforeend', html);
+	
+	// Store original value
+	g.originalIntelArcSetting = intelArcEnabled;
+	
+	// Add event listeners
+	const enableCheckbox = document.getElementById('intel-arc-enable');
+	const saveBtn = document.getElementById('intel-arc-save-btn');
+	
+	enableCheckbox.addEventListener('change', () => {
+		const changed = enableCheckbox.checked !== g.originalIntelArcSetting;
+		saveBtn.disabled = !changed;
+	});
+	
+	saveBtn.addEventListener('click', saveIntelArcSettings);
+}
+
+async function saveIntelArcSettings(){
+	const enableCheckbox = document.getElementById('intel-arc-enable');
+	const saveBtn = document.getElementById('intel-arc-save-btn');
+	const statusDiv = document.getElementById('intel-arc-status');
+	
+	const enable = enableCheckbox.checked;
+	
+	// Show saving state
+	saveBtn.disabled = true;
+	saveBtn.innerText = 'Saving...';
+	
+	try {
+		// Update config via IPC
+		const result = await ipcRenderer.invoke('update_config', {
+			intel_arc: enable
+		});
+		
+		if(result.success) {
+			// Update local config and original state
+			g.config.intel_arc = enable;
+			g.originalIntelArcSetting = enable;
+			
+			// Show success message with restart note
+			statusDiv.style.display = 'block';
+			statusDiv.style.background = 'rgba(255, 152, 0, 0.2)';
+			statusDiv.style.border = '1px solid rgba(255, 152, 0, 0.5)';
+			statusDiv.style.color = '#FF9800';
+			statusDiv.innerText = '✓ Saved! Restart app for changes to take effect.';
+			
+			saveBtn.innerText = 'Save Settings';
+			
+			// Hide message after 5 seconds
+			setTimeout(() => {
+				statusDiv.style.display = 'none';
+			}, 5000);
 		} else {
 			throw new Error(result.error || 'Failed to save settings');
 		}
