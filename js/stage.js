@@ -457,18 +457,26 @@ async function pollStart(){
 
 async function loop(){
 	g.poll_idx++;
-	let sensors = await poll(g.config.sensor_selection);
-	let data = { 
-		uuid:system_info.system.uuid,
-		name:system_info.os.hostname,
-		os:system_info.os.distro,
-		ram:system_info.memory.total,
-		sensors:sensors,
-		time:Date.now(),
-		change:g.change_timestamp, 
+	
+	// Skip entire poll cycle if user is actively typing in an input field
+	const activeElement = document.activeElement;
+	const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+	
+	if(!isTyping) {
+		let sensors = await poll(g.config.sensor_selection);
+		let data = { 
+			uuid:system_info.system.uuid,
+			name:system_info.os.hostname,
+			os:system_info.os.distro,
+			ram:system_info.memory.total,
+			sensors:sensors,
+			time:Date.now(),
+			change:g.change_timestamp, 
+		}
+		tools.sendToId(1, 'stats', data);
+		sendToServer(data); // Fire and forget
 	}
-	tools.sendToId(1, 'stats', data);
-	sendToServer(data); // Fire and forget
+	
 	clearTimeout(g.poll_timeout);
 	g.poll_timeout = setTimeout(loop, g.config.poll_rate);
 }
@@ -513,12 +521,7 @@ async function poll(filter){
 		}
 		if(window.pushData && await win.isVisible()){
 			ret.poll_idx = g.poll_idx;
-			// Skip pushData if user is actively typing in an input field
-			const activeElement = document.activeElement;
-			const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
-			if(!isTyping) {
-				window.pushData(ret);
-			}
+			window.pushData(ret);
 		}
 		if(ret?.hdd && system_info){
 			for(let i=0; i<ret.hdd.length; i++){
