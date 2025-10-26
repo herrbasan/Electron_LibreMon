@@ -71,10 +71,18 @@ async function appStart(e, data){
 	g.loader.kill(1000);
 	
 	// Create sensor groups UI before starting polling
-	createSensorGroupsUI();
+	try {
+		createSensorGroupsUI();
+	} catch(err) {
+		console.error('Error creating sensor groups UI:', err);
+	}
 	
 	// Create ingest server settings UI
-	createIngestServerUI();
+	try {
+		createIngestServerUI();
+	} catch(err) {
+		console.error('Error creating ingest server UI:', err);
+	}
 	
 	pollStart();
 }
@@ -261,8 +269,8 @@ function createIngestServerUI(){
 	
 	const enableIngest = g.config.enable_ingest === true; // Explicitly check for true
 	let ingestServer = g.config.ingest_server || '';
-	// Convert backslashes to forward slashes for display
-	ingestServer = ingestServer.replace(/\\\\/g, '/');
+	// Normalize all backslashes to forward slashes for display
+	ingestServer = ingestServer.replace(/\\/g, '/');
 	
 	const html = /*html*/`
 		<div class="ingest-server-card">
@@ -319,8 +327,10 @@ function validateURL(url){
 	if(!url || url.trim() === '') return { valid: true, url: '' }; // Empty is valid (disables reporting)
 	
 	try {
-		// Handle backslash escaping from JSON
-		url = url.replace(/\\\\/g, '/');
+		// Normalize all backslashes to forward slashes
+		url = url.replace(/\\/g, '/');
+		// Fix double slashes that aren't part of protocol
+		url = url.replace(/([^:])\/\//g, '$1/');
 		
 		const parsed = new URL(url);
 		if(parsed.protocol !== 'http:' && parsed.protocol !== 'https:'){
