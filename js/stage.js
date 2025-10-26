@@ -73,6 +73,9 @@ async function appStart(e, data){
 	// Create sensor groups UI before starting polling
 	createSensorGroupsUI();
 	
+	// Create ingest server settings UI
+	createIngestServerUI();
+	
 	pollStart();
 }
 
@@ -253,6 +256,179 @@ async function applySensorGroupChanges(){
 	}
 }
 
+function createIngestServerUI(){
+	const settingsContainer = document.querySelector('.hm_settings');
+	
+	const enableIngest = g.config.enable_ingest !== false; // Default true for backward compatibility
+	const ingestServer = g.config.ingest_server || '';
+	
+	const html = /*html*/`
+		<div class="ingest-server-card">
+			<div class="hm_head">Data Reporting</div>
+			<p style="font-size: 13px; opacity: 0.7; margin: 8px 0 12px 0;">
+				Send hardware statistics to a centralized server for multi-machine monitoring.
+			</p>
+			
+			<div class="nui-checkbox" style="margin-bottom: 12px;">
+				<input type="checkbox" id="ingest-enable" ${enableIngest ? 'checked' : ''}>
+				<label for="ingest-enable">Enable data reporting</label>
+			</div>
+			
+			<div style="margin-bottom: 12px;">
+				<label for="ingest-url" style="display: block; font-size: 13px; margin-bottom: 4px; opacity: 0.9;">Server URL</label>
+				<input type="text" id="ingest-url" class="nui_input" value="${ingestServer}" 
+					placeholder="http://192.168.1.100:4440/computer_stats" 
+					style="width: 100%; padding: 8px; background: var(--color-bg-shade1); border: 1px solid var(--color-text-shade0); border-radius: 4px; color: var(--color-text);"
+					${!enableIngest ? 'disabled' : ''}>
+				<div id="ingest-url-error" style="font-size: 12px; color: #F44336; margin-top: 4px; display: none;"></div>
+			</div>
+			
+			<button id="ingest-save-btn" class="nui_button primary" style="width: 100%; padding: 10px;" disabled>
+				Save Settings
+			</button>
+			
+			<div id="ingest-status" style="margin-top: 12px; padding: 8px 12px; border-radius: 4px; font-size: 13px; display: none;"></div>
+		</div>
+	`;
+	
+	settingsContainer.insertAdjacentHTML('beforeend', html);
+	
+	// Store original values
+	g.originalIngestSettings = {
+		enable_ingest: enableIngest,
+		ingest_server: ingestServer
+	};
+	
+	// Add event listeners
+	const enableCheckbox = document.getElementById('ingest-enable');
+	const urlInput = document.getElementById('ingest-url');
+	const saveBtn = document.getElementById('ingest-save-btn');
+	
+	enableCheckbox.addEventListener('change', (e) => {
+		urlInput.disabled = !e.target.checked;
+		onIngestSettingsChange();
+	});
+	
+	urlInput.addEventListener('input', onIngestSettingsChange);
+	saveBtn.addEventListener('click', saveIngestSettings);
+}
+
+function validateURL(url){
+	if(!url || url.trim() === '') return { valid: true, url: '' }; // Empty is valid (disables reporting)
+	
+	try {
+		// Handle backslash escaping from JSON
+		url = url.replace(/\\\\/g, '/');
+		
+		const parsed = new URL(url);
+		if(parsed.protocol !== 'http:' && parsed.protocol !== 'https:'){
+			return { valid: false, error: 'URL must use http:// or https://' };
+		}
+		return { valid: true, url: url };
+	} catch(e) {
+		return { valid: false, error: 'Invalid URL format' };
+	}
+}
+
+function onIngestSettingsChange(){
+	const enableCheckbox = document.getElementById('ingest-enable');
+	const urlInput = document.getElementById('ingest-url');
+	const saveBtn = document.getElementById('ingest-save-btn');
+	const errorDiv = document.getElementById('ingest-url-error');
+	
+	const enable = enableCheckbox.checked;
+	const url = urlInput.value.trim();
+	
+	// Validate URL if enabled
+	let isValid = true;
+	if(enable && url) {
+		const validation = validateURL(url);
+		if(!validation.valid){
+			errorDiv.textContent = validation.error;
+			errorDiv.style.display = 'block';
+			isValid = false;
+		} else {
+			errorDiv.style.display = 'none';
+		}
+	} else {
+		errorDiv.style.display = 'none';
+	}
+	
+	// Check if settings changed
+	const changed = enable !== g.originalIngestSettings.enable_ingest || 
+	                url !== g.originalIngestSettings.ingest_server;
+	
+	saveBtn.disabled = !changed || !isValid;
+}
+
+async function saveIngestSettings(){
+	const enableCheckbox = document.getElementById('ingest-enable');
+	const urlInput = document.getElementById('ingest-url');
+	const saveBtn = document.getElementById('ingest-save-btn');
+	const statusDiv = document.getElementById('ingest-status');
+	
+	const enable = enableCheckbox.checked;
+	let url = urlInput.value.trim();
+	
+	// Validate URL
+	const validation = validateURL(url);
+	if(!validation.valid){
+		statusDiv.style.display = 'block';
+		statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+		statusDiv.style.border = '1px solid rgba(244, 67, 54, 0.5)';
+		statusDiv.style.color = '#F44336';
+		statusDiv.innerText = '✗ ' + validation.error;
+		return;
+	}
+	
+	url = validation.url;
+	
+	// Show saving state
+	saveBtn.disabled = true;
+	saveBtn.innerText = 'Saving...';
+	
+	try {
+		// Update config via IPC
+		const result = await ipcRenderer.invoke('update_config', {
+			enable_ingest: enable,
+			ingest_server: url
+		});
+		
+		if(result.success) {
+			// Update local config and original state
+			g.config.enable_ingest = enable;
+			g.config.ingest_server = url;
+			g.originalIngestSettings = { enable_ingest: enable, ingest_server: url };
+			
+			// Show success message
+			statusDiv.style.display = 'block';
+			statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+			statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.5)';
+			statusDiv.style.color = '#4CAF50';
+			statusDiv.innerText = '✓ Settings saved successfully!';
+			
+			saveBtn.innerText = 'Save Settings';
+			
+			// Hide success message after 3 seconds
+			setTimeout(() => {
+				statusDiv.style.display = 'none';
+			}, 3000);
+		} else {
+			throw new Error(result.error || 'Failed to save settings');
+		}
+	} catch(err) {
+		// Show error message
+		statusDiv.style.display = 'block';
+		statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+		statusDiv.style.border = '1px solid rgba(244, 67, 54, 0.5)';
+		statusDiv.style.color = '#F44336';
+		statusDiv.innerText = '✗ Error: ' + err.message;
+		
+		saveBtn.innerText = 'Save Settings';
+		saveBtn.disabled = false;
+	}
+}
+
 async function pollStart(){
 	console.log('App Start');
 	if(!g.isPackaged){
@@ -288,7 +464,10 @@ async function loop(){
 }
 
 async function sendToServer(data){
-	if(g.mute_fetch) { return; }
+	// Skip if disabled or invalid URL
+	if(!g.config.enable_ingest || g.mute_fetch) { return; }
+	if(!g.config.ingest_server || g.config.ingest_server.trim() === '') { return; }
+	
 	g.mute_fetch = true;
 	try {
 		await ut.jfetch(g.config.ingest_server, {stats:JSON.stringify(data)}, {credentials: 'same-origin', method: 'POST', timeout:10000});

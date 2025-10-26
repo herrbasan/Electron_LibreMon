@@ -47,12 +47,24 @@ npm run package
 
 Configuration is stored in `config.json`:
 
-- `ingest_server`: Backend endpoint for centralized data collection
+- `ingest_server`: Backend endpoint for centralized data collection (editable in settings UI)
+- `enable_ingest`: Enable/disable sending data to ingest server (default: false, editable in settings UI)
 - `poll_rate`: Data polling interval in milliseconds (default: 1000)
 - `sensor_selection`: Array of selected sensor IDs
 - `sensor_groups`: Hardware categories to monitor (CPU, GPU, Memory, etc.)
 - `start_at_login`: Launch application at Windows startup
 - `widget_bounds`: Widget window position and size
+
+## Data Reporting
+
+The application can send hardware statistics to a centralized server for multi-machine monitoring. Configure in the settings window:
+
+1. **Enable Data Reporting**: Toggle checkbox to enable/disable reporting
+2. **Server URL**: Enter your backend endpoint URL (e.g., `http://192.168.1.100:4440/computer_stats`)
+3. **Validation**: URL is validated - invalid or empty URLs prevent data transmission
+4. **Fire-and-Forget**: Data transmission is non-blocking and fails silently if server is unreachable
+
+Data is sent as JSON POST requests with system information and sensor readings.
 
 ## Sensor Groups
 

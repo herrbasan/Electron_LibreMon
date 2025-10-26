@@ -147,6 +147,23 @@ async function init(cmd){
 		}
 	})
 	
+	ipcMain.handle('update_config', async (e, updates) => {
+		try {
+			fb('Updating config: ' + JSON.stringify(updates));
+			
+			// Update user config
+			const cfg = userConfigMain.get();
+			Object.assign(cfg, updates);
+			userConfigMain.set(cfg);
+			fb('Config updated successfully');
+			
+			return { success: true };
+		} catch (err) {
+			fb('Error updating config: ' + err.message);
+			return { success: false, error: err.message };
+		}
+	})
+	
 	app.whenReady().then(appStart).catch((err) => { throw err});
 }
 
