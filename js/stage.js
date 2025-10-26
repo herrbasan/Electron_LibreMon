@@ -505,19 +505,44 @@ async function saveIntelArcSettings(){
 			g.config.intel_arc = enable;
 			g.originalIntelArcSetting = enable;
 			
-			// Show success message with restart note
+			// Initialize or skip Intel Arc poller based on new setting
+			if(enable) {
+				statusDiv.style.display = 'block';
+				statusDiv.style.background = 'rgba(255, 152, 0, 0.2)';
+				statusDiv.style.border = '1px solid rgba(255, 152, 0, 0.5)';
+				statusDiv.style.color = '#FF9800';
+				statusDiv.innerText = 'Initializing Intel Arc poller...';
+				
+				await intelArcPoller.initialize();
+			}
+			
+			// Refresh sensors list immediately to show/hide Intel Arc sensors
+			let sensors = await poll(g.config.sensor_selection);
+			let data = { 
+				uuid:system_info.system.uuid,
+				name:system_info.os.hostname,
+				os:system_info.os.distro,
+				ram:system_info.memory.total,
+				sensors:sensors,
+				time:Date.now(),
+				change:g.change_timestamp, 
+			}
+			tools.sendToId(1, 'stats', data);
+			tools.sendToId(1, 'reset_widget');
+			
+			// Show success message
 			statusDiv.style.display = 'block';
-			statusDiv.style.background = 'rgba(255, 152, 0, 0.2)';
-			statusDiv.style.border = '1px solid rgba(255, 152, 0, 0.5)';
-			statusDiv.style.color = '#FF9800';
-			statusDiv.innerText = '✓ Saved! Restart app for changes to take effect.';
+			statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+			statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.5)';
+			statusDiv.style.color = '#4CAF50';
+			statusDiv.innerText = `✓ Intel Arc ${enable ? 'enabled' : 'disabled'} successfully!`;
 			
 			saveBtn.innerText = 'Save Settings';
 			
-			// Hide message after 5 seconds
+			// Hide message after 3 seconds
 			setTimeout(() => {
 				statusDiv.style.display = 'none';
-			}, 5000);
+			}, 3000);
 		} else {
 			throw new Error(result.error || 'Failed to save settings');
 		}
