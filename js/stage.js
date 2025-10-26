@@ -259,7 +259,7 @@ async function applySensorGroupChanges(){
 function createIngestServerUI(){
 	const settingsContainer = document.querySelector('.hm_settings');
 	
-	const enableIngest = g.config.enable_ingest !== false; // Default true for backward compatibility
+	const enableIngest = g.config.enable_ingest === true; // Explicitly check for true
 	const ingestServer = g.config.ingest_server || '';
 	
 	const html = /*html*/`
