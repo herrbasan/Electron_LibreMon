@@ -1,6 +1,6 @@
 {
-    "ingest_server": "",
-    "enable_ingest": false,
+    "ingest_server": "http://192.168.0.100:4440/computer_stats",
+    "enable_ingest": true,
     "poll_rate": 1000,
     "intel_arc": false,
     "sensor_selection": [],
