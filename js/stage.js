@@ -260,7 +260,9 @@ function createIngestServerUI(){
 	const settingsContainer = document.querySelector('.hm_settings');
 	
 	const enableIngest = g.config.enable_ingest === true; // Explicitly check for true
-	const ingestServer = g.config.ingest_server || '';
+	let ingestServer = g.config.ingest_server || '';
+	// Convert backslashes to forward slashes for display
+	ingestServer = ingestServer.replace(/\\\\/g, '/');
 	
 	const html = /*html*/`
 		<div class="ingest-server-card">
