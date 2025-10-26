@@ -27,6 +27,9 @@ function pushData(data){
 
 function renderHardwareType(target, data){
     for(let key in data){
+        // Skip non-array properties (like poll_idx)
+        if(!Array.isArray(data[key])) continue;
+        
         if(!g.hardwareType[key]){
             g.hardwareType[key] = ut.createElement('div', {class:'hm_hardware_type ' + key, inner:`<div class="hm_head">${key}</div>`});
             g.hardwareType[key].hardware = {};
