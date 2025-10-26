@@ -466,26 +466,21 @@ async function loop(){
 async function sendToServer(data){
 	// Skip if disabled or invalid URL
 	if(!g.config.enable_ingest) { 
-		console.log('Data reporting disabled (enable_ingest: false)');
 		return; 
 	}
 	if(g.mute_fetch) { 
-		console.log('Data reporting muted (already sending)');
 		return; 
 	}
 	if(!g.config.ingest_server || g.config.ingest_server.trim() === '') { 
-		console.log('Data reporting skipped (no server URL configured)');
 		return; 
 	}
 	
-	console.log('Sending data to:', g.config.ingest_server);
 	g.mute_fetch = true;
 	try {
 		await ut.jfetch(g.config.ingest_server, {stats:JSON.stringify(data)}, {credentials: 'same-origin', method: 'POST', timeout:10000});
-		console.log('Data sent successfully');
 	}
 	catch(e){
-		console.error('Failed to send data:', e.message);
+		// Fail quietly
 	}
 	data = null;
 	g.mute_fetch = false;
