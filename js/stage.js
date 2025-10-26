@@ -83,7 +83,6 @@ async function appStart(e, data){
 function createGeneralSettingsUI(){
 	createSensorGroupsUI();
 	createIngestServerUI();
-	createIntelArcUI();
 }
 
 function createSensorGroupsUI(){
@@ -440,125 +439,6 @@ async function saveIngestSettings(){
 	}
 }
 
-function createIntelArcUI(){
-	const settingsContainer = document.querySelector('.hm_general_settings');
-	
-	const intelArcEnabled = g.config.intel_arc === true;
-	
-	const html = /*html*/`
-		<div style="border-bottom: solid thin var(--color-text-shade0); margin: 16px 0;"></div>
-		<div class="intel-arc-card">
-			<div class="hm_head">Intel Arc Support</div>
-			<p style="font-size: 13px; opacity: 0.7; margin: 8px 0 12px 0;">
-				Enable additional Intel Arc GPU sensor polling (requires Intel Arc GPU).
-			</p>
-			
-			<div class="nui-checkbox" style="margin-bottom: 12px;">
-				<input type="checkbox" id="intel-arc-enable" ${intelArcEnabled ? 'checked' : ''}>
-				<label for="intel-arc-enable">Enable Intel Arc polling</label>
-			</div>
-			
-			<button id="intel-arc-save-btn" class="nui_button primary" style="width: 100%; padding: 10px;" disabled>
-				Save Settings
-			</button>
-			
-			<div id="intel-arc-status" style="margin-top: 12px; padding: 8px 12px; border-radius: 4px; font-size: 13px; display: none;"></div>
-		</div>
-	`;
-	
-	settingsContainer.insertAdjacentHTML('beforeend', html);
-	
-	// Store original value
-	g.originalIntelArcSetting = intelArcEnabled;
-	
-	// Add event listeners
-	const enableCheckbox = document.getElementById('intel-arc-enable');
-	const saveBtn = document.getElementById('intel-arc-save-btn');
-	
-	enableCheckbox.addEventListener('change', () => {
-		const changed = enableCheckbox.checked !== g.originalIntelArcSetting;
-		saveBtn.disabled = !changed;
-	});
-	
-	saveBtn.addEventListener('click', saveIntelArcSettings);
-}
-
-async function saveIntelArcSettings(){
-	const enableCheckbox = document.getElementById('intel-arc-enable');
-	const saveBtn = document.getElementById('intel-arc-save-btn');
-	const statusDiv = document.getElementById('intel-arc-status');
-	
-	const enable = enableCheckbox.checked;
-	
-	// Show saving state
-	saveBtn.disabled = true;
-	saveBtn.innerText = 'Saving...';
-	
-	try {
-		// Update config via IPC
-		const result = await ipcRenderer.invoke('update_config', {
-			intel_arc: enable
-		});
-		
-		if(result.success) {
-			// Update local config and original state
-			g.config.intel_arc = enable;
-			g.originalIntelArcSetting = enable;
-			
-			// Initialize or skip Intel Arc poller based on new setting
-			if(enable) {
-				statusDiv.style.display = 'block';
-				statusDiv.style.background = 'rgba(255, 152, 0, 0.2)';
-				statusDiv.style.border = '1px solid rgba(255, 152, 0, 0.5)';
-				statusDiv.style.color = '#FF9800';
-				statusDiv.innerText = 'Initializing Intel Arc poller...';
-				
-				await intelArcPoller.initialize();
-			}
-			
-			// Refresh sensors list immediately to show/hide Intel Arc sensors
-			let sensors = await poll(g.config.sensor_selection);
-			let data = { 
-				uuid:system_info.system.uuid,
-				name:system_info.os.hostname,
-				os:system_info.os.distro,
-				ram:system_info.memory.total,
-				sensors:sensors,
-				time:Date.now(),
-				change:g.change_timestamp, 
-			}
-			tools.sendToId(1, 'stats', data);
-			tools.sendToId(1, 'reset_widget');
-			
-			// Show success message
-			statusDiv.style.display = 'block';
-			statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
-			statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.5)';
-			statusDiv.style.color = '#4CAF50';
-			statusDiv.innerText = `✓ Intel Arc ${enable ? 'enabled' : 'disabled'} successfully!`;
-			
-			saveBtn.innerText = 'Save Settings';
-			
-			// Hide message after 3 seconds
-			setTimeout(() => {
-				statusDiv.style.display = 'none';
-			}, 3000);
-		} else {
-			throw new Error(result.error || 'Failed to save settings');
-		}
-	} catch(err) {
-		// Show error message
-		statusDiv.style.display = 'block';
-		statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
-		statusDiv.style.border = '1px solid rgba(244, 67, 54, 0.5)';
-		statusDiv.style.color = '#F44336';
-		statusDiv.innerText = '✗ Error: ' + err.message;
-		
-		saveBtn.innerText = 'Save Settings';
-		saveBtn.disabled = false;
-	}
-}
-
 async function pollStart(){
 	console.log('App Start');
 	if(!g.isPackaged){
@@ -632,8 +512,13 @@ async function poll(filter){
 			ret.gpu.push(...intelArcData.gpu);
 		}
 		if(window.pushData && await win.isVisible()){
-			ret.poll_idx = g.poll_idx; 
-			window.pushData(ret);
+			ret.poll_idx = g.poll_idx;
+			// Skip pushData if user is actively typing in an input field
+			const activeElement = document.activeElement;
+			const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+			if(!isTyping) {
+				window.pushData(ret);
+			}
 		}
 		if(ret?.hdd && system_info){
 			for(let i=0; i<ret.hdd.length; i++){
