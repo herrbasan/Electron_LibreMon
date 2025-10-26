@@ -1,8 +1,7 @@
 'use strict';
 import ut from '../nui/nui_ut.js';
 import { sysmon_poll } from '../nui/nui_sysmon_poll.js';
-let g = { hardwareType:{}, all:[], visibleSensors: new Set() };
-let visibilityObserver = null;
+let g = { hardwareType:{}, all:[] };
 
 
 function init(config){
@@ -14,36 +13,12 @@ function init(config){
     g.config = config;
     window.pushData = pushData;
     window.cleanMain = cleanUp;
-    
-    // Initialize Intersection Observer for viewport visibility tracking
-    if(visibilityObserver) {
-        visibilityObserver.disconnect();
-    }
-    g.visibleSensors.clear();
-    
-    visibilityObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                g.visibleSensors.add(entry.target);
-            } else {
-                g.visibleSensors.delete(entry.target);
-            }
-        });
-    }, {
-        root: g.settings, // Settings container as viewport
-        rootMargin: '50px', // Start updating slightly before visible
-        threshold: 0 // Any part visible counts
-    });
 }
 
 function cleanUp(){
     ut.killKids(g.settings);
     g.hardwareType = {};
     g.all = [];
-    g.visibleSensors.clear();
-    if(visibilityObserver) {
-        visibilityObserver.disconnect();
-    }
 }
 
 function pushData(data){
@@ -52,6 +27,9 @@ function pushData(data){
 
 function renderHardwareType(target, data){
     for(let key in data){
+        // Skip non-array properties like POLL_IDX
+        if(!Array.isArray(data[key])) continue;
+        
         if(!g.hardwareType[key]){
             g.hardwareType[key] = ut.createElement('div', {class:'hm_hardware_type ' + key, inner:`<div class="hm_head">${key}</div>`});
             g.hardwareType[key].hardware = {};
@@ -115,18 +93,12 @@ function renderSensor(target, type, data){
             }
             target.appendChild(target.sensor[id]);
             g.all.push(html.checkbox);
-            
-            // Observe this sensor element for viewport visibility
-            if(visibilityObserver) {
-                visibilityObserver.observe(target.sensor[id]);
-            }
-        }
-        
-        // Only update value if sensor is visible in viewport
-        if(g.visibleSensors.has(target.sensor[id])) {
-            // Format value for display based on sensor type
+        } else {
+            // Update sensor value using textNode to avoid reflow
             let displayValue = sysmon_poll.formatSensorValue(data.data.value, data.data.type);
-            target.sensor[id].num.innerText = displayValue;
+            if(target.sensor[id].num.firstChild) {
+                target.sensor[id].num.firstChild.nodeValue = displayValue;
+            }
         }
     }
 }

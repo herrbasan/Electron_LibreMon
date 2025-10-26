@@ -317,7 +317,27 @@ function createIngestServerUI(){
 		onIngestSettingsChange();
 	});
 	
-	urlInput.addEventListener('input', onIngestSettingsChange);
+	// Only validate/update on blur (focus loss) instead of every keystroke
+	urlInput.addEventListener('blur', onIngestSettingsChange);
+	// Still need to check for changes on input to enable save button, but no validation
+	urlInput.addEventListener('input', () => {
+		const enable = enableCheckbox.checked;
+		const url = urlInput.value.trim();
+		const changed = enable !== g.originalIngestSettings.enable_ingest || 
+		                url !== g.originalIngestSettings.ingest_server;
+		// Enable save button if changed, validation happens on blur
+		saveBtn.disabled = !changed;
+	});
+	
+	// Auto-blur input on scroll to trigger validation
+	if(g.settings) {
+		g.settings.addEventListener('scroll', () => {
+			if(document.activeElement === urlInput) {
+				urlInput.blur();
+			}
+		});
+	}
+	
 	saveBtn.addEventListener('click', saveIngestSettings);
 }
 
@@ -458,11 +478,13 @@ async function pollStart(){
 async function loop(){
 	g.poll_idx++;
 	
-	// Skip entire poll cycle if user is actively typing in an input field
+	// Check if user is typing in input field
 	const activeElement = document.activeElement;
-	const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
+	const isTypingInInput = activeElement && activeElement.tagName === 'INPUT' && activeElement.type === 'text';
 	
-	if(!isTyping) {
+	// Skip entire poll if typing to avoid sluggishness
+	// Auto-blur on scroll ensures updates resume quickly
+	if(!isTypingInInput) {
 		let sensors = await poll(g.config.sensor_selection);
 		let data = { 
 			uuid:system_info.system.uuid,
@@ -473,8 +495,8 @@ async function loop(){
 			time:Date.now(),
 			change:g.change_timestamp, 
 		}
-		tools.sendToId(1, 'stats', data);
-		sendToServer(data); // Fire and forget
+		tools.sendToId(1, 'stats', data); // Send to widget
+		sendToServer(data); // Fire and forget to backend
 	}
 	
 	clearTimeout(g.poll_timeout);
