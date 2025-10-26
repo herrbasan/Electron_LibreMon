@@ -82,9 +82,10 @@ The application integrates LibreHardwareMonitor via a **native N-API addon**, al
 #### Binaries
 - `js/libre_hardware_addon/`: N-API native addon and dependencies
   - `librehardwaremonitor_native.node`: Pre-built N-API addon
-  - `.NET 9.0 runtime DLLs`: coreclr.dll, hostfxr.dll, nethost.dll, etc.
+  - `.NET 9.0 runtime DLLs`: coreclr.dll, hostfxr.dll, nethost.dll, etc. (self-contained deployment)
   - `LibreHardwareMonitorLib.dll`: Hardware monitoring library
   - `200+ System.*.dll files`: .NET Base Class Library
+  - `LibreHardwareMonitorBridge.runtimeconfig.json`: Runtime config with empty `includedFrameworks` array to force bundled runtime usage
 - `bin/libre_defaults.xml`: XML template for LibreHardwareMonitor configuration (legacy, not used with N-API)
 
 #### Helper Utilities
@@ -117,6 +118,7 @@ The application integrates LibreHardwareMonitor via a **native N-API addon**, al
 - N-API addon directory excluded from ASAR and placed in extraResource
 - Generates Windows installer with Squirrel
 - Requires administrator privileges (configured in forge.config.js)
+- **Self-Contained .NET Deployment**: Build process includes fix-runtimeconfig.js script that strips framework dependency from runtimeconfig.json, ensuring app uses bundled .NET runtime instead of system installation
 
 ## Key Concepts for AI Assistance
 - **IPC Communication**: Main process ↔ renderer processes for data and events

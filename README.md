@@ -22,7 +22,7 @@ Desktop hardware monitoring widget and settings interface using LibreHardwareMon
 ## Requirements
 
 - Windows 10/11 (admin privileges required for hardware sensor access)
-- .NET 9.0 Runtime (bundled with N-API addon)
+- No external dependencies - .NET 9.0 runtime fully bundled with N-API addon (self-contained deployment)
 
 ## Installation
 
