@@ -70,25 +70,23 @@ async function appStart(e, data){
 	g.loader.progress('Poll Start');
 	g.loader.kill(1000);
 	
-	// Create sensor groups UI before starting polling
+	// Create general settings UI (sensor groups and ingest server)
 	try {
-		createSensorGroupsUI();
+		createGeneralSettingsUI();
 	} catch(err) {
-		console.error('Error creating sensor groups UI:', err);
-	}
-	
-	// Create ingest server settings UI
-	try {
-		createIngestServerUI();
-	} catch(err) {
-		console.error('Error creating ingest server UI:', err);
+		console.error('Error creating general settings UI:', err);
 	}
 	
 	pollStart();
 }
 
+function createGeneralSettingsUI(){
+	createSensorGroupsUI();
+	createIngestServerUI();
+}
+
 function createSensorGroupsUI(){
-	const settingsContainer = document.querySelector('.hm_settings');
+	const settingsContainer = document.querySelector('.hm_general_settings');
 	
 	// Get current sensor groups from config (support both new and legacy format)
 	const sensorGroups = g.config.sensor_groups || g.config.sensors || {};
@@ -167,7 +165,7 @@ function createSensorGroupsUI(){
 }
 
 function onSensorGroupChange(){
-	const settingsContainer = document.querySelector('.hm_settings');
+	const settingsContainer = document.querySelector('.hm_general_settings');
 	const applyBtn = settingsContainer.querySelector('#sg-apply-btn');
 	
 	// Check if any changes were made
@@ -188,7 +186,7 @@ function onSensorGroupChange(){
 }
 
 async function applySensorGroupChanges(){
-	const settingsContainer = document.querySelector('.hm_settings');
+	const settingsContainer = document.querySelector('.hm_general_settings');
 	const applyBtn = settingsContainer.querySelector('#sg-apply-btn');
 	const statusDiv = settingsContainer.querySelector('#sg-status');
 	
@@ -265,7 +263,7 @@ async function applySensorGroupChanges(){
 }
 
 function createIngestServerUI(){
-	const settingsContainer = document.querySelector('.hm_settings');
+	const settingsContainer = document.querySelector('.hm_general_settings');
 	
 	const enableIngest = g.config.enable_ingest === true; // Explicitly check for true
 	let ingestServer = g.config.ingest_server || '';
