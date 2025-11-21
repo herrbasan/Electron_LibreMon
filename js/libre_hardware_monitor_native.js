@@ -23,7 +23,12 @@ function buildAddonCandidatePaths() {
 
     if (process && process.resourcesPath) {
         pushCandidate(path.join(process.resourcesPath, 'NativeLibremon_NAPI', ADDON_FILENAME));
+        // Also check for the addon in the resources folder if packaged differently
+        pushCandidate(path.join(process.resourcesPath, 'app', 'js', 'libre_hardware_addon', ADDON_FILENAME));
     }
+
+    // Check local build location (new robust build)
+    pushCandidate(path.join(__dirname, 'libre_hardware_addon', ADDON_FILENAME));
 
     const repoRoot = path.resolve(__dirname, '..');
     pushCandidate(path.join(repoRoot, 'LibreHardwareMonitor_NativeNodeIntegration', 'dist', 'NativeLibremon_NAPI', ADDON_FILENAME));

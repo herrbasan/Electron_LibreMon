@@ -12,3 +12,6 @@ temp.json
 
 # LibreHardwareMonitor Source
 /LibreHardwareMonitor_Source
+
+# Native Addon Build Artifacts
+js/libre_hardware_addon/
