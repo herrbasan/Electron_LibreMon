@@ -428,7 +428,14 @@ function initApp(){
 function initWidget(){
 	return new Promise(async (resolve, reject) => {
 		fb('Init Widget');
-		widget = await helper.tools.browserWindow('frameless', { webPreferences:{preload:path.join(__dirname, 'widget.js')}, skipTaskbar:true, transparent:true, show:false, file:'./html/widget.html'})
+		widget = await helper.tools.browserWindow('frameless', { 
+			webPreferences:{preload:path.join(__dirname, 'widget.js')}, 
+			skipTaskbar:true, 
+			transparent:true, 
+			show:false, 
+			file:'./html/widget.html',
+			resizable: true
+		})
 		if(!isPackaged){widget.toggleDevTools();}
 		resolve(widget);
 	})

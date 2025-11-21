@@ -2,8 +2,8 @@ const path = require('path');
 module.exports = {
   packagerConfig: {
     asar:true,
-  ignore:['_old','_gsdata_','.vscode','bin','js/libre_hardware_addon'],
-  extraResource: ["./config.json","sysmon_icon.ico", "./bin", "./LibreHardwareMonitor_NativeNodeIntegration/dist/NativeLibremon_NAPI", "./js/libre_hardware_addon"],
+  ignore:['_old','_gsdata_','.vscode','bin'],
+  extraResource: ["./config.json","sysmon_icon.ico", "./bin", "./LibreHardwareMonitor_NativeNodeIntegration/dist/NativeLibremon_NAPI"],
     executableName: 'libremon',
     win32metadata: {
       'requested-execution-level':'requireAdministrator'

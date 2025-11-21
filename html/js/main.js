@@ -48,11 +48,11 @@ function renderHardware(target, type, data, idx){
         target.appendChild(target.hardware[id]);
     }
     for(let key in data){
-        renderSensorType(target.hardware[id], key, data[key]);
+        renderSensorType(target.hardware[id], key, data[key], data.id);
     }
 }
 
-function renderSensorType(target, type, data){
+function renderSensorType(target, type, data, hardwareId){
     let id = type;
     if(data.name){
         if(!target.sensorType) { target.sensorType = {}; }
@@ -61,31 +61,40 @@ function renderSensorType(target, type, data){
             target.appendChild(target.sensorType[id]);
         }
         for(let key in data){
-            renderSensor(target.sensorType[id], key, data[key]);
+            renderSensor(target.sensorType[id], key, data[key], hardwareId);
         }
     }
 }
 
-function renderSensor(target, type, data){
+function renderSensor(target, type, data, hardwareId){
     let id = type;
     if(data?.name){
         if(!target.sensor) { target.sensor = {}; }
         if(!target.sensor[id]){
-            let slug = ut.slugify(data.name) + data.SensorId;
+            let sensorId = data.SensorId || 'unknown';
+            
+            // Config Slug: MUST match stage.js expectation: ut.slugify(name) + SensorId
+            // We do NOT append hardwareId here because we handled uniqueness in the backend (libre_hardware_monitor_web.js)
+            // by appending a suffix to SensorId if needed.
+            let configSlug = ut.slugify(data.name) + sensorId;
+            
+            // DOM ID: Must be safe for HTML
+            let safeSlug = configSlug.replace(/[^a-zA-Z0-9-_]/g, '_');
+
             // Format value for display based on sensor type
             let displayValue = sysmon_poll.formatSensorValue(data.data.value, data.data.type);
             let html = ut.htmlObject(/*html*/ `
                 <div class="hm_sensor ${type}">
                     <div class="nui-checkbox">
-                        <input type="checkbox" id="check_${slug}" name="checkbox" value="">
-                        <label for="check_${slug}">${data.name}</label>
+                        <input type="checkbox" id="check_${safeSlug}" name="checkbox" value="">
+                        <label for="check_${safeSlug}">${data.name}</label>
                     </div>
                     <div class="value">${displayValue}</div>
                 </div>
             `);
             html.num = html.el('.value');
             html.checkbox = html.el('input');
-            html.checkbox.slug = slug;
+            html.checkbox.slug = configSlug;
             html.checkbox.addEventListener('change', selectChange)
             target.sensor[id] = html;
             if(g.config.sensor_selection.includes(html.checkbox.slug)){

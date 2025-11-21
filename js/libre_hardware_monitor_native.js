@@ -1,4 +1,3 @@
-
 'use strict';
 
 const fs = require('fs');
@@ -24,13 +23,12 @@ function buildAddonCandidatePaths() {
 
     if (process && process.resourcesPath) {
         pushCandidate(path.join(process.resourcesPath, 'NativeLibremon_NAPI', ADDON_FILENAME));
-        pushCandidate(path.join(process.resourcesPath, 'libre_hardware_addon', ADDON_FILENAME));
     }
 
     const repoRoot = path.resolve(__dirname, '..');
     pushCandidate(path.join(repoRoot, 'LibreHardwareMonitor_NativeNodeIntegration', 'dist', 'NativeLibremon_NAPI', ADDON_FILENAME));
-    pushCandidate(path.join(__dirname, 'libre_hardware_addon', ADDON_FILENAME));
 
+    // console.log('Addon candidates:', candidates);
     return candidates;
 }
 
@@ -46,9 +44,20 @@ function loadAddon() {
             }
 
             try {
-                nativeAddon = require(candidate);
-                resolvedAddonPath = candidate;
-                break;
+                // Add the addon directory to PATH temporarily so dependencies (like nethost.dll) can be found
+                const addonDir = path.dirname(candidate);
+                const oldPath = process.env.PATH;
+                process.env.PATH = `${addonDir}${path.delimiter}${oldPath}`;
+                
+                try {
+                    nativeAddon = require(candidate);
+                    resolvedAddonPath = candidate;
+                } finally {
+                    // Restore PATH
+                    process.env.PATH = oldPath;
+                }
+                
+                if (nativeAddon) return nativeAddon;
             } catch (err) {
                 errors.push(candidate + ' (' + err.message + ')');
             }

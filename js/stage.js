@@ -3,7 +3,6 @@ const { ipcRenderer } = require( "electron" );
 const path = require('path');
 const helper = require('./electron_helper/helper_new.js');
 const libreHardwareMonitor = require('./libre_hardware_monitor_web.js');
-const intelArcPoller = require('./intel_arc_poller.js');
 
 
 let g = {};
@@ -63,10 +62,6 @@ function hideApp(){
 }
 
 async function appStart(e, data){
-	if(g.config.intel_arc === true){
-		g.loader.progress('Initializing Intel Arc');
-		await intelArcPoller.initialize();
-	}
 	g.loader.progress('Poll Start');
 	g.loader.kill(1000);
 	
@@ -528,19 +523,11 @@ async function sendToServer(data){
 
 async function poll(filter){
 	return new Promise(async (resolve, reject) => {
-		// Poll both LibreHardwareMonitor and Intel Arc in parallel (Fast)
-		const [libreData, intelArcData] = await Promise.all([
-			libreHardwareMonitor.poll(),
-			intelArcPoller.poll().catch(() => null) // Graceful fallback if Intel Arc fails (Robust)
-		]);
+		// Poll LibreHardwareMonitor (Fast)
+		const libreData = await libreHardwareMonitor.poll();
 
 		let ret = libreData || {}; // Start with LibreHardwareMonitor data
 
-		// Merge Intel Arc data if available (Slim - only add if present)
-		if (intelArcData && intelArcData.gpu) {
-			ret.gpu = ret.gpu || [];
-			ret.gpu.push(...intelArcData.gpu);
-		}
 		if(window.pushData && await win.isVisible()){
 			ret.poll_idx = g.poll_idx;
 			window.pushData(ret);
