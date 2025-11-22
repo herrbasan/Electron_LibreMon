@@ -83,10 +83,36 @@ The application integrates LibreHardwareMonitor via a **native N-API addon**, al
 - `js/libre_hardware_addon/`: N-API native addon and dependencies
   - `librehardwaremonitor_native.node`: Pre-built N-API addon
   - `.NET 9.0 runtime DLLs`: coreclr.dll, hostfxr.dll, nethost.dll, etc. (self-contained deployment)
-  - `LibreHardwareMonitorLib.dll`: Hardware monitoring library
+  - `LibreHardwareMonitorLib.dll`: Hardware monitoring library (custom fork with Intel GPU VRAM support)
   - `200+ System.*.dll files`: .NET Base Class Library
   - `LibreHardwareMonitorBridge.runtimeconfig.json`: Runtime config with empty `includedFrameworks` array to force bundled runtime usage
+  - **Source**: Built from `LibreHardwareMonitor_NativeNodeIntegration` submodule
 - `bin/libre_defaults.xml`: XML template for LibreHardwareMonitor configuration (legacy, not used with N-API)
+
+#### Build System (N-API Addon)
+The N-API addon is built from the `LibreHardwareMonitor_NativeNodeIntegration` submodule with special handling for Node.js 24.9.0 toolset incompatibility:
+
+**Problem**: Node.js 24.9.0 generates Visual Studio project files requesting ClangCL compiler, but VS2019 Build Tools only includes MSVC v142.
+
+**Solution**: Automatic project file patching during build:
+1. `NativeLibremon_NAPI/package.json` install script runs: `node-gyp configure` → `node patch-vcxproj.js` → `node-gyp build`
+2. `patch-vcxproj.js` walks build directory and replaces `<PlatformToolset>ClangCL</PlatformToolset>` with `<PlatformToolset>v142</PlatformToolset>`
+3. `NativeLibremon_NAPI/.npmrc` sets `msvs_version=2019` and `msbuild_toolset=v142` to inform node-gyp
+4. `binding.gyp` includes `"msvs_toolset": "v142"` for main project (dependencies still need patching)
+
+**Files**:
+- `LibreHardwareMonitor_NativeNodeIntegration/NativeLibremon_NAPI/patch-vcxproj.js`: Toolset patcher script
+- `LibreHardwareMonitor_NativeNodeIntegration/NativeLibremon_NAPI/.npmrc`: npm config forcing MSVC
+- `LibreHardwareMonitor_NativeNodeIntegration/NativeLibremon_NAPI/binding.gyp`: Build config with v142 toolset
+- `LibreHardwareMonitor_NativeNodeIntegration/scripts/build-napi.ps1`: Build orchestration script
+
+**Recent Updates (Nov 21, 2025)**:
+- Updated LibreHardwareMonitor submodule to commit `5b2645bcbbe10373ec21afc3e95cda3a0a93c97e`
+- Removed obsolete `IsDimmDetectionEnabled` property from `HardwareMonitorBridge.cs` (API removed in newer LHM versions)
+- Changed managed bridge to use ProjectReference instead of pre-built DLL reference
+  - Old: Referenced `deps/LibreHardwareMonitor/LibreHardwareMonitorLib.dll` (stale)
+  - New: References `deps/LibreHardwareMonitor-src/LibreHardwareMonitorLib/LibreHardwareMonitorLib.csproj` (always current)
+  - Ensures bridge compiles against current source instead of cached build
 
 #### Helper Utilities
 - `js/electron_helper/helper.js`: Extensive Electron helper library

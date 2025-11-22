@@ -431,10 +431,9 @@ function initWidget(){
 		widget = await helper.tools.browserWindow('frameless', { 
 			webPreferences:{preload:path.join(__dirname, 'widget.js')}, 
 			skipTaskbar:true, 
-			transparent:true, 
+			transparent:true,
 			show:false, 
-			file:'./html/widget.html',
-			resizable: true
+			file:'./html/widget.html'
 		})
 		if(!isPackaged){widget.toggleDevTools();}
 		resolve(widget);

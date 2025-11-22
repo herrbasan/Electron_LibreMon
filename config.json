@@ -14,6 +14,8 @@
         "battery": false,
         "fanController": false
     },
+    "filter_dimms": true,
+    "filter_virtual_nics": true,
     "widget_bounds": {
         "width": 1200,
         "height": 800

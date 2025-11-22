@@ -78,10 +78,13 @@ let poll = function(selected_ids){
 				return;
 			}
 			
+			// Get filter options from config
+			const config = await ipcRenderer.invoke('get_config');
+			
 			// Poll from native addon
 			data = await nativeMonitor.poll({
-				filterVirtualNics: true,
-				filterDIMMs: true
+				filterVirtualNics: config.filter_virtual_nics !== false,
+				filterDIMMs: config.filter_dimms !== false
 			});
             // console.log('Poll data keys:', data ? data.Children.map(c => c.Text) : 'null');
 		}
