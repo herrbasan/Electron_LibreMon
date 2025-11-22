@@ -432,7 +432,8 @@ function initWidget(){
 			webPreferences:{preload:path.join(__dirname, 'widget.js')}, 
 			skipTaskbar:true, 
 			transparent:true,
-			show:false, 
+			show:false,
+			resizable:true,
 			file:'./html/widget.html'
 		})
 		if(!isPackaged){widget.toggleDevTools();}

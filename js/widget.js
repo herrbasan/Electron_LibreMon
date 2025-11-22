@@ -51,6 +51,9 @@ async function init(){
 	win.hook_event('move', winEvents);
 	win.hook_event('resize', winEvents);
 	win.getId().then(console.log);
+
+	// Initialize custom resize handles for transparent frameless window
+	initResizeHandles();
 }
 
 let resizeMoveTimeout;
@@ -116,6 +119,84 @@ function appClose(){
 
 function fb(e, data){
 	console.log(data);
+}
+
+// Custom resize functionality for transparent frameless windows
+function initResizeHandles() {
+	// Wait a bit for DOM to be ready if needed
+	setTimeout(() => {
+		const handles = document.querySelectorAll('.resize-handle');
+		console.log('Found resize handles:', handles.length);
+		
+		handles.forEach(handle => {
+			handle.addEventListener('mousedown', (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				console.log('Resize started, direction:', handle.className);
+				
+				// Disable text selection during resize
+				document.body.style.userSelect = 'none';
+				document.body.style.webkitUserSelect = 'none';
+				
+				const direction = handle.className.replace('resize-handle ', '');
+				const startX = e.screenX;
+				const startY = e.screenY;
+				
+				win.getBounds().then(startBounds => {
+					console.log('Start bounds:', startBounds);
+					const startWidth = startBounds.width;
+					const startHeight = startBounds.height;
+					const startLeft = startBounds.x;
+					const startTop = startBounds.y;
+					
+					const minWidth = 400;
+					const minHeight = 300;
+					
+					const onMouseMove = (e) => {
+						const deltaX = e.screenX - startX;
+						const deltaY = e.screenY - startY;
+						
+						let newBounds = { x: startLeft, y: startTop, width: startWidth, height: startHeight };
+						
+						// Handle different resize directions
+						if (direction.includes('right')) {
+							newBounds.width = Math.max(minWidth, startWidth + deltaX);
+						}
+						if (direction.includes('left')) {
+							const newWidth = Math.max(minWidth, startWidth - deltaX);
+							newBounds.width = newWidth;
+							newBounds.x = startLeft + (startWidth - newWidth);
+						}
+						if (direction.includes('bottom')) {
+							newBounds.height = Math.max(minHeight, startHeight + deltaY);
+						}
+						if (direction.includes('top')) {
+							const newHeight = Math.max(minHeight, startHeight - deltaY);
+							newBounds.height = newHeight;
+							newBounds.y = startTop + (startHeight - newHeight);
+						}
+						
+						win.setBounds(newBounds);
+					};
+					
+					const onMouseUp = () => {
+						document.removeEventListener('mousemove', onMouseMove);
+						document.removeEventListener('mouseup', onMouseUp);
+						
+						console.log('Resize ended');
+						
+						// Re-enable text selection
+						document.body.style.userSelect = '';
+						document.body.style.webkitUserSelect = '';
+					};
+					
+					document.addEventListener('mousemove', onMouseMove);
+					document.addEventListener('mouseup', onMouseUp);
+				});
+			});
+		});
+	}, 100);
 }
 
 window.stage = {init:init};

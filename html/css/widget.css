@@ -1,5 +1,8 @@
 body {
     background-color: transparent;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .sysmon {
@@ -16,4 +19,77 @@ body {
 } 
 .sysmon .sysmon_pc .head {
     -webkit-app-region: drag;
+}
+
+/* Custom resize handles for transparent frameless window */
+.resize-handle {
+    position: fixed;
+    z-index: 9999;
+    -webkit-app-region: no-drag;
+}
+
+/* Corner handles (priority zones) */
+.resize-handle.top-left {
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nw-resize;
+}
+
+.resize-handle.top-right {
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: ne-resize;
+}
+
+.resize-handle.bottom-left {
+    bottom: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    cursor: sw-resize;
+}
+
+.resize-handle.bottom-right {
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: se-resize;
+}
+
+/* Edge handles */
+.resize-handle.top {
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 8px;
+    cursor: n-resize;
+}
+
+.resize-handle.bottom {
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 8px;
+    cursor: s-resize;
+}
+
+.resize-handle.left {
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 8px;
+    cursor: w-resize;
+}
+
+.resize-handle.right {
+    right: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 8px;
+    cursor: e-resize;
 }
