@@ -67,13 +67,13 @@ choco install gh
 gh auth login
 
 # Create a release
-npm run release -- -Version 1.2.0 -Notes "Release notes here"
+npm run release -- -Notes "Release notes here"
 
 # Or use PowerShell directly
-.\scripts\create-release.ps1 -Version 1.2.0 -Notes "Release notes here"
+.\scripts\create-release.ps1 -Notes "Release notes here"
 
 # Create a draft release
-npm run release -- -Version 1.2.0 -Draft
+npm run release -- -Draft
 ```
 
 The script will:

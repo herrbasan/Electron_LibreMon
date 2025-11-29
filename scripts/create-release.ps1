@@ -2,15 +2,16 @@
 # Creates a GitHub release with built artifacts
 
 param(
-    [Parameter(Mandatory=$true)]
-    [string]$Version,
-
     [Parameter(Mandatory=$false)]
     [string]$Notes = "",
 
     [Parameter(Mandatory=$false)]
     [switch]$Draft
 )
+
+# Read version from package.json
+$packageJson = Get-Content -Path "package.json" -Raw | ConvertFrom-Json
+$Version = $packageJson.version
 
 Write-Host "Creating LibreMon release v$Version" -ForegroundColor Green
 
@@ -76,8 +77,10 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Find the generated installer
+# Find generated artifacts
 $installerPath = Get-ChildItem -Path "out\make\squirrel.windows\x64\*.exe" | Select-Object -First 1
+$nupkgPath = Get-ChildItem -Path "out\make\squirrel.windows\x64\*-full.nupkg" | Select-Object -First 1
+$releasesPath = Get-Item -Path "out\make\squirrel.windows\x64\RELEASES"
 
 if (-not $installerPath) {
     Write-Error "Could not find generated installer in out\make\squirrel.windows\x64\"
@@ -85,6 +88,8 @@ if (-not $installerPath) {
 }
 
 Write-Host "Found installer: $($installerPath.FullName)" -ForegroundColor Green
+Write-Host "Found nupkg: $($nupkgPath.FullName)" -ForegroundColor Green
+Write-Host "Found RELEASES: $($releasesPath.FullName)" -ForegroundColor Green
 
 # Create release notes if not provided
 if (-not $Notes) {
@@ -108,7 +113,9 @@ $ghArgs = @(
     "release", "create", "v$Version",
     "--title", "LibreMon v$Version",
     "--notes", $Notes,
-    $installerPath.FullName
+    $installerPath.FullName,
+    $nupkgPath.FullName,
+    $releasesPath.FullName
 )
 
 if ($Draft) {
