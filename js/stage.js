@@ -2,7 +2,7 @@
 const { ipcRenderer } = require( "electron" );
 const path = require('path');
 const helper = require('./electron_helper/helper_new.js');
-const libreHardwareMonitor = require('./libre_hardware_monitor_web.js');
+const libreHardwareMonitor = require('./libreHardwareMonitor.js');
 
 
 let g = {};

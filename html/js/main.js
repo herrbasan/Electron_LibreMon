@@ -74,7 +74,7 @@ function renderSensor(target, type, data, hardwareId){
             let sensorId = data.SensorId || 'unknown';
             
             // Config Slug: MUST match stage.js expectation: ut.slugify(name) + SensorId
-            // We do NOT append hardwareId here because we handled uniqueness in the backend (libre_hardware_monitor_web.js)
+            // We do NOT append hardwareId here because we handled uniqueness in the backend (libreHardwareMonitor.js)
             // by appending a suffix to SensorId if needed.
             let configSlug = ut.slugify(data.name) + sensorId;
             

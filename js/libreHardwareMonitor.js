@@ -1,7 +1,39 @@
 'use strict';
 
-const nativeMonitor = require('./libre_hardware_monitor_native.js');
+/**
+ * LibreHardwareMonitor integration
+ * Combines native addon loading and web interface
+ */
+
+const path = require('path');
 const { ipcRenderer } = require('electron');
+
+// Native addon loader
+let nativeMonitor;
+try {
+    // In development: require from js/libre_hardware_addon
+    nativeMonitor = require(path.join(__dirname, 'libre_hardware_addon'));
+} catch (err) {
+    // In packaged app: try app.asar.unpacked
+    if (process.resourcesPath) {
+        try {
+            nativeMonitor = require(path.join(process.resourcesPath, 'libre_hardware_addon'));
+        } catch (err2) {
+            throw new Error(
+                'Failed to load libre_hardware_addon module.\n' +
+                'Development: Run "npm run copy-addon" to copy the built module.\n' +
+                'Production: Check packaging configuration.\n' +
+                'Errors: ' + err.message + ' | ' + err2.message
+            );
+        }
+    } else {
+        throw new Error(
+            'Failed to load libre_hardware_addon module.\n' +
+            'Run "npm run copy-addon" to copy the built module from the submodule.\n' +
+            'Error: ' + err.message
+        );
+    }
+}
 
 const DEFAULT_SENSOR_GROUPS = {
 	cpu: true,
@@ -26,7 +58,7 @@ function resolveSensorGroups(config) {
 
 	normalized.cpu = rawGroups.cpu !== false;
 	normalized.gpu = rawGroups.gpu !== false;
-	
+
 	normalized.memory = rawGroups.memory !== false;
 	normalized.motherboard = rawGroups.motherboard !== false;
 	normalized.storage = rawGroups.storage !== false;
@@ -48,15 +80,15 @@ let initialized = false;
 // Initialize on first use with sensor groups from config
 async function ensureInitialized() {
 	if (initialized) return true;
-	
+
 	try {
 		// Get sensor groups from config
 		const config = await ipcRenderer.invoke('get_config');
 		// console.log('Full config from IPC:', config);
 		const sensorGroups = resolveSensorGroups(config);
-		
+
 		// console.log('Sensor groups for N-API init:', sensorGroups);
-		
+
 		// Initialize N-API addon with ONLY the enabled sensors
 		// This prevents hardware polling for disabled groups (critical for HDD wear)
 		await nativeMonitor.init(sensorGroups);
@@ -77,10 +109,10 @@ let poll = function(selected_ids){
 				resolve(false);
 				return;
 			}
-			
+
 			// Get filter options from config
 			const config = await ipcRenderer.invoke('get_config');
-			
+
 			// Poll from native addon
 			data = await nativeMonitor.poll({
 				filterVirtualNics: config.filter_virtual_nics !== false,
@@ -107,7 +139,7 @@ let poll = function(selected_ids){
 				// Handle duplicate names (e.g. identical GPUs)
 				let existing = out[type].filter(g => g.name.replace(/ #\d+$/, '') === data[i].Text);
 				let suffix = '';
-				
+
 				if(existing.length > 0){
 					suffix = '_' + existing.length;
 				}
@@ -160,11 +192,11 @@ function getSensors(obj, hw_type, idx, suffix){
 function getValues(obj, hw_type, idx, suffix){
 	if(obj.Children.length == 0){ delete obj.Children; }
 	if(obj.ImageURL){ delete obj.ImageURL; }
-	if(obj.Text){ 
+	if(obj.Text){
 		obj.name = obj.Text;
 		delete obj.Text;
 	}
-	
+
 	// Ensure SensorId is present and preserved
 	if(!obj.SensorId) {
 		if(obj.Identifier) obj.SensorId = obj.Identifier;
