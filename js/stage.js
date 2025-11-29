@@ -498,7 +498,7 @@ async function loop(){
 		
 		// Calculate next poll interval: poll_rate - poll_time, minimum 500ms
 		const nextInterval = Math.max(500, g.config.poll_rate - pollTime);
-		console.log(`Poll ${g.poll_idx}: ${pollTime}ms, next in ${nextInterval}ms`);
+		
 		
 		clearTimeout(g.poll_timeout);
 		g.poll_timeout = setTimeout(loop, nextInterval);

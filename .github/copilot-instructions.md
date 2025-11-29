@@ -79,13 +79,19 @@ npm run release -- -Draft
 The script will:
 - Build the application using `npm run make`
 - Create a GitHub release with the installer
-- Upload the `.exe` installer as an asset
+- Upload the `.exe` installer, nupkg, and RELEASES file as assets
+- Sync release tag to local repo
 
 **Requirements:**
 - GitHub CLI (`gh`) installed and authenticated
 - Must be on clean `main` branch
 - Administrator privileges for building
 - The release script automatically finds `gh.exe` even if not in PATH
+
+**Options:**
+- `-Notes "text"` - Custom release notes
+- `-Draft` - Create as draft release
+- `-Clean` - Remove old builds before building
 
 ## Update System
 
@@ -112,7 +118,14 @@ updateHelper.init({
 ```
 
 **GitHub mode automatically:**
-- Fetches latest release from GitHub API
+- Fetches latest release from GitHub API (with 5s timeout)
 - Downloads RELEASES and nupkg files
 - Uses existing Squirrel update mechanism
 - No manual hosting required
+
+**Update flow:**
+- On startup, silently checks for updates via `checkVersion()`
+- If update available, shows splash screen for user decision
+- User can "Update" (downloads and installs) or "Ignore" (continues to app)
+- Network failures or timeouts gracefully fall through to app start
+- Prevents app quit when update window is closed before main windows exist

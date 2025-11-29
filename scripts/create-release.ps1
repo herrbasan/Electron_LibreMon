@@ -6,7 +6,10 @@ param(
     [string]$Notes = "",
 
     [Parameter(Mandatory=$false)]
-    [switch]$Draft
+    [switch]$Draft,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$Clean
 )
 
 # Read version from package.json
@@ -25,11 +28,23 @@ try {
     $possiblePaths = @(
         "C:\Program Files\GitHub CLI\gh.exe",
         "C:\Program Files\GitHub CLI\bin\gh.exe",
-        "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Packages\GitHub.cli_*\x64\gh.exe",
         "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Links\gh.exe",
         "C:\ProgramData\chocolatey\bin\gh.exe",
         "C:\tools\gh\gh.exe"
     )
+    
+    # Also check WinGet packages folder (may have version in path)
+    $wingetPackages = "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Packages"
+    if (Test-Path $wingetPackages) {
+        $ghDirs = Get-ChildItem -Path $wingetPackages -Directory -Filter "GitHub.cli_*" | Sort-Object Name -Descending
+        foreach ($dir in $ghDirs) {
+            $candidate = Join-Path $dir.FullName "x64\gh.exe"
+            if (Test-Path $candidate) {
+                $possiblePaths += $candidate
+                break
+            }
+        }
+    }
     
     foreach ($path in $possiblePaths) {
         if (Test-Path $path) {
@@ -55,6 +70,23 @@ After installation, ensure it's in your PATH or run this script from the directo
 
 Write-Host "Using GitHub CLI at: $ghPath" -ForegroundColor Cyan
 
+# Check GitHub CLI authentication
+$authStatus = & $ghPath auth status 2>&1
+if ($LASTEXITCODE -ne 0) {
+    Write-Error @"
+GitHub CLI is not authenticated. Run:
+  $ghPath auth login
+"@
+    exit 1
+}
+
+# Check if release/tag already exists
+$existingRelease = & $ghPath release view "v$Version" 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Error "Release v$Version already exists. Bump version in package.json first."
+    exit 1
+}
+
 # Ensure we're on main branch and clean
 $branch = git branch --show-current
 if ($branch -ne "main") {
@@ -66,6 +98,12 @@ $status = git status --porcelain
 if ($status) {
     Write-Error "Working directory is not clean. Please commit or stash changes."
     exit 1
+}
+
+# Optionally clean old builds
+if ($Clean -and (Test-Path "out")) {
+    Write-Host "Cleaning old builds..." -ForegroundColor Yellow
+    Remove-Item -Path "out" -Recurse -Force
 }
 
 # Build the application
@@ -129,4 +167,10 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# Fetch the tag that GitHub created so it's in local repo
+Write-Host "Syncing release tag to local repo..." -ForegroundColor Yellow
+git fetch --tags
+
 Write-Host "Release v$Version created successfully!" -ForegroundColor Green
+Write-Host ""
+Write-Host "View release at: https://github.com/herrbasan/Electron_LibreMon/releases/tag/v$Version" -ForegroundColor Cyan
