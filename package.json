@@ -8,7 +8,8 @@
     "copy-addon": "node scripts/copy-native-addon.js",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "release": "powershell scripts/create-release.ps1"
   },
   "author": "David Renelt",
   "license": "MIT",

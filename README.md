@@ -56,3 +56,28 @@ Settings are stored in `config.json` and editable via the settings UI:
 VS Code must run as Administrator for hardware sensor access.
 
 The N-API addon is built from the `LibreHardwareMonitor_NativeNodeIntegration` submodule and includes a self-contained .NET 9.0 runtime.
+
+## Releases
+
+Create a new GitHub release with built artifacts:
+
+```bash
+# Create a release (requires GitHub CLI)
+npm run release -- -Version 1.2.0 -Notes "Release notes here"
+
+# Or use PowerShell directly
+.\scripts\create-release.ps1 -Version 1.2.0 -Notes "Release notes here"
+
+# Create a draft release
+npm run release -- -Version 1.2.0 -Draft
+```
+
+The script will:
+- Build the application using `npm run make`
+- Create a GitHub release with the installer
+- Upload the `.exe` installer as an asset
+
+**Requirements:**
+- GitHub CLI (`gh`) installed and authenticated
+- Must be on clean `main` branch
+- Administrator privileges for building
