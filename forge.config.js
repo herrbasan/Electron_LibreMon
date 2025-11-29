@@ -4,7 +4,7 @@ module.exports = {
     asar: {
       unpack: "**/libre_hardware_addon/**"
     },
-    ignore: ['_old', '_gsdata_', '.vscode', 'LibreHardwareMonitor_NativeNodeIntegration', 'scripts'],
+    ignore: ['_old', '_gsdata_', '.vscode', 'LibreHardwareMonitor_NativeNodeIntegration', 'scripts', 'bin'],
     extraResource: ["./config.json", "sysmon_icon.ico", "./js/libre_hardware_addon"],
     executableName: 'libremon',
     win32metadata: {
