@@ -138,7 +138,13 @@ async function init(cmd){
 				fb('Restarting stage window to apply sensor group changes');
 				stage.destroy();
 				stage = null;
-				initStage();
+				await initStage();
+				stage.show(); // Reopen the settings window
+			}
+			
+			// Notify widget to re-render with new sensor groups
+			if (widget && widget.webContents) {
+				widget.webContents.send('reset_widget');
 			}
 			
 			return { success: true };
