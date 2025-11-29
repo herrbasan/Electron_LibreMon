@@ -86,3 +86,33 @@ The script will:
 - Must be on clean `main` branch
 - Administrator privileges for building
 - The release script automatically finds `gh.exe` even if not in PATH
+
+## Update System
+
+The application includes a custom update system in `js/electron_helper/update.js` that supports multiple sources:
+
+### HTTP Mode (Default)
+```javascript
+// Traditional HTTP endpoint
+updateHelper.init({
+  mode: 'splash',  // or 'widget' or 'silent'
+  url: 'https://your-server.com/updates/',
+  source: 'http'  // optional, this is default
+});
+```
+
+### GitHub Mode
+```javascript
+// Automatic GitHub releases integration
+updateHelper.init({
+  mode: 'splash',  // or 'widget' or 'silent'  
+  url: 'herrbasan/Electron_LibreMon',  // GitHub repo
+  source: 'git'
+});
+```
+
+**GitHub mode automatically:**
+- Fetches latest release from GitHub API
+- Downloads RELEASES and nupkg files
+- Uses existing Squirrel update mechanism
+- No manual hosting required
