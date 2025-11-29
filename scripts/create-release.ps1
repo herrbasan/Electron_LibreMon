@@ -22,6 +22,7 @@ try {
 } catch {
     # Try to find gh.exe in common locations
     $possiblePaths = @(
+        "C:\Program Files\GitHub CLI\gh.exe",
         "C:\Program Files\GitHub CLI\bin\gh.exe",
         "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Packages\GitHub.cli_*\x64\gh.exe",
         "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Links\gh.exe",
