@@ -480,7 +480,10 @@ async function loop(){
 	// Skip entire poll if typing to avoid sluggishness
 	// Auto-blur on scroll ensures updates resume quickly
 	if(!isTypingInInput) {
+		const pollStart = Date.now();
 		let sensors = await poll(g.config.sensor_selection);
+		const pollTime = Date.now() - pollStart;
+		
 		let data = { 
 			uuid:system_info.system.uuid,
 			name:system_info.os.hostname,
@@ -492,6 +495,14 @@ async function loop(){
 		}
 		tools.sendToId(1, 'stats', data); // Send to widget
 		sendToServer(data); // Fire and forget to backend
+		
+		// Calculate next poll interval: poll_rate - poll_time, minimum 500ms
+		const nextInterval = Math.max(500, g.config.poll_rate - pollTime);
+		console.log(`Poll ${g.poll_idx}: ${pollTime}ms, next in ${nextInterval}ms`);
+		
+		clearTimeout(g.poll_timeout);
+		g.poll_timeout = setTimeout(loop, nextInterval);
+		return;
 	}
 	
 	clearTimeout(g.poll_timeout);
