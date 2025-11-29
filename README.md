@@ -67,7 +67,9 @@ winget install --id GitHub.cli
 # or
 choco install gh
 
-# Authenticate
+# Authenticate (use full path if not in PATH)
+"C:\Program Files\GitHub CLI\gh.exe" auth login
+# or if installed elsewhere
 gh auth login
 
 # Create a release
@@ -89,3 +91,4 @@ The script will:
 - GitHub CLI (`gh`) installed and authenticated
 - Must be on clean `main` branch
 - Administrator privileges for building
+- The release script automatically finds `gh.exe` even if not in PATH
