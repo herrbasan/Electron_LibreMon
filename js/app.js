@@ -122,6 +122,13 @@ async function init(cmd){
 		return systemInfoCache;
 	})
 	
+	ipcMain.handle('open_settings', async (e) => {
+		if (stage) {
+			stage.show();
+			stage.focus();
+		}
+	});
+
 	ipcMain.handle('update_sensor_groups', async (e, sensorGroups) => {
 		try {
 			fb('Updating sensor groups...');

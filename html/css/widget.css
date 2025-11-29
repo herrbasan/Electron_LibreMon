@@ -10,6 +10,7 @@ body {
     width: 100%;
     padding: 0;
     transition: background 0.2s;
+    -webkit-app-region: drag;
 }
 
 .sysmon .sysmon_pc.nui-card {
@@ -92,4 +93,58 @@ body {
     bottom: 16px;
     width: 8px;
     cursor: e-resize;
+}
+
+/* Empty state for first-time users */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    padding: 40px;
+    box-sizing: border-box;
+    -webkit-app-region: drag;
+    transition: background 0.2s;
+}
+
+.empty-state.hidden {
+    display: none;
+}
+
+.empty-state h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.empty-state p {
+    margin: 0 0 24px 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 280px;
+}
+
+.empty-state .open-settings-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(76, 175, 80, 0.8);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    -webkit-app-region: no-drag;
+}
+
+.empty-state .open-settings-btn:hover {
+    background: rgba(76, 175, 80, 1);
+}
+
+.empty-state .open-settings-btn:active {
+    background: rgba(56, 142, 60, 1);
 }

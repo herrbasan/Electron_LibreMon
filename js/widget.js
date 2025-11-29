@@ -9,15 +9,24 @@ let userConfig;
 let win = helper.window;
 let tools = helper.tools;
 
-if(window) { window.electron_widget = {init:init, helper:helper} }
+if(window) { window.electron_widget = {init:init, helper:helper, openSettings:openSettings} }
+
+async function openSettings() {
+	await ipcRenderer.invoke('open_settings');
+}
 
 async function init(){
 	console.log('App Init');
 
     userConfig = await helper.config.initRenderer('config', (updatedConfig) => {
         console.log('Widget config updated', updatedConfig);
+        // Update empty state when config changes
+        if(window.updateEmptyState) window.updateEmptyState(updatedConfig);
     });
     g.config = userConfig.get();
+    
+    // Expose config for empty state detection
+    window.getWidgetConfig = () => g.config;
 
 	g.main_env = await helper.global.get('main_env');
 	g.app_path = await helper.global.get('app_path');
@@ -61,11 +70,17 @@ let resizeMoveTimeout;
 function winEvents(sender, e){
 	if(e.type == 'focus'){
 		console.log('focus');
-		ut.el('.sysmon').style.backgroundColor = 'rgba(0,0,0,0.2)';
+		const sysmon = ut.el('.sysmon');
+		const emptyState = ut.el('.empty-state');
+		if(sysmon) sysmon.style.backgroundColor = 'rgba(0,0,0,0.2)';
+		if(emptyState) emptyState.style.backgroundColor = 'rgba(0,0,0,0.2)';
 	}
 	else if(e.type == 'blur'){
 		console.log('blur');
-		ut.el('.sysmon').style.backgroundColor = null;
+		const sysmon = ut.el('.sysmon');
+		const emptyState = ut.el('.empty-state');
+		if(sysmon) sysmon.style.backgroundColor = null;
+		if(emptyState) emptyState.style.backgroundColor = null;
 	}
 	else if(e.type == 'move' || e.type == 'resize'){
 		clearTimeout(resizeMoveTimeout);
