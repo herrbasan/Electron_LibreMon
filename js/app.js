@@ -170,6 +170,7 @@ async function init(cmd){
 
 async function startup(){
 	// checkUpdate will call appStart() when appropriate
+	if(!isPackaged){ appStart(); return; }
 	await checkUpdate();
 }
 
@@ -406,6 +407,7 @@ function initApp(){
 			{ label: 'Show Settings', click: (e) => { stage.show() }},
 			{ label: 'Show Widget', click: (e) => { widget.show() }},
 			{ type: 'separator' },
+			{ label: 'Check for Updates', click: (e) => { manualUpdateCheck() }},
 			{ 
                 label: 'Start at Login', 
                 type: 'checkbox',
@@ -476,6 +478,11 @@ function fb(o, context='main'){
 	if(widget?.webContents){
 		widget.webContents.send('fb', {msg:o, context:context});
 	}
+}
+
+async function manualUpdateCheck(){
+	fb('Manual update check triggered');
+	update.checkWithUI('herrbasan/Electron_LibreMon', update_progress);
 }
 
 async function checkUpdate(){
