@@ -70,6 +70,7 @@ let resizeMoveTimeout;
 function winEvents(sender, e){
 	if(e.type == 'focus'){
 		console.log('focus');
+		document.body.classList.add('focused');
 		const sysmon = ut.el('.sysmon');
 		const emptyState = ut.el('.empty-state');
 		if(sysmon) sysmon.style.backgroundColor = 'rgba(0,0,0,0.2)';
@@ -77,6 +78,7 @@ function winEvents(sender, e){
 	}
 	else if(e.type == 'blur'){
 		console.log('blur');
+		document.body.classList.remove('focused');
 		const sysmon = ut.el('.sysmon');
 		const emptyState = ut.el('.empty-state');
 		if(sysmon) sysmon.style.backgroundColor = null;

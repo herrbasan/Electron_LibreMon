@@ -13,7 +13,7 @@ function init(){
     window.resetWidget = reset;
     window.updateEmptyState = updateEmptyState;
     
-    // Set up button click handler
+    // Set up empty state button click handler
     const btn = ut.el('.empty-state .open-settings-btn');
     if(btn) {
         btn.addEventListener('click', () => {
