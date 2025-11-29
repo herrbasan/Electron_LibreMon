@@ -3,6 +3,7 @@ const path = require('path');
 const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('electron');
 const helper = require('./electron_helper/helper_new.js');
 const squirrel_startup = require('./squirrel_startup.js');
+const update = require('./electron_helper/update.js');
 const si = require('systeminformation');
 
 const {spawn, execSync} = require("child_process");
@@ -187,6 +188,11 @@ async function appStart(){
 	await initStage();
 	// N-API addon handles hardware monitoring directly - no need to spawn LibreHardwareMonitor.exe
 	// startLibre();
+	
+	// Check for updates after initialization (only in production)
+	if (isPackaged) {
+		setTimeout(checkUpdate, 2000);
+	}
 }
 
 function scheduleStageRestart() {
@@ -472,6 +478,35 @@ function fb(o, context='main'){
 	}
 }
 
+async function checkUpdate(){
+	fb('Checking for updates');
+	// Use GitHub mode for automatic updates from releases
+	let check = await update.checkVersionGit('herrbasan/Electron_LibreMon');
+	if(check.status && check.isNew){
+		fb('Update available');
+		update.init({
+			mode:'splash', 
+			url:'herrbasan/Electron_LibreMon', 
+			source: 'git',
+			progress:update_progress, 
+			check:check
+		});
+	}
+	else {
+		fb('No updates available');
+	}
+}
 
+function update_progress(e){
+	if(e.type == 'state'){
+		fb('Update State: ' + e.data);
+	}
+	if(e.type == 'log'){
+		fb('Update Log: ' + e.data);
+	}
+	if(e.type == 'download'){
+		fb('Update Download: ' + Math.round((e.data.bytes / e.data.totalbytes) * 100) + '%');
+	}
+}
 
 module.exports.fb = fb;
