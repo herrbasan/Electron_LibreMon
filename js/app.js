@@ -165,7 +165,11 @@ async function init(cmd){
 		}
 	})
 	
-	app.whenReady().then(appStart).catch((err) => { throw err});
+	app.whenReady().then(startup).catch((err) => { throw err});
+}
+
+async function startup(){
+	await checkUpdate();
 }
 
 async function appStart(){
@@ -188,11 +192,6 @@ async function appStart(){
 	await initStage();
 	// N-API addon handles hardware monitoring directly - no need to spawn LibreHardwareMonitor.exe
 	// startLibre();
-	
-	// Check for updates after initialization (only in production)
-	if (isPackaged) {
-		setTimeout(checkUpdate, 2000);
-	}
 }
 
 function scheduleStageRestart() {
@@ -479,22 +478,27 @@ function fb(o, context='main'){
 }
 
 async function checkUpdate(){
-	fb('Checking for updates');
-	// Use GitHub mode for automatic updates from releases
-	let check = await update.checkVersionGit('herrbasan/Electron_LibreMon');
-	if(check.status && check.isNew){
-		fb('Update available');
+	return new Promise(async (resolve, reject) => {
+		fb('Checking for updates');
+		// Use GitHub mode for automatic updates from releases
 		update.init({
 			mode:'splash', 
 			url:'herrbasan/Electron_LibreMon', 
 			source: 'git',
-			progress:update_progress, 
-			check:check
+			progress:update_progress
+		}).then((result) => {
+			if(result){
+				fb('Update check completed - update available');
+			}
+			else {
+				fb('No updates available');
+			}
+			resolve(result);
+		}).catch((err) => {
+			fb('Update check failed: ' + err.message);
+			resolve(false);
 		});
-	}
-	else {
-		fb('No updates available');
-	}
+	});
 }
 
 function update_progress(e){
