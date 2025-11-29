@@ -62,7 +62,15 @@ The N-API addon is built from the `LibreHardwareMonitor_NativeNodeIntegration` s
 Create a new GitHub release with built artifacts:
 
 ```bash
-# Create a release (requires GitHub CLI)
+# Install GitHub CLI first (required)
+winget install --id GitHub.cli
+# or
+choco install gh
+
+# Authenticate
+gh auth login
+
+# Create a release
 npm run release -- -Version 1.2.0 -Notes "Release notes here"
 
 # Or use PowerShell directly

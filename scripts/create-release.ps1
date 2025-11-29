@@ -14,6 +14,23 @@ param(
 
 Write-Host "Creating LibreMon release v$Version" -ForegroundColor Green
 
+# Check if GitHub CLI is installed
+try {
+    $null = Get-Command gh -ErrorAction Stop
+} catch {
+    Write-Error @"
+GitHub CLI (gh) is not installed or not in PATH.
+
+Installation options:
+1. Winget: winget install --id GitHub.cli
+2. Chocolatey: choco install gh
+3. Download: https://cli.github.com/
+
+After installation, authenticate with: gh auth login
+"@
+    exit 1
+}
+
 # Ensure we're on main branch and clean
 $branch = git branch --show-current
 if ($branch -ne "main") {
