@@ -15,21 +15,43 @@ param(
 Write-Host "Creating LibreMon release v$Version" -ForegroundColor Green
 
 # Check if GitHub CLI is installed
+$ghPath = $null
 try {
-    $null = Get-Command gh -ErrorAction Stop
+    $ghCmd = Get-Command gh -ErrorAction Stop
+    $ghPath = $ghCmd.Source
 } catch {
-    Write-Error @"
-GitHub CLI (gh) is not installed or not in PATH.
+    # Try to find gh.exe in common locations
+    $possiblePaths = @(
+        "C:\Program Files\GitHub CLI\bin\gh.exe",
+        "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Packages\GitHub.cli_*\x64\gh.exe",
+        "$env:USERPROFILE\AppData\Local\Microsoft\WinGet\Links\gh.exe",
+        "C:\ProgramData\chocolatey\bin\gh.exe",
+        "C:\tools\gh\gh.exe"
+    )
+    
+    foreach ($path in $possiblePaths) {
+        if (Test-Path $path) {
+            $ghPath = $path
+            break
+        }
+    }
+    
+    if (-not $ghPath) {
+        Write-Error @"
+GitHub CLI (gh) is not found in PATH or common installation locations.
 
 Installation options:
 1. Winget: winget install --id GitHub.cli
 2. Chocolatey: choco install gh
 3. Download: https://cli.github.com/
 
-After installation, authenticate with: gh auth login
+After installation, ensure it's in your PATH or run this script from the directory containing gh.exe
 "@
-    exit 1
+        exit 1
+    }
 }
+
+Write-Host "Using GitHub CLI at: $ghPath" -ForegroundColor Cyan
 
 # Ensure we're on main branch and clean
 $branch = git branch --show-current
@@ -92,7 +114,7 @@ if ($Draft) {
     $ghArgs += "--draft"
 }
 
-& gh @ghArgs
+& $ghPath @ghArgs
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to create GitHub release"
