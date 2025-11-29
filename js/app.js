@@ -169,6 +169,7 @@ async function init(cmd){
 }
 
 async function startup(){
+	// checkUpdate will call appStart() when appropriate
 	await checkUpdate();
 }
 
@@ -480,24 +481,39 @@ function fb(o, context='main'){
 async function checkUpdate(){
 	return new Promise(async (resolve, reject) => {
 		fb('Checking for updates');
-		// Use GitHub mode for automatic updates from releases
-		update.init({
-			mode:'splash', 
-			url:'herrbasan/Electron_LibreMon', 
-			source: 'git',
-			progress:update_progress
-		}).then((result) => {
-			if(result){
-				fb('Update check completed - update available');
-			}
-			else {
-				fb('No updates available');
-			}
-			resolve(result);
-		}).catch((err) => {
-			fb('Update check failed: ' + err.message);
+		// First do a silent check
+		let check = await update.checkVersion('herrbasan/Electron_LibreMon', 'git');
+		
+		if(check.status && check.isNew){
+			fb('Update available, showing splash screen');
+			// Update available - show splash screen for user decision
+			update.init({
+				mode:'splash', 
+				url:'herrbasan/Electron_LibreMon', 
+				source: 'git',
+				check: check, // Pass the check result to avoid re-checking
+				progress:update_progress
+			}).then((result) => {
+				if(result){
+					fb('User accepted update - update in progress');
+				}
+				else {
+					fb('User declined update - proceeding to app start');
+					appStart(); // Continue to app start if user declines
+				}
+				resolve(result);
+			}).catch((err) => {
+				fb('Update init failed: ' + err.message);
+				appStart(); // Continue to app start on error
+				resolve(false);
+			});
+		}
+		else {
+			fb('No updates available - proceeding to app start');
+			// No update available - proceed directly to app start
+			appStart();
 			resolve(false);
-		});
+		}
 	});
 }
 
