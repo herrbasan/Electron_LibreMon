@@ -129,3 +129,33 @@ updateHelper.init({
 - User can "Update" (downloads and installs) or "Ignore" (continues to app)
 - Network failures or timeouts gracefully fall through to app start
 - Prevents app quit when update window is closed before main windows exist
+
+### Squirrel Windows Integration
+
+The app uses Squirrel.Windows for installation and updates. Key learnings:
+
+**Squirrel Events** (`js/squirrel_startup.js`):
+- `--squirrel-install`: First installation, creates shortcuts
+- `--squirrel-updated`: After update applied, recreates shortcuts
+- `--squirrel-uninstall`: Removes shortcuts
+- `--squirrel-obsolete`: Old version being replaced (note: no 'd' at end)
+- `--squirrel-firstrun`: First run after install
+
+**Critical Implementation Details:**
+
+1. **Window IDs are dynamic** - Never hardcode window IDs. The update splash window gets ID 1 when created first, breaking any `sendToId(1, ...)` calls meant for the widget. Use `broadcast()` instead for IPC.
+
+2. **Skip update check during Squirrel events** - When any `--squirrel-*` argument is present, skip the update check entirely. Squirrel's "update dance" briefly runs old versions which could trigger false update prompts.
+
+3. **Quit handler must be removed before quitAndInstall** - The `preventQuitHandler` (added to keep app running when "Ignore" is clicked) blocks `quitAndInstall()`. Remove it before calling:
+   ```javascript
+   if (preventQuitHandler) {
+       app.off('window-all-closed', preventQuitHandler);
+       preventQuitHandler = null;
+   }
+   autoUpdater.quitAndInstall(true, true);
+   ```
+
+4. **Handle both obsolete spellings** - Squirrel sends `--squirrel-obsolete` (without 'd'), but some docs show `--squirrel-obsoleted`. Handle both.
+
+5. **Old version cleanup** - Squirrel automatically removes old app versions during the update dance, but only if the old version properly quits when receiving `--squirrel-obsolete`
