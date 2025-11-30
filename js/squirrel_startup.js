@@ -8,7 +8,7 @@ function squirrel_startup() {
         let ret = false;
         let cmd = process.argv[1];
         if (app.isPackaged) {
-            await write_log('Squirrel command: ' + (cmd || 'none'));
+            await write_log('Squirrel command: ' + (cmd || 'none') + ' | argv: ' + JSON.stringify(process.argv));
             let app_exe = process.execPath;
             app_exe = path.resolve(path.dirname(app_exe), '..', path.basename(app_exe));
             let app_path = app.getAppPath();
@@ -48,7 +48,8 @@ function squirrel_startup() {
             if (cmd === '--squirrel-firstrun') {
                 await write_log('Squirrel Firstrun');
                 await createShortcuts(target);
-                ret = true;
+                // Don't set ret=true - let the app continue running on first launch
+                ret = false;
                 acted = true;
             }
             if(!acted){
@@ -104,7 +105,18 @@ function write_log(msg) {
     let ts = Date.now();
     let date = new Date().toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric", hour: '2-digit', minute: '2-digit' })
     msg = ts + ' | ' + date + ' | ' + msg;
-    return fs.appendFile(path.resolve(path.dirname(process.execPath), '..', 'startup.log'), msg + '\n');
+    // Try multiple log locations - during install, process.execPath may be in temp folder
+    const logPaths = [
+        path.resolve(path.dirname(process.execPath), '..', 'startup.log'),
+        path.join(app.getPath('userData'), 'startup.log'),
+        path.join(process.env.LOCALAPPDATA || '', 'libremon', 'startup.log')
+    ];
+    // Try first path, fall back silently if it fails
+    return fs.appendFile(logPaths[0], msg + '\n').catch(() => {
+        return fs.appendFile(logPaths[1], msg + '\n').catch(() => {
+            return fs.appendFile(logPaths[2], msg + '\n').catch(() => {});
+        });
+    });
 }
 
 module.exports = squirrel_startup;
