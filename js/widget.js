@@ -25,6 +25,10 @@ async function init(){
     });
     g.config = userConfig.get();
     
+    // Apply dark mode setting (default to dark if not set)
+    const isDark = g.config.dark_mode !== false;
+    document.body.classList.toggle('dark', isDark);
+    
     // Expose config for empty state detection
     window.getWidgetConfig = () => g.config;
 
@@ -55,6 +59,11 @@ async function init(){
 	ipcRenderer.on('reset_widget', () => { 
 		if(window.resetWidget) window.resetWidget();
 	});
+	ipcRenderer.on('toggle_dark_mode', (e, isDark) => {
+		document.body.classList.toggle('dark', isDark);
+		// Update graph colors for new mode
+		if (window.updateGraphColors) window.updateGraphColors();
+	});
 	win.hook_event('focus', winEvents);
 	win.hook_event('blur', winEvents);
 	win.hook_event('move', winEvents);
@@ -73,8 +82,10 @@ function winEvents(sender, e){
 		document.body.classList.add('focused');
 		const sysmon = ut.el('.sysmon');
 		const emptyState = ut.el('.empty-state');
-		if(sysmon) sysmon.style.backgroundColor = 'rgba(0,0,0,0.2)';
-		if(emptyState) emptyState.style.backgroundColor = 'rgba(0,0,0,0.2)';
+		const isDark = document.body.classList.contains('dark');
+		const bgColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)';
+		if(sysmon) sysmon.style.backgroundColor = bgColor;
+		if(emptyState) emptyState.style.backgroundColor = bgColor;
 	}
 	else if(e.type == 'blur'){
 		console.log('blur');

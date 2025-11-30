@@ -12,6 +12,7 @@ function init(){
     sysmon_poll.init(widgetEl);
     window.resetWidget = reset;
     window.updateEmptyState = updateEmptyState;
+    window.updateGraphColors = () => sysmon_poll.updateGraphColors();
     
     // Set up empty state button click handler
     const btn = ut.el('.empty-state .open-settings-btn');

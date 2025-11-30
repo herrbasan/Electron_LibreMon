@@ -429,6 +429,19 @@ function initApp(){
 				const y = Math.floor(primaryDisplay.workArea.y + (primaryDisplay.workArea.height - height) / 2);
 				widget.setPosition(x, y);
 			}},
+			{ 
+				label: 'Dark Mode', 
+				type: 'checkbox',
+				checked: userConfigMain?.get()?.dark_mode !== false,
+				click: (menuItem) => {
+					const config = userConfigMain.get();
+					config.dark_mode = menuItem.checked;
+					userConfigMain.set(config);
+					if (widget && widget.webContents) {
+						widget.webContents.send('toggle_dark_mode', menuItem.checked);
+					}
+				}
+			},
 			{ type: 'separator' },
 			{ 
                 label: 'Start at Login', 

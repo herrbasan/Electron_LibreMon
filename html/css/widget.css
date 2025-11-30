@@ -20,9 +20,6 @@ body {
     border: 0;
     box-shadow: none;
 } 
-.sysmon .sysmon_pc .head {
-    -webkit-app-region: no-drag;
-}
 
 /* Drag overlay - covers window except resize edges */
 .drag-overlay {
@@ -127,17 +124,18 @@ body {
     display: none;
 }
 
+/* Light mode (default) */
 .empty-state h2 {
     margin: 0 0 12px 0;
     font-size: 20px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(0, 0, 0, 0.85);
 }
 
 .empty-state p {
     margin: 0 0 24px 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.6);
     max-width: 280px;
 }
 
@@ -146,7 +144,7 @@ body {
     font-size: 14px;
     font-weight: 500;
     color: #fff;
-    background: rgba(76, 175, 80, 0.8);
+    background: rgba(76, 175, 80, 0.9);
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -160,4 +158,17 @@ body {
 
 .empty-state .open-settings-btn:active {
     background: rgba(56, 142, 60, 1);
+}
+
+/* Dark mode */
+.dark .empty-state h2 {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .empty-state p {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .empty-state .open-settings-btn {
+    background: rgba(76, 175, 80, 0.8);
 }

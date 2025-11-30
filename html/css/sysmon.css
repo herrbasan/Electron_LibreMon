@@ -154,3 +154,56 @@
 		border-top: solid thin rgba(180,180,180,0.3);
 	}
 }
+
+/* Light/Dark Mode Colors */
+/* Light mode (default) */
+.sysmon .sysmon_pc .head .name,
+.sysmon .wol .label {
+	color: rgba(0, 0, 0, 0.6);
+}
+
+.sysmon .sysmon_pc .device > .name {
+	color: rgb(50, 100, 180);
+}
+
+.sysmon .sysmon_pc .device .sensor .name {
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.sysmon .sysmon_pc .device .sensor .data {
+	color: rgba(0, 0, 0, 0.9);
+}
+
+.sysmon .sysmon_pc .device .sensor .plot {
+	background-color: rgba(0, 0, 0, 0.08);
+}
+
+.sysmon .sysmon_pc .hardware .bot {
+	border-top-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark mode */
+.dark .sysmon .sysmon_pc .head .name,
+.dark .sysmon .wol .label {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .sysmon .sysmon_pc .device > .name {
+	color: rgb(76, 132, 229);
+}
+
+.dark .sysmon .sysmon_pc .device .sensor .name {
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .sysmon .sysmon_pc .device .sensor .data {
+	color: rgba(255, 255, 255, 0.95);
+}
+
+.dark .sysmon .sysmon_pc .device .sensor .plot {
+	background-color: rgba(180, 180, 180, 0.1);
+}
+
+.dark .sysmon .sysmon_pc .hardware .bot {
+	border-top-color: rgba(255, 255, 255, 0.15);
+}
