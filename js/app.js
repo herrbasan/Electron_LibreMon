@@ -421,14 +421,6 @@ function initApp(){
 			{ label: 'Show Widget', click: (e) => { widget.show() }},
 			{ type: 'separator' },
 			{ label: 'Check for Updates', click: (e) => { manualUpdateCheck() }},
-			{ 
-                label: 'Start at Login', 
-                type: 'checkbox',
-				checked: isLoginItemEnabled(),
-				click: (menuItem) => {
-					setLoginItemEnabled(menuItem.checked);
-				}
-            },
 			{ label: 'Reset Widget Position', click: (e) => { 
 				if (!widget) return;
 				const primaryDisplay = screen.getPrimaryDisplay();
@@ -437,6 +429,15 @@ function initApp(){
 				const y = Math.floor(primaryDisplay.workArea.y + (primaryDisplay.workArea.height - height) / 2);
 				widget.setPosition(x, y);
 			}},
+			{ type: 'separator' },
+			{ 
+                label: 'Start at Login', 
+                type: 'checkbox',
+				checked: isLoginItemEnabled(),
+				click: (menuItem) => {
+					setLoginItemEnabled(menuItem.checked);
+				}
+            },
 			{ label: 'Exit', role:'quit'}
 		])
 		tray.setToolTip('System Monitor')
