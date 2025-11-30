@@ -18,3 +18,8 @@
 [30.11.25 09:46:54] info: Program: About to wait for parent PID 31740
 [30.11.25 09:46:54] info: Program: About to launch: 'C:\Users\dave\AppData\Local\libremon\app-1.1.7\libremon.exe': 
 [30.11.25 09:46:54] info: Program: Finished Squirrel Updater
+[30.11.25 10:14:44] info: Program: Starting Squirrel Updater: --processStartAndWait libremon.exe
+[30.11.25 10:14:44] info: Program: Want to launch 'C:\Users\dave\AppData\Local\libremon\app-1.1.8\libremon.exe'
+[30.11.25 10:14:44] info: Program: About to wait for parent PID 10248
+[30.11.25 10:14:44] info: Program: About to launch: 'C:\Users\dave\AppData\Local\libremon\app-1.1.8\libremon.exe': 
+[30.11.25 10:14:44] info: Program: Finished Squirrel Updater

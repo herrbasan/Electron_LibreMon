@@ -40,3 +40,12 @@
 1764492404061 | Nov 30, 2025, 09:46 AM | Squirrel startup: no action for cmd --squirrel-obsolete
 1764492414666 | Nov 30, 2025, 09:46 AM | Squirrel command: none
 1764492414705 | Nov 30, 2025, 09:46 AM | Squirrel startup: no action for cmd none
+1764494079678 | Nov 30, 2025, 10:14 AM | Squirrel command: --squirrel-updated
+1764494079716 | Nov 30, 2025, 10:14 AM | Creating shortcuts for: libremon.exe
+1764494079719 | Nov 30, 2025, 10:14 AM | Update.exe --createShortcut=libremon.exe
+1764494079841 | Nov 30, 2025, 10:14 AM | Update.exe --createShortcut=libremon.exe --ShortcutDir=Desktop
+1764494079965 | Nov 30, 2025, 10:14 AM | Install Done
+1764494081875 | Nov 30, 2025, 10:14 AM | Squirrel command: --squirrel-obsolete
+1764494081914 | Nov 30, 2025, 10:14 AM | Squirrel Obsolete
+1764494084614 | Nov 30, 2025, 10:14 AM | Squirrel command: none
+1764494084657 | Nov 30, 2025, 10:14 AM | Squirrel startup: no action for cmd none

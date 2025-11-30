@@ -93,3 +93,17 @@
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
    at Squirrel.UpdateManager.ApplyReleasesImpl.<>c__DisplayClass14_1.<<cleanDeadVersions>b__7>d.MoveNext()
 [30.11.25 09:46:54] info: Program: Finished Squirrel Updater
+[30.11.25 10:14:36] info: Program: Starting Squirrel Updater: --update C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 10:14:36] info: Program: Starting update, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 10:14:36] info: Program: About to update to: C:\Users\dave\AppData\Local\libremon
+[30.11.25 10:14:36] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 10:14:36] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 10:14:36] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\dave\AppData\Local\libremon\app-1.1.8
+[30.11.25 10:14:37] info: LogHost: Rigging execution stub for libremon_ExecutionStub.exe to C:\Users\dave\AppData\Local\libremon\libremon.exe
+[30.11.25 10:14:39] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\dave\AppData\Local\libremon\app-1.1.8\libremon.exe]
+[30.11.25 10:14:41] info: ApplyReleasesImpl: Starting fixPinnedExecutables
+[30.11.25 10:14:41] info: ApplyReleasesImpl: Fixing up tray icons
+[30.11.25 10:14:41] info: ApplyReleasesImpl: cleanDeadVersions: checking for version 1.1.8
+[30.11.25 10:14:41] info: ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.1.7
+[30.11.25 10:14:41] info: ApplyReleasesImpl: cleanDeadVersions: exclude new version folder app-1.1.8
+[30.11.25 10:14:44] info: Program: Finished Squirrel Updater

@@ -68,3 +68,17 @@
 [30.11.25 09:46:42] info: ApplyReleasesImpl: Creating shortcut for libremon.exe => D:\Home\Desktop\libremon.lnk
 [30.11.25 09:46:42] info: ApplyReleasesImpl: About to save shortcut: D:\Home\Desktop\libremon.lnk (target C:\Users\dave\AppData\Local\libremon\libremon.exe, workingDir C:\Users\dave\AppData\Local\libremon\app-1.1.7, args , toastActivatorCSLID 29e964ef-f268-5bb8-b560-e84ce600553b)
 [30.11.25 09:46:42] info: Program: Finished Squirrel Updater
+[30.11.25 10:14:39] info: Program: Starting Squirrel Updater: --createShortcut=libremon.exe
+[30.11.25 10:14:39] info: ApplyReleasesImpl: About to create shortcuts for libremon.exe, rootAppDir C:\Users\dave\AppData\Local\libremon
+[30.11.25 10:14:39] info: ApplyReleasesImpl: Creating shortcut for libremon.exe => C:\Users\dave\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\David Renelt\libremon.lnk
+[30.11.25 10:14:39] info: ApplyReleasesImpl: About to save shortcut: C:\Users\dave\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\David Renelt\libremon.lnk (target C:\Users\dave\AppData\Local\libremon\libremon.exe, workingDir C:\Users\dave\AppData\Local\libremon\app-1.1.8, args , toastActivatorCSLID 29e964ef-f268-5bb8-b560-e84ce600553b)
+[30.11.25 10:14:39] info: ApplyReleasesImpl: Creating shortcut for libremon.exe => D:\Home\Desktop\libremon.lnk
+[30.11.25 10:14:39] info: ApplyReleasesImpl: About to save shortcut: D:\Home\Desktop\libremon.lnk (target C:\Users\dave\AppData\Local\libremon\libremon.exe, workingDir C:\Users\dave\AppData\Local\libremon\app-1.1.8, args , toastActivatorCSLID 29e964ef-f268-5bb8-b560-e84ce600553b)
+[30.11.25 10:14:39] info: Program: Finished Squirrel Updater
+[30.11.25 10:14:39] info: Program: Starting Squirrel Updater: --createShortcut=libremon.exe --ShortcutDir=Desktop
+[30.11.25 10:14:39] info: ApplyReleasesImpl: About to create shortcuts for libremon.exe, rootAppDir C:\Users\dave\AppData\Local\libremon
+[30.11.25 10:14:39] info: ApplyReleasesImpl: Creating shortcut for libremon.exe => C:\Users\dave\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\David Renelt\libremon.lnk
+[30.11.25 10:14:39] info: ApplyReleasesImpl: About to save shortcut: C:\Users\dave\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\David Renelt\libremon.lnk (target C:\Users\dave\AppData\Local\libremon\libremon.exe, workingDir C:\Users\dave\AppData\Local\libremon\app-1.1.8, args , toastActivatorCSLID 29e964ef-f268-5bb8-b560-e84ce600553b)
+[30.11.25 10:14:39] info: ApplyReleasesImpl: Creating shortcut for libremon.exe => D:\Home\Desktop\libremon.lnk
+[30.11.25 10:14:39] info: ApplyReleasesImpl: About to save shortcut: D:\Home\Desktop\libremon.lnk (target C:\Users\dave\AppData\Local\libremon\libremon.exe, workingDir C:\Users\dave\AppData\Local\libremon\app-1.1.8, args , toastActivatorCSLID 29e964ef-f268-5bb8-b560-e84ce600553b)
+[30.11.25 10:14:39] info: Program: Finished Squirrel Updater
