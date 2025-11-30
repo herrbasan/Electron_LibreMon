@@ -16,10 +16,20 @@ function squirrel_startup() {
             let target = path.basename(app_exe);
             let acted = false;
 
-            if (cmd === '--squirrel-install' || cmd === '--squirrel-updated') {
+            if (cmd === '--squirrel-install') {
                 await write_log('Creating shortcuts for: ' + target);
                 await createShortcuts(target);
                 await write_log('Install Done');
+                // Launch app after install completes
+                await write_log('Launching app after install');
+                await launchApp(target);
+                ret = true;
+                acted = true;
+            }
+            if (cmd === '--squirrel-updated') {
+                await write_log('Creating shortcuts for: ' + target);
+                await createShortcuts(target);
+                await write_log('Update Done');
                 ret = true;
                 acted = true;
             }
@@ -77,6 +87,16 @@ function runCommand(args) {
     return new Promise((resolve, reject) => {
         var updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
         spawn(updateExe, args, { detached: true }).on('close', resolve);
+    })
+}
+
+function launchApp(target) {
+    return new Promise((resolve, reject) => {
+        var updateExe = path.resolve(path.dirname(process.execPath), '..', 'Update.exe');
+        // Use --processStart to launch the app properly via Update.exe
+        spawn(updateExe, ['--processStart', target], { detached: true, stdio: 'ignore' }).unref();
+        // Don't wait for the app to close, resolve immediately
+        resolve();
     })
 }
 
