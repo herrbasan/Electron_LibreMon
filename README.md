@@ -10,6 +10,12 @@ Desktop hardware monitoring widget for Windows using LibreHardwareMonitor.
 - **Sensor Group Configuration**: Enable/disable hardware categories (CPU, GPU, Memory, etc.)
 - **System Tray Integration**: Quick access to widget and settings
 - **Centralized Reporting**: Optional data transmission to backend server for multi-machine monitoring
+​
+## Dark / Light Mode
+![Dark / Light Mode](assets\libremon_dark_light.png)
+
+## Settings
+![Settings Window](assets\libremon_settings.png)
 
 ## Requirements
 
