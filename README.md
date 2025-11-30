@@ -70,3 +70,7 @@ Settings are stored in `config.json` and editable via the settings UI:
 VS Code must run as Administrator for hardware sensor access.
 
 The N-API addon is built from the `LibreHardwareMonitor_NativeNodeIntegration` submodule and includes a self-contained .NET 9.0 runtime.
+
+## Acknowledgements
+
+- [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) — The excellent open-source hardware monitoring library that powers this application
