@@ -1,0 +1,95 @@
+﻿[30.11.25 09:23:05] info: Program: Starting Squirrel Updater: --update C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:23:05] info: Program: Starting update, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:23:05] info: Program: About to update to: C:\Users\dave\AppData\Local\libremon
+[30.11.25 09:23:05] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:23:05] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:23:05] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\dave\AppData\Local\libremon\app-1.1.4
+[30.11.25 09:23:07] info: LogHost: Rigging execution stub for libremon_ExecutionStub.exe to C:\Users\dave\AppData\Local\libremon\libremon.exe
+[30.11.25 09:23:08] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\dave\AppData\Local\libremon\app-1.1.4\libremon.exe]
+[30.11.25 09:23:09] info: ApplyReleasesImpl: Starting fixPinnedExecutables
+[30.11.25 09:23:09] info: ApplyReleasesImpl: Fixing up tray icons
+[30.11.25 09:23:09] info: ApplyReleasesImpl: cleanDeadVersions: checking for version 1.1.4
+[30.11.25 09:23:09] info: ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.1.2
+[30.11.25 09:23:09] info: ApplyReleasesImpl: cleanDeadVersions: exclude new version folder app-1.1.4
+[30.11.25 09:23:09] info: Program: Finished Squirrel Updater
+[30.11.25 09:32:35] info: Program: Starting Squirrel Updater: --update C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:32:35] info: Program: Starting update, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:32:35] info: Program: About to update to: C:\Users\dave\AppData\Local\libremon
+[30.11.25 09:32:35] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:32:35] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:32:36] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\dave\AppData\Local\libremon\app-1.1.5
+[30.11.25 09:32:37] info: LogHost: Rigging execution stub for libremon_ExecutionStub.exe to C:\Users\dave\AppData\Local\libremon\libremon.exe
+[30.11.25 09:32:39] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\dave\AppData\Local\libremon\app-1.1.5\libremon.exe]
+[30.11.25 09:32:41] info: ApplyReleasesImpl: Starting fixPinnedExecutables
+[30.11.25 09:32:41] info: ApplyReleasesImpl: Fixing up tray icons
+[30.11.25 09:32:41] info: ApplyReleasesImpl: cleanDeadVersions: checking for version 1.1.5
+[30.11.25 09:32:41] info: ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.1.4
+[30.11.25 09:32:41] info: ApplyReleasesImpl: cleanDeadVersions: exclude new version folder app-1.1.5
+[30.11.25 09:32:51] error: ApplyReleasesImpl: Coudln't run Squirrel hook, continuing: C:\Users\dave\AppData\Local\libremon\app-1.1.2\libremon.exe: System.OperationCanceledException: The operation was canceled.
+   at System.Threading.CancellationToken.ThrowOperationCanceledException()
+   at Squirrel.Utility.<>c__DisplayClass11_0.<InvokeProcessAsync>b__0()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<InvokeProcessAsync>d__11.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.UpdateManager.ApplyReleasesImpl.<>c__DisplayClass14_1.<<cleanDeadVersions>b__7>d.MoveNext()
+[30.11.25 09:32:52] info: Program: Finished Squirrel Updater
+[30.11.25 09:39:33] info: Program: Starting Squirrel Updater: --update C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:39:33] info: Program: Starting update, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:39:33] info: Program: About to update to: C:\Users\dave\AppData\Local\libremon
+[30.11.25 09:39:33] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:39:33] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:39:33] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\dave\AppData\Local\libremon\app-1.1.6
+[30.11.25 09:39:34] info: LogHost: Rigging execution stub for libremon_ExecutionStub.exe to C:\Users\dave\AppData\Local\libremon\libremon.exe
+[30.11.25 09:39:36] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\dave\AppData\Local\libremon\app-1.1.6\libremon.exe]
+[30.11.25 09:39:38] info: ApplyReleasesImpl: Starting fixPinnedExecutables
+[30.11.25 09:39:38] info: ApplyReleasesImpl: Fixing up tray icons
+[30.11.25 09:39:38] info: ApplyReleasesImpl: cleanDeadVersions: checking for version 1.1.6
+[30.11.25 09:39:38] info: ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.1.5
+[30.11.25 09:39:38] info: ApplyReleasesImpl: cleanDeadVersions: exclude new version folder app-1.1.6
+[30.11.25 09:39:48] error: ApplyReleasesImpl: Coudln't run Squirrel hook, continuing: C:\Users\dave\AppData\Local\libremon\app-1.1.4\libremon.exe: System.OperationCanceledException: The operation was canceled.
+   at System.Threading.CancellationToken.ThrowOperationCanceledException()
+   at Squirrel.Utility.<>c__DisplayClass11_0.<InvokeProcessAsync>b__0()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<InvokeProcessAsync>d__11.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.UpdateManager.ApplyReleasesImpl.<>c__DisplayClass14_1.<<cleanDeadVersions>b__7>d.MoveNext()
+[30.11.25 09:39:49] info: Program: Finished Squirrel Updater
+[30.11.25 09:46:38] info: Program: Starting Squirrel Updater: --update C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:46:38] info: Program: Starting update, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:46:38] info: Program: About to update to: C:\Users\dave\AppData\Local\libremon
+[30.11.25 09:46:38] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:46:38] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:46:38] info: ApplyReleasesImpl: Writing files to app directory: C:\Users\dave\AppData\Local\libremon\app-1.1.7
+[30.11.25 09:46:39] info: LogHost: Rigging execution stub for libremon_ExecutionStub.exe to C:\Users\dave\AppData\Local\libremon\libremon.exe
+[30.11.25 09:46:41] info: ApplyReleasesImpl: Squirrel Enabled Apps: [C:\Users\dave\AppData\Local\libremon\app-1.1.7\libremon.exe]
+[30.11.25 09:46:43] info: ApplyReleasesImpl: Starting fixPinnedExecutables
+[30.11.25 09:46:43] info: ApplyReleasesImpl: Fixing up tray icons
+[30.11.25 09:46:43] info: ApplyReleasesImpl: cleanDeadVersions: checking for version 1.1.7
+[30.11.25 09:46:43] info: ApplyReleasesImpl: cleanDeadVersions: exclude current version folder app-1.1.6
+[30.11.25 09:46:43] info: ApplyReleasesImpl: cleanDeadVersions: exclude new version folder app-1.1.7
+[30.11.25 09:46:53] error: ApplyReleasesImpl: Coudln't run Squirrel hook, continuing: C:\Users\dave\AppData\Local\libremon\app-1.1.5\libremon.exe: System.OperationCanceledException: The operation was canceled.
+   at System.Threading.CancellationToken.ThrowOperationCanceledException()
+   at Squirrel.Utility.<>c__DisplayClass11_0.<InvokeProcessAsync>b__0()
+   at System.Threading.Tasks.Task.Execute()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.Utility.<InvokeProcessAsync>d__11.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Squirrel.UpdateManager.ApplyReleasesImpl.<>c__DisplayClass14_1.<<cleanDeadVersions>b__7>d.MoveNext()
+[30.11.25 09:46:54] info: Program: Finished Squirrel Updater

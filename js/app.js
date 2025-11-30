@@ -182,8 +182,19 @@ async function init(cmd){
 }
 
 async function startup(){
-	// checkUpdate will call appStart() when appropriate
+	// Skip update check entirely during startup - Squirrel's update dance can cause
+	// old versions to briefly run and trigger false update prompts.
+	// Update check will happen after a delay once the app is fully initialized.
 	if(!isPackaged){ appStart(); return; }
+	
+	// Check if we're in a squirrel event (any argument starting with --squirrel)
+	const cmd = process.argv[1];
+	if(cmd && cmd.startsWith('--squirrel')){
+		// Let squirrel_startup handle it, don't run update check
+		appStart();
+		return;
+	}
+	
 	await checkUpdate();
 }
 

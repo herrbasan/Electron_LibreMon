@@ -1,0 +1,56 @@
+﻿[30.11.25 09:23:05] info: Program: Starting Squirrel Updater: --checkForUpdate C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:23:05] info: Program: Fetching update information, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:23:05] info: CheckForUpdateImpl: Generated new staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:23:05] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:23:05] warn: UpdateInfo: Couldn't get release notes for:libremon-1.1.4-full.nupkg: System.IO.FileNotFoundException: Could not find file 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.4-full.nupkg'.
+File name: 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.4-full.nupkg'
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at NuGet.ZipPackage.<>c__DisplayClass9_0.<.ctor>b__0()
+   at NuGet.ZipPackage.EnsureManifest()
+   at Squirrel.ReleaseEntry.GetReleaseNotes(String packageDirectory)
+   at Squirrel.UpdateInfo.<FetchReleaseNotes>b__19_0(ReleaseEntry x)
+[30.11.25 09:23:05] info: Program: Finished Squirrel Updater
+[30.11.25 09:32:35] info: Program: Starting Squirrel Updater: --checkForUpdate C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:32:35] info: Program: Fetching update information, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:32:35] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:32:35] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:32:35] warn: UpdateInfo: Couldn't get release notes for:libremon-1.1.5-full.nupkg: System.IO.FileNotFoundException: Could not find file 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.5-full.nupkg'.
+File name: 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.5-full.nupkg'
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at NuGet.ZipPackage.<>c__DisplayClass9_0.<.ctor>b__0()
+   at NuGet.ZipPackage.EnsureManifest()
+   at Squirrel.ReleaseEntry.GetReleaseNotes(String packageDirectory)
+   at Squirrel.UpdateInfo.<FetchReleaseNotes>b__19_0(ReleaseEntry x)
+[30.11.25 09:32:35] info: Program: Finished Squirrel Updater
+[30.11.25 09:39:33] info: Program: Starting Squirrel Updater: --checkForUpdate C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:39:33] info: Program: Fetching update information, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:39:33] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:39:33] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:39:33] warn: UpdateInfo: Couldn't get release notes for:libremon-1.1.6-full.nupkg: System.IO.FileNotFoundException: Could not find file 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.6-full.nupkg'.
+File name: 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.6-full.nupkg'
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at NuGet.ZipPackage.<>c__DisplayClass9_0.<.ctor>b__0()
+   at NuGet.ZipPackage.EnsureManifest()
+   at Squirrel.ReleaseEntry.GetReleaseNotes(String packageDirectory)
+   at Squirrel.UpdateInfo.<FetchReleaseNotes>b__19_0(ReleaseEntry x)
+[30.11.25 09:39:33] info: Program: Finished Squirrel Updater
+[30.11.25 09:46:37] info: Program: Starting Squirrel Updater: --checkForUpdate C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:46:37] info: Program: Fetching update information, downloading from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:46:38] info: CheckForUpdateImpl: Using existing staging user ID: a4227564-22a7-5e9a-b085-4b4ed6e2447f
+[30.11.25 09:46:38] info: CheckForUpdateImpl: Reading RELEASES file from C:\Users\dave\AppData\Local\Temp\libremon_update
+[30.11.25 09:46:38] warn: UpdateInfo: Couldn't get release notes for:libremon-1.1.7-full.nupkg: System.IO.FileNotFoundException: Could not find file 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.7-full.nupkg'.
+File name: 'C:\Users\dave\AppData\Local\libremon\packages\libremon-1.1.7-full.nupkg'
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share)
+   at NuGet.ZipPackage.<>c__DisplayClass9_0.<.ctor>b__0()
+   at NuGet.ZipPackage.EnsureManifest()
+   at Squirrel.ReleaseEntry.GetReleaseNotes(String packageDirectory)
+   at Squirrel.UpdateInfo.<FetchReleaseNotes>b__19_0(ReleaseEntry x)
+[30.11.25 09:46:38] info: Program: Finished Squirrel Updater
