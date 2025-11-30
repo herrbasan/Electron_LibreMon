@@ -38,6 +38,7 @@ function squirrel_startup() {
             if (cmd === '--squirrel-firstrun') {
                 await write_log('Squirrel Firstrun');
                 await createShortcuts(target);
+                ret = true;
                 acted = true;
             }
             if(!acted){
