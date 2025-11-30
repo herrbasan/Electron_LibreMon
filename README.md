@@ -13,13 +13,14 @@ Desktop hardware monitoring widget for Windows using LibreHardwareMonitor.
 
 ## Screenshots
 
+*Dark / Light Mode*
+
 <img src="./assets/libremon_dark_light.png" width="400">
 
-*Dark / Light Mode*
+*Settings Window*
 
 <img src="./assets/libremon_settings.png" width="400">
 
-*Settings Window*
 
 ## Requirements
 
