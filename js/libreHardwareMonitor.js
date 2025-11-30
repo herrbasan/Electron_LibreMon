@@ -91,7 +91,12 @@ async function ensureInitialized() {
 
 		// Initialize N-API addon with ONLY the enabled sensors
 		// This prevents hardware polling for disabled groups (critical for HDD wear)
-		await nativeMonitor.init(sensorGroups);
+		// Also pass performance optimization options
+		await nativeMonitor.init({
+			...sensorGroups,
+			dimmDetection: config.dimm_detection === true,        // false by default (99% faster memory init)
+			physicalNetworkOnly: config.physical_network_only !== false  // true by default (91% fewer adapters)
+		});
 		initialized = true;
 		return true;
 	} catch(err) {

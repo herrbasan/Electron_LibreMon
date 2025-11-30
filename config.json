@@ -14,6 +14,8 @@
         "battery": false,
         "fanController": false
     },
+    "dimm_detection": false,
+    "physical_network_only": true,
     "filter_dimms": true,
     "filter_virtual_nics": true,
     "widget_bounds": {

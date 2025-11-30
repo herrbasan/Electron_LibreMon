@@ -77,6 +77,7 @@ async function appStart(e, data){
 
 function createGeneralSettingsUI(){
 	createSensorGroupsUI();
+	createPerformanceSettingsUI();
 	createIngestServerUI();
 }
 
@@ -253,6 +254,114 @@ async function applySensorGroupChanges(){
 		statusDiv.innerText = '✗ Error: ' + err.message;
 		
 		applyBtn.innerText = 'Apply Changes';
+		applyBtn.disabled = false;
+	}
+}
+
+function createPerformanceSettingsUI(){
+	const settingsContainer = document.querySelector('.hm_general_settings');
+	
+	// Get current performance settings from config (with defaults)
+	const dimmDetection = g.config.dimm_detection === true; // false by default
+	const physicalNetworkOnly = g.config.physical_network_only !== false; // true by default
+	
+	const html = /*html*/`
+		<div class="performance-settings-card">
+			<div class="hm_head">Performance Settings</div>
+			<p style="font-size: 13px; opacity: 0.7; margin: 8px 0 12px 0;">
+				Optimize startup time and polling performance. Changes require app restart.
+			</p>
+			
+			<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;">
+				<div class="nui-checkbox">
+					<input type="checkbox" id="perf-dimm" ${dimmDetection ? 'checked' : ''}>
+					<label for="perf-dimm">DIMM Detection <span style="opacity: 0.6; font-size: 12px;">(slower memory init)</span></label>
+				</div>
+				<div class="nui-checkbox">
+					<input type="checkbox" id="perf-physical-nic" ${physicalNetworkOnly ? 'checked' : ''}>
+					<label for="perf-physical-nic">Physical Network Only <span style="opacity: 0.6; font-size: 12px;">(skip virtual adapters)</span></label>
+				</div>
+			</div>
+			
+			<button id="perf-apply-btn" class="nui_button primary" style="width: 100%; padding: 10px; margin-top: 8px;" disabled>
+				Save Changes
+			</button>
+			
+			<div id="perf-status" style="margin-top: 12px; padding: 8px 12px; border-radius: 4px; font-size: 13px; display: none;"></div>
+		</div>
+		<div style="border-bottom: solid thin var(--color-text-shade0); margin: 16px 0;"></div>
+	`;
+	
+	settingsContainer.insertAdjacentHTML('beforeend', html);
+	
+	// Store original state for change detection
+	g.originalPerfSettings = { dimmDetection, physicalNetworkOnly };
+	
+	// Add change listeners
+	document.getElementById('perf-dimm').addEventListener('change', onPerfSettingChange);
+	document.getElementById('perf-physical-nic').addEventListener('change', onPerfSettingChange);
+	
+	// Add apply button listener
+	document.getElementById('perf-apply-btn').addEventListener('click', applyPerfSettings);
+}
+
+function onPerfSettingChange(){
+	const applyBtn = document.getElementById('perf-apply-btn');
+	
+	const current = {
+		dimmDetection: document.getElementById('perf-dimm').checked,
+		physicalNetworkOnly: document.getElementById('perf-physical-nic').checked
+	};
+	
+	const changed = JSON.stringify(current) !== JSON.stringify(g.originalPerfSettings);
+	applyBtn.disabled = !changed;
+}
+
+async function applyPerfSettings(){
+	const applyBtn = document.getElementById('perf-apply-btn');
+	const statusDiv = document.getElementById('perf-status');
+	
+	const dimmDetection = document.getElementById('perf-dimm').checked;
+	const physicalNetworkOnly = document.getElementById('perf-physical-nic').checked;
+	
+	// Show loading state
+	applyBtn.disabled = true;
+	applyBtn.innerText = 'Applying...';
+	statusDiv.style.display = 'block';
+	statusDiv.style.background = 'rgba(255, 152, 0, 0.2)';
+	statusDiv.style.border = '1px solid rgba(255, 152, 0, 0.5)';
+	statusDiv.style.color = '#FF9800';
+	statusDiv.innerText = 'Saving settings...';
+	
+	try {
+		// Update config via IPC
+		const result = await ipcRenderer.invoke('update_config', {
+			dimm_detection: dimmDetection,
+			physical_network_only: physicalNetworkOnly
+		});
+		
+		if(result.success) {
+			// Update stored original state
+			g.originalPerfSettings = { dimmDetection, physicalNetworkOnly };
+			g.config.dimm_detection = dimmDetection;
+			g.config.physical_network_only = physicalNetworkOnly;
+			
+			// Show success message
+			statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
+			statusDiv.style.border = '1px solid rgba(76, 175, 80, 0.5)';
+			statusDiv.style.color = '#4CAF50';
+			statusDiv.innerText = '✓ Settings saved! Restart app to apply changes.';
+			
+			applyBtn.innerText = 'Saved';
+		} else {
+			throw new Error(result.error || 'Unknown error');
+		}
+	} catch(err) {
+		statusDiv.style.background = 'rgba(244, 67, 54, 0.2)';
+		statusDiv.style.border = '1px solid rgba(244, 67, 54, 0.5)';
+		statusDiv.style.color = '#F44336';
+		statusDiv.innerText = `Error: ${err.message}`;
+		applyBtn.innerText = 'Apply & Restart';
 		applyBtn.disabled = false;
 	}
 }
