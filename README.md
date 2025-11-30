@@ -12,10 +12,10 @@ Desktop hardware monitoring widget for Windows using LibreHardwareMonitor.
 - **Centralized Reporting**: Optional data transmission to backend server for multi-machine monitoring
 ​
 ## Dark / Light Mode
-![Dark / Light Mode](assets\libremon_dark_light.png)
+![Dark / Light Mode](./assets\libremon_dark_light.png)
 
 ## Settings
-![Settings Window](assets\libremon_settings.png)
+![Settings Window](./assets\libremon_settings.png)
 
 ## Requirements
 
