@@ -227,8 +227,8 @@ async function applySensorGroupChanges(){
 				time:Date.now(),
 				change:g.change_timestamp, 
 			}
-			tools.sendToId(1, 'stats', data);
-			tools.sendToId(1, 'reset_widget');
+			tools.broadcast('stats', data);
+			tools.broadcast('reset_widget');
 			
 			// Show success message
 			statusDiv.style.background = 'rgba(76, 175, 80, 0.2)';
@@ -493,7 +493,7 @@ async function loop(){
 			time:Date.now(),
 			change:g.change_timestamp, 
 		}
-		tools.sendToId(1, 'stats', data); // Send to widget
+		tools.broadcast('stats', data); // Send to widget
 		sendToServer(data); // Fire and forget to backend
 		
 		// Calculate next poll interval: poll_rate - poll_time, minimum 500ms
