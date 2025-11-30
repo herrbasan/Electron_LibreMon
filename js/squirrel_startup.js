@@ -30,8 +30,8 @@ function squirrel_startup() {
                 ret = true;
                 acted = true;
             }
-            if (cmd === '--squirrel-obsoleted') {
-                await write_log('Squirrel Obsoleted');
+            if (cmd === '--squirrel-obsolete' || cmd === '--squirrel-obsoleted') {
+                await write_log('Squirrel Obsolete');
                 ret = true;
                 acted = true;
             }
