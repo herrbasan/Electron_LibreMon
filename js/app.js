@@ -35,6 +35,9 @@ let userConfigMain;
 let stageRestartTimeout = null;
 let stageCreatedAt = null;
 let systemInfoCache = null; // Cache system info, only poll once per app start
+let widgetLocked = false; // Lock mode: widget stays in background like desktop
+let widgetHUD = false; // HUD mode: click-through, stays on top
+let trayIcon = null; // System tray icon reference
 
 function getLoginItemOptions(){
 	let loginPath = process.execPath;
@@ -177,6 +180,11 @@ async function init(cmd){
 			return { success: false, error: err.message };
 		}
 	})
+	
+	// Unregister all shortcuts when app quits
+	app.on('will-quit', () => {
+		globalShortcut.unregisterAll();
+	});
 	
 	app.whenReady().then(startup).catch((err) => { throw err});
 }
@@ -426,49 +434,86 @@ function initApp(){
 		Menu.setApplicationMenu( null );
 
 		let icon_path = path.join(base_path, 'sysmon_icon.ico');
-		let tray = new Tray(icon_path);
-		const contextMenu = Menu.buildFromTemplate([
-			{ label: 'Show Settings', click: (e) => { stage.show() }},
-			{ label: 'Show Widget', click: (e) => { widget.show() }},
-			{ type: 'separator' },
-			{ label: 'Check for Updates', click: (e) => { manualUpdateCheck() }},
-			{ label: 'Reset Widget Position', click: (e) => { 
-				if (!widget) return;
-				const primaryDisplay = screen.getPrimaryDisplay();
-				const { width, height } = widget.getBounds();
-				const x = Math.floor(primaryDisplay.workArea.x + (primaryDisplay.workArea.width - width) / 2);
-				const y = Math.floor(primaryDisplay.workArea.y + (primaryDisplay.workArea.height - height) / 2);
-				widget.setPosition(x, y);
-			}},
-			{ 
-				label: 'Dark Mode', 
-				type: 'checkbox',
-				checked: userConfigMain?.get()?.dark_mode !== false,
-				click: (menuItem) => {
-					const config = userConfigMain.get();
-					config.dark_mode = menuItem.checked;
-					userConfigMain.set(config);
-					if (widget && widget.webContents) {
-						widget.webContents.send('toggle_dark_mode', menuItem.checked);
-					}
-				}
-			},
-			{ type: 'separator' },
-			{ 
-                label: 'Start at Login', 
-                type: 'checkbox',
-				checked: isLoginItemEnabled(),
-				click: (menuItem) => {
-					setLoginItemEnabled(menuItem.checked);
-				}
-            },
-			{ label: 'Exit', role:'quit'}
-		])
-		tray.setToolTip('System Monitor')
-		tray.setContextMenu(contextMenu)
-		tray.on('click', widgetToggle);
+		trayIcon = new Tray(icon_path);
+		updateTrayMenu();
+		trayIcon.setToolTip('System Monitor');
+		trayIcon.on('click', widgetToggle);
+		
+		// Register global shortcuts for widget modes
+		globalShortcut.register('Ctrl+Alt+F9', () => {
+			// Normal mode - disable both lock and HUD
+			if(widgetLocked) toggleWidgetLock(false);
+			if(widgetHUD) toggleWidgetHUD(false);
+			fb('Widget set to normal mode (Ctrl+Alt+F9)');
+		});
+		globalShortcut.register('Ctrl+Alt+F10', () => {
+			// Lock mode
+			toggleWidgetLock(!widgetLocked);
+			fb('Widget lock toggled (Ctrl+Alt+F10)');
+		});
+		globalShortcut.register('Ctrl+Alt+F11', () => {
+			// HUD mode
+			toggleWidgetHUD(!widgetHUD);
+			fb('Widget HUD toggled (Ctrl+Alt+F11)');
+		});
+		
 		resolve();
 	})
+}
+
+function updateTrayMenu(){
+	if(!trayIcon) return;
+	const contextMenu = Menu.buildFromTemplate([
+		{ label: 'Show Settings', click: (e) => { stage.show() }},
+		{ label: 'Show Widget', click: (e) => { widget.show() }},
+		{ type: 'separator' },
+		{ 
+			label: 'Lock to Desktop', 
+			type: 'checkbox',
+			checked: widgetLocked,
+			click: (menuItem) => { toggleWidgetLock(menuItem.checked); }
+		},
+		{ 
+			label: 'HUD Mode (Click-through)', 
+			type: 'checkbox',
+			checked: widgetHUD,
+			click: (menuItem) => { toggleWidgetHUD(menuItem.checked); }
+		},
+		{ type: 'separator' },
+		{ label: 'Check for Updates', click: (e) => { manualUpdateCheck() }},
+		{ label: 'Reset Widget Position', click: (e) => { 
+			if (!widget) return;
+			const primaryDisplay = screen.getPrimaryDisplay();
+			const { width, height } = widget.getBounds();
+			const x = Math.floor(primaryDisplay.workArea.x + (primaryDisplay.workArea.width - width) / 2);
+			const y = Math.floor(primaryDisplay.workArea.y + (primaryDisplay.workArea.height - height) / 2);
+			widget.setPosition(x, y);
+		}},
+		{ 
+			label: 'Dark Mode', 
+			type: 'checkbox',
+			checked: userConfigMain?.get()?.dark_mode !== false,
+			click: (menuItem) => {
+				const config = userConfigMain.get();
+				config.dark_mode = menuItem.checked;
+				userConfigMain.set(config);
+				if (widget && widget.webContents) {
+					widget.webContents.send('toggle_dark_mode', menuItem.checked);
+				}
+			}
+		},
+		{ type: 'separator' },
+		{ 
+			label: 'Start at Login', 
+			type: 'checkbox',
+			checked: isLoginItemEnabled(),
+			click: (menuItem) => {
+				setLoginItemEnabled(menuItem.checked);
+			}
+		},
+		{ label: 'Exit', role:'quit'}
+	]);
+	trayIcon.setContextMenu(contextMenu);
 }
 
 function initWidget(){
@@ -511,6 +556,75 @@ function widgetToggle(){
 	if(widget.isVisible()){ widget.hide(); }
 	else { widget.show();}
 }
+
+function toggleWidgetLock(locked){
+	if(!widget) return;
+	widgetLocked = locked;
+	
+	if(locked){
+		// Disable HUD mode if it was on
+		if(widgetHUD){
+			widgetHUD = false;
+			widget.setIgnoreMouseEvents(false);
+			widget.setAlwaysOnTop(false);
+			if(widget.webContents){
+				widget.webContents.send('widget_hud_state', false);
+			}
+		}
+		// Lock mode: send to bottom, not focusable, not in taskbar
+		widget.setAlwaysOnTop(false);
+		widget.setFocusable(false);
+		widget.setSkipTaskbar(true);
+		widget.blur(); // Remove focus immediately
+		fb('Widget locked to desktop');
+	} else {
+		// Unlock: restore normal behavior
+		widget.setFocusable(true);
+		fb('Widget unlocked');
+	}
+	
+	// Notify widget renderer about lock state
+	if(widget.webContents){
+		widget.webContents.send('widget_lock_state', locked);
+	}
+	
+	// Update tray menu to reflect state
+	updateTrayMenu();
+}
+
+function toggleWidgetHUD(enabled){
+	if(!widget) return;
+	widgetHUD = enabled;
+	
+	if(enabled){
+		// Disable lock mode if it was on
+		if(widgetLocked){
+			widgetLocked = false;
+			widget.setFocusable(true);
+			if(widget.webContents){
+				widget.webContents.send('widget_lock_state', false);
+			}
+		}
+		// HUD mode: click-through, always on top
+		widget.setAlwaysOnTop(true, 'screen-saver');
+		widget.setIgnoreMouseEvents(true, { forward: true });
+		fb('Widget HUD mode enabled');
+	} else {
+		// Disable HUD mode
+		widget.setAlwaysOnTop(false);
+		widget.setIgnoreMouseEvents(false);
+		fb('Widget HUD mode disabled');
+	}
+	
+	// Notify widget renderer about HUD state
+	if(widget.webContents){
+		widget.webContents.send('widget_hud_state', enabled);
+	}
+	
+	// Update tray menu to reflect state
+	updateTrayMenu();
+}
+
 function fb(o, context='main'){ 
     console.log(context + ' : ', o);
 	if(widget?.webContents){

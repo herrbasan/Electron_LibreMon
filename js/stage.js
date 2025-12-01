@@ -390,8 +390,7 @@ function createIngestServerUI(){
 				<label for="ingest-url" style="display: block; font-size: 13px; margin-bottom: 4px; opacity: 0.9;">Server URL</label>
 				<input type="text" id="ingest-url" class="nui_input" value="${ingestServer}" 
 					placeholder="http://192.168.1.100:4440/computer_stats" 
-					style="width: 100%; padding: 8px; background: var(--color-bg-shade1); border: 1px solid var(--color-text-shade0); border-radius: 4px; color: var(--color-text);"
-					${!enableIngest ? 'disabled' : ''}>
+					style="width: 100%; padding: 8px; background: var(--color-bg-shade1); border: 1px solid var(--color-text-shade0); border-radius: 4px; color: var(--color-text);">
 				<div id="ingest-url-error" style="font-size: 12px; color: #F44336; margin-top: 4px; display: none;"></div>
 			</div>
 			
@@ -416,8 +415,7 @@ function createIngestServerUI(){
 	const urlInput = document.getElementById('ingest-url');
 	const saveBtn = document.getElementById('ingest-save-btn');
 	
-	enableCheckbox.addEventListener('change', (e) => {
-		urlInput.disabled = !e.target.checked;
+	enableCheckbox.addEventListener('change', () => {
 		onIngestSettingsChange();
 	});
 	

@@ -172,3 +172,17 @@ body {
 .dark .empty-state .open-settings-btn {
     background: rgba(76, 175, 80, 0.8);
 }
+
+/* Lock mode - widget is part of desktop */
+body.locked .sysmon,
+body.locked .empty-state {
+    opacity: 0.85;
+}
+
+/* Hide resize handles and drag overlay in lock/HUD mode */
+body.locked .resize-handle,
+body.locked .drag-overlay,
+body.hud-mode .resize-handle,
+body.hud-mode .drag-overlay {
+    display: none;
+}

@@ -64,6 +64,14 @@ async function init(){
 		// Update graph colors for new mode
 		if (window.updateGraphColors) window.updateGraphColors();
 	});
+	ipcRenderer.on('widget_lock_state', (e, locked) => {
+		document.body.classList.toggle('locked', locked);
+		console.log('Widget lock state:', locked);
+	});
+	ipcRenderer.on('widget_hud_state', (e, enabled) => {
+		document.body.classList.toggle('hud-mode', enabled);
+		console.log('Widget HUD state:', enabled);
+	});
 	win.hook_event('focus', winEvents);
 	win.hook_event('blur', winEvents);
 	win.hook_event('move', winEvents);
