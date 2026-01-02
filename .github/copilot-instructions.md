@@ -177,3 +177,50 @@ The app uses Squirrel.Windows for installation and updates. Key learnings:
 4. **Handle both obsolete spellings** - Squirrel sends `--squirrel-obsolete` (without 'd'), but some docs show `--squirrel-obsoleted`. Handle both.
 
 5. **Old version cleanup** - Squirrel automatically removes old app versions during the update dance, but only if the old version properly quits when receiving `--squirrel-obsolete`
+
+## PawnIO Driver
+
+PawnIO is a scriptable kernel driver required by LibreHardwareMonitor for accessing many hardware sensors (CPU temps, voltages, fan speeds, embedded controller data, etc.).
+
+### Why PawnIO is Needed
+
+LibreHardwareMonitor moved from their own kernel driver to PawnIO in recent versions. Without PawnIO:
+- Many CPU temperature readings won't work
+- Voltage sensors are unavailable
+- Fan speed readings may be missing
+- Embedded controller access is disabled
+
+### Bundled Installer
+
+The PawnIO installer (`PawnIO_setup.exe`) is bundled in the `bin/` folder and automatically installed during:
+- **First installation** (`--squirrel-install`)
+- **Updates** (`--squirrel-updated`)
+
+The installer runs silently with the `-install` flag.
+
+### Setup
+
+1. Download PawnIO from https://pawnio.eu/ (Official signed edition)
+2. Place `PawnIO_setup.exe` in the `bin/` folder
+3. The installer will be packaged with the app and run during installation
+
+### Technical Details
+
+```javascript
+// Check PawnIO status programmatically
+const pawnio = require('./js/electron_helper/pawnio.js');
+const status = pawnio.getStatus();
+// Returns: { ok: boolean, installed: boolean, version: string|null, needsUpdate: boolean }
+
+// Manual install (normally done by Squirrel)
+const result = await pawnio.install(resourcesPath, logFunction);
+// Returns: { success: boolean, message: string }
+```
+
+**Registry Locations Checked:**
+- `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO` (64-bit)
+- `HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO` (32-bit)
+
+**Minimum Version:** 2.0.0.0
+
+**Download:** https://pawnio.eu/ (Official signed edition recommended)

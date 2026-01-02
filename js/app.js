@@ -4,6 +4,7 @@ const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('el
 const helper = require('./electron_helper/helper_new.js');
 const squirrel_startup = require('./squirrel_startup.js');
 const update = require('./electron_helper/update.js');
+const pawnio = require('./electron_helper/pawnio.js');
 const si = require('systeminformation');
 
 const {spawn, execSync} = require("child_process");
@@ -219,6 +220,16 @@ async function appStart(){
 	}
 	if(desiredAutoStart !== isLoginItemEnabled()){
 		setLoginItemEnabled(desiredAutoStart);
+	}
+
+	// Log PawnIO status (installed during Squirrel install/update events)
+	const pawnioStatus = pawnio.getStatus();
+	if (pawnioStatus.ok) {
+		fb(`PawnIO v${pawnioStatus.version} detected`);
+	} else if (pawnioStatus.installed) {
+		fb(`PawnIO v${pawnioStatus.version} outdated (need ${pawnio.MIN_VERSION}+) - some sensors may not work`);
+	} else {
+		fb('PawnIO not installed - some sensors may not work');
 	}
 
 	await initApp();

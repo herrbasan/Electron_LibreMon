@@ -2,6 +2,7 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const app = require('electron').app;
 const fs = require('fs').promises;
+const pawnio = require('./electron_helper/pawnio.js');
 
 function squirrel_startup() {
     return new Promise(async (resolve, reject) => {
@@ -12,6 +13,7 @@ function squirrel_startup() {
             let app_exe = process.execPath;
             app_exe = path.resolve(path.dirname(app_exe), '..', path.basename(app_exe));
             let app_path = app.getAppPath();
+            let resources_path = path.dirname(app_path);
 
             let target = path.basename(app_exe);
             let acted = false;
@@ -19,6 +21,10 @@ function squirrel_startup() {
             if (cmd === '--squirrel-install') {
                 await write_log('Creating shortcuts for: ' + target);
                 await createShortcuts(target);
+                // Install PawnIO driver
+                await write_log('Installing PawnIO driver...');
+                const pawnioResult = await pawnio.install(resources_path, write_log);
+                await write_log('PawnIO result: ' + pawnioResult.message);
                 await write_log('Install Done');
                 // Launch app after install completes
                 await write_log('Launching app after install');
@@ -29,6 +35,10 @@ function squirrel_startup() {
             if (cmd === '--squirrel-updated') {
                 await write_log('Creating shortcuts for: ' + target);
                 await createShortcuts(target);
+                // Update PawnIO driver if needed
+                await write_log('Checking PawnIO driver...');
+                const pawnioResult = await pawnio.install(resources_path, write_log);
+                await write_log('PawnIO result: ' + pawnioResult.message);
                 await write_log('Update Done');
                 ret = true;
                 acted = true;
