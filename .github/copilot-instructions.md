@@ -25,6 +25,24 @@ Electron-based desktop hardware monitoring widget for Windows. Displays real-tim
 ### Submodule
 - `LibreHardwareMonitor_NativeNodeIntegration/`: N-API addon source with bundled .NET 9.0 runtime
 
+## Native Addon Build Process
+
+When the submodule is updated, rebuild the native addon:
+
+```bash
+# Update submodule to latest
+git submodule update --remote --merge LibreHardwareMonitor_NativeNodeIntegration
+
+# Build and copy the native addon (single command does both)
+node scripts/build-native.js
+```
+
+The `build-native.js` script:
+1. Runs `npm run rebuild` in `LibreHardwareMonitor_NativeNodeIntegration/NativeLibremon_NAPI`
+2. Copies artifacts from `dist/NativeLibremon_NAPI` to `js/libre_hardware_addon`
+
+You can also run via npm: `npm run build-addon`
+
 ## Coding Style
 
 ### Performance-First Philosophy
