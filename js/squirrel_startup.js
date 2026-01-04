@@ -13,7 +13,20 @@ function squirrel_startup() {
             let app_exe = process.execPath;
             app_exe = path.resolve(path.dirname(app_exe), '..', path.basename(app_exe));
             let app_path = app.getAppPath();
-            let resources_path = path.dirname(app_path);
+            let resources_path = (process.resourcesPath && typeof process.resourcesPath === 'string')
+                ? process.resourcesPath
+                : path.dirname(app_path);
+
+            await write_log('Squirrel paths | execPath: ' + process.execPath);
+            await write_log('Squirrel paths | app.getAppPath(): ' + app_path);
+            await write_log('Squirrel paths | process.resourcesPath: ' + (process.resourcesPath || 'null'));
+            await write_log('Squirrel paths | resources_path: ' + resources_path);
+            try {
+                const searchPaths = pawnio.getInstallerSearchPaths(resources_path);
+                await write_log('PawnIO installer search paths: ' + searchPaths.join(' | '));
+            } catch (e) {
+                await write_log('Failed to compute PawnIO search paths: ' + e.message);
+            }
 
             let target = path.basename(app_exe);
             let acted = false;
@@ -21,10 +34,9 @@ function squirrel_startup() {
             if (cmd === '--squirrel-install') {
                 await write_log('Creating shortcuts for: ' + target);
                 await createShortcuts(target);
-                // Install PawnIO driver
-                await write_log('Installing PawnIO driver...');
-                const pawnioResult = await pawnio.install(resources_path, write_log);
-                await write_log('PawnIO result: ' + pawnioResult.message);
+                // PawnIO installer is interactive on some systems; do not run it in Squirrel event context.
+                // Defer to normal app startup (packaged) where retries can be rate-limited.
+                await write_log('PawnIO install deferred to app startup');
                 await write_log('Install Done');
                 // Launch app after install completes
                 await write_log('Launching app after install');
@@ -35,10 +47,7 @@ function squirrel_startup() {
             if (cmd === '--squirrel-updated') {
                 await write_log('Creating shortcuts for: ' + target);
                 await createShortcuts(target);
-                // Update PawnIO driver if needed
-                await write_log('Checking PawnIO driver...');
-                const pawnioResult = await pawnio.install(resources_path, write_log);
-                await write_log('PawnIO result: ' + pawnioResult.message);
+                await write_log('PawnIO install deferred to app startup');
                 await write_log('Update Done');
                 ret = true;
                 acted = true;
@@ -58,6 +67,7 @@ function squirrel_startup() {
             if (cmd === '--squirrel-firstrun') {
                 await write_log('Squirrel Firstrun');
                 await createShortcuts(target);
+                await write_log('PawnIO install deferred to app startup');
                 // Don't set ret=true - let the app continue running on first launch
                 ret = false;
                 acted = true;

@@ -71,6 +71,40 @@ VS Code must run as Administrator for hardware sensor access.
 
 The N-API addon is built from the `LibreHardwareMonitor_NativeNodeIntegration` submodule and includes a self-contained .NET 9.0 runtime.
 
+## Troubleshooting
+
+### Missing or Incorrect Sensor Values
+
+If sensors are missing or showing incorrect/zero values, the most common cause is a missing or broken **PawnIO driver** installation.
+
+**PawnIO** is a kernel driver required by LibreHardwareMonitor for accessing many hardware sensors including:
+- CPU temperatures and voltages
+- Fan speeds
+- Embedded controller data
+- Some motherboard sensors
+
+**How to fix:**
+
+1. **Check if PawnIO is installed:**
+   - Open Services (`services.msc`) and look for "PawnIO"
+   - Or run: `sc.exe query PawnIO` in an admin command prompt
+
+2. **If the service doesn't exist:**
+   - Download PawnIO from https://pawnio.eu/ (Official signed edition)
+   - Run the installer as Administrator
+   - Restart the app
+
+3. **If you get "previous installation found" error:**
+   - Run the PawnIO uninstaller first, or
+   - Delete the registry key: `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO`
+   - Then reinstall PawnIO
+
+4. **If installation fails with error 0x430/1072:**
+   - This means "service marked for deletion"
+   - Reboot your computer and try again
+
+**Note:** The app attempts to install PawnIO automatically on first run. If this fails, manual installation as described above should resolve the issue.
+
 ## Acknowledgements
 
 - [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) — The excellent open-source hardware monitoring library that powers this application

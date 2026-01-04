@@ -13,11 +13,85 @@ const fs = _fs.promises;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function write_main_log(msg) {
+	try {
+		const ts = Date.now();
+		const line = `${ts} | ${new Date().toISOString()} | ${msg}\n`;
+		const logPaths = [];
+		// Primary: LocalAppData\libremon (matches where you're already reading startup.log)
+		if (process.env.LOCALAPPDATA) {
+			logPaths.push(path.join(process.env.LOCALAPPDATA, 'libremon', 'main.log'));
+		}
+		// Also try Electron userData (Roaming by default)
+		try {
+			logPaths.push(path.join(app.getPath('userData'), 'main.log'));
+		} catch (e) {}
+		// Last resort: alongside installed exe
+		try {
+			logPaths.push(path.join(path.dirname(process.execPath), 'main.log'));
+		} catch (e) {}
+
+		return fs.appendFile(logPaths[0], line).catch(() => {
+			if (logPaths[1]) {
+				return fs.appendFile(logPaths[1], line).catch(() => {
+					if (logPaths[2]) {
+						return fs.appendFile(logPaths[2], line).catch(() => {});
+					}
+				});
+			}
+		});
+	} catch (e) {
+		return Promise.resolve();
+	}
+}
+
+write_main_log(`app.js loaded | argv=${JSON.stringify(process.argv)} | isPackaged=${app.isPackaged} | execPath=${process.execPath}`).catch(() => {});
+
+async function appendUserLog(fileName, msg) {
+	try {
+		const ts = Date.now();
+		const line = `${ts} | ${new Date().toISOString()} | ${msg}\n`;
+		const logPaths = [];
+		try {
+			logPaths.push(path.join(app.getPath('userData'), fileName));
+		} catch (e) {}
+		if (process.env.LOCALAPPDATA) {
+			logPaths.push(path.join(process.env.LOCALAPPDATA, 'libremon', fileName));
+		}
+		// As a last resort, try alongside the installed app folder (LocalAppData\libremon\app-*)
+		try {
+			logPaths.push(path.join(path.dirname(process.execPath), fileName));
+		} catch (e) {}
+
+		for (const p of logPaths) {
+			try {
+				await fs.appendFile(p, line);
+				return;
+			} catch (e) {
+				// try next
+			}
+		}
+	} catch (e) {
+		// ignore
+	}
+}
+
 //app.commandLine.appendSwitch('high-dpi-support', 'false');
 //app.commandLine.appendSwitch('force-device-scale-factor', '1');
 //app.commandLine.appendSwitch('--js-flags', '--experimental-module');
 
-squirrel_startup().then(({ret, cmd}) => { if(ret) { app.quit(); return; } init(cmd); });
+squirrel_startup().then(({ret, cmd}) => {
+	write_main_log(`squirrel_startup resolved | ret=${ret} | cmd=${cmd || 'none'}`).catch(() => {});
+	if(ret) { app.quit(); return; }
+	try {
+		init(cmd);
+	} catch (e) {
+		write_main_log(`init threw synchronously: ${e?.message || String(e)}`).catch(() => {});
+		throw e;
+	}
+}).catch((e) => {
+	write_main_log(`squirrel_startup rejected: ${e?.message || String(e)}`).catch(() => {});
+});
 
 let main_env = {};
 let stage;
@@ -78,8 +152,14 @@ function setLoginItemEnabled(enabled){
 }
 
 async function init(cmd){
+	await write_main_log(`init start | cmd=${cmd || 'none'} | app_path=${app_path} | base_path=${base_path}`);
 	fb('APP SET_ENV');
-	main_env = await helper.tools.readJSON(path.join(app_path, 'env.json'));
+	try {
+		main_env = await helper.tools.readJSON(path.join(app_path, 'env.json'));
+	} catch (e) {
+		await write_main_log(`init failed reading env.json: ${e?.message || String(e)}`);
+		throw e;
+	}
 	
 	fb('--------------------------------------');
 	process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
@@ -187,10 +267,17 @@ async function init(cmd){
 		globalShortcut.unregisterAll();
 	});
 	
-	app.whenReady().then(startup).catch((err) => { throw err});
+	app.whenReady().then(() => {
+		write_main_log('whenReady -> startup()').catch(() => {});
+		return startup();
+	}).catch((err) => {
+		write_main_log(`startup failed: ${err?.message || String(err)}`).catch(() => {});
+		throw err;
+	});
 }
 
 async function startup(){
+	await write_main_log(`startup entered | argv1=${process.argv[1] || 'none'} | isPackaged=${isPackaged}`);
 	// Skip update check entirely during startup - Squirrel's update dance can cause
 	// old versions to briefly run and trigger false update prompts.
 	// Update check will happen after a delay once the app is fully initialized.
@@ -200,6 +287,7 @@ async function startup(){
 	const cmd = process.argv[1];
 	if(cmd && cmd.startsWith('--squirrel')){
 		// Let squirrel_startup handle it, don't run update check
+		await write_main_log(`startup detected squirrel cmd=${cmd} -> appStart()`);
 		appStart();
 		return;
 	}
@@ -208,6 +296,8 @@ async function startup(){
 }
 
 async function appStart(){
+	await write_main_log('appStart entered');
+	await appendUserLog('pawnio.log', 'appStart entered');
 	// Load default config from config.json (single source of truth)
 	const defaultConfig = await helper.tools.readJSON(path.join(app_path, 'config.json'));
 	
@@ -222,14 +312,103 @@ async function appStart(){
 		setLoginItemEnabled(desiredAutoStart);
 	}
 
-	// Log PawnIO status (installed during Squirrel install/update events)
-	const pawnioStatus = pawnio.getStatus();
-	if (pawnioStatus.ok) {
-		fb(`PawnIO v${pawnioStatus.version} detected`);
-	} else if (pawnioStatus.installed) {
-		fb(`PawnIO v${pawnioStatus.version} outdated (need ${pawnio.MIN_VERSION}+) - some sensors may not work`);
-	} else {
-		fb('PawnIO not installed - some sensors may not work');
+	// Ensure PawnIO is installed (driver required for many sensors).
+	// Squirrel install/update events are best-effort; also verify here before starting the N-API addon.
+	if (isPackaged) {
+		const pawnioStatePath = path.join(app.getPath('userData'), 'pawnio_install_state.json');
+		const PAWNIO_RETRY_COOLDOWN_MS = 60 * 1000; // 60 seconds (prevents loops, but doesn't block testing)
+		let lastState = null;
+		try {
+			if (_fs.existsSync(pawnioStatePath)) {
+				lastState = JSON.parse(await fs.readFile(pawnioStatePath, 'utf8'));
+			}
+		} catch (e) {
+			lastState = null;
+		}
+
+		await appendUserLog('pawnio.log', `appStart PawnIO check | cmd=${process.argv[1] || 'none'} | base_path=${base_path}`);
+
+		// Compute a simple "boot key" so we can safely retry installs after a reboot.
+		// This is important for service install failures like 0x430/1072 (service marked for deletion)
+		// which often require a reboot.
+		let bootKey = null;
+		try {
+			const t = await si.time();
+			if (t && typeof t.uptime === 'number') {
+				bootKey = Math.floor(Date.now() - (t.uptime * 1000));
+			}
+		} catch (e) {
+			bootKey = null;
+		}
+		await appendUserLog('pawnio.log', `bootKey=${bootKey ?? 'null'} | lastState=${lastState ? JSON.stringify(lastState) : 'null'}`);
+
+		let pawnioStatus = pawnio.getStatus();
+		await appendUserLog('pawnio.log', `status before install: ${JSON.stringify(pawnioStatus)}`);
+		if (!pawnioStatus.ok) {
+			const now = Date.now();
+			const lastExitCode = lastState?.lastExitCode;
+			const sameBoot = (bootKey && lastState?.bootKey) ? (String(bootKey) === String(lastState.bootKey)) : true;
+
+			// 1072 decimal = 0x430 hex: service marked for deletion; typically needs reboot.
+			if (lastExitCode === 1072 && sameBoot) {
+				const m = '[PawnIO] Previous install failed with 0x430/1072 (service marked for deletion). Reboot required; skipping retry to avoid loops.';
+				fb(m);
+				await appendUserLog('pawnio.log', m);
+			} else if (lastState && lastState.lastAttemptAt && (now - lastState.lastAttemptAt) < PAWNIO_RETRY_COOLDOWN_MS) {
+				const m = `[PawnIO] Last install attempt failed recently (code ${lastExitCode ?? 'unknown'}). Skipping retry to avoid loops.`;
+				fb(m);
+				await appendUserLog('pawnio.log', m);
+			} else {
+				fb(`PawnIO missing/outdated (need ${pawnio.MIN_VERSION}+) - attempting install`);
+				await appendUserLog('pawnio.log', `attempting install | min=${pawnio.MIN_VERSION}`);
+			try {
+				const result = await pawnio.install(base_path, async (m) => {
+					fb('[PawnIO] ' + m);
+					await appendUserLog('pawnio.log', '[PawnIO] ' + m);
+				});
+				fb('[PawnIO] ' + result.message);
+				await appendUserLog('pawnio.log', `result: ${JSON.stringify(result)}`);
+				try {
+					if (result.success) {
+						if (_fs.existsSync(pawnioStatePath)) {
+							await fs.unlink(pawnioStatePath).catch(() => {});
+						}
+					} else {
+						await fs.writeFile(pawnioStatePath, JSON.stringify({
+							lastAttemptAt: Date.now(),
+							bootKey: bootKey,
+							lastExitCode: result.code ?? null,
+							lastMessage: result.message || null
+						}));
+					}
+				} catch (e) {}
+			} catch (e) {
+				fb('[PawnIO] install failed: ' + (e?.message || String(e)));
+				await appendUserLog('pawnio.log', 'install threw: ' + (e?.message || String(e)));
+				try {
+					await fs.writeFile(pawnioStatePath, JSON.stringify({
+						lastAttemptAt: Date.now(),
+						bootKey: bootKey,
+						lastExitCode: null,
+						lastMessage: e?.message || String(e)
+					}));
+				} catch (e2) {}
+			}
+			pawnioStatus = pawnio.getStatus();
+			await appendUserLog('pawnio.log', `status after install: ${JSON.stringify(pawnioStatus)}`);
+			}
+		}
+
+		if (pawnioStatus.ok) {
+			fb(`PawnIO v${pawnioStatus.version} detected`);
+			await appendUserLog('pawnio.log', `detected ok: v${pawnioStatus.version}`);
+		} else if (pawnioStatus.installed) {
+			fb(`PawnIO v${pawnioStatus.version} outdated (need ${pawnio.MIN_VERSION}+) - some sensors may not work`);
+			await appendUserLog('pawnio.log', `detected outdated: v${pawnioStatus.version} need ${pawnio.MIN_VERSION}`);
+		} else {
+			fb('PawnIO not installed - some sensors may not work');
+			await appendUserLog('pawnio.log', 'not installed after checks');
+		}
 	}
 
 	await initApp();

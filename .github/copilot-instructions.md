@@ -221,6 +221,38 @@ const result = await pawnio.install(resourcesPath, logFunction);
 - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO` (64-bit)
 - `HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO` (32-bit)
 
+**Service Check:**
+- `sc.exe query PawnIO` - Verifies the driver service actually exists
+
 **Minimum Version:** 2.0.0.0
 
 **Download:** https://pawnio.eu/ (Official signed edition recommended)
+
+### Detection Logic (Critical Fix)
+
+The `getStatus()` function checks **both** the registry Uninstall key AND the Windows service existence. This is critical because:
+
+1. **Registry alone is insufficient** - The Uninstall key can exist even when the service is missing ("broken install" state)
+2. **Broken installs cause silent failures** - Sensors requiring PawnIO simply return no data
+3. **Installer refuses to reinstall** - PawnIO's own installer shows "previous installation found" error
+
+**Solution implemented in `pawnio.js`:**
+```javascript
+// getStatus() now returns:
+{
+  ok: boolean,           // true only if BOTH registry AND service are good
+  installed: boolean,    // false if service missing (even if registry exists)
+  version: string|null,
+  needsUpdate: boolean,
+  serviceExists: boolean,
+  serviceRunning: boolean,
+  registryOnly: boolean  // true = broken state (registry exists, service doesn't)
+}
+```
+
+**When `registryOnly: true`:**
+1. Run uninstaller first (`-uninstall`) to clean stale registry
+2. Brief pause for cleanup
+3. Then run installer (`-install`) fresh
+
+This prevents the "previous installation found" dialog and ensures clean installs.
