@@ -2,7 +2,7 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const app = require('electron').app;
 const fs = require('fs').promises;
-const pawnio = require('./electron_helper/pawnio.js');
+const pawnio = require('./pawnio.js');
 
 function squirrel_startup() {
     return new Promise(async (resolve, reject) => {

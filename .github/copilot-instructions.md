@@ -208,7 +208,7 @@ The installer runs silently with the `-install` flag.
 
 ```javascript
 // Check PawnIO status programmatically
-const pawnio = require('./js/electron_helper/pawnio.js');
+const pawnio = require('./js/pawnio.js');
 const status = pawnio.getStatus();
 // Returns: { ok: boolean, installed: boolean, version: string|null, needsUpdate: boolean }
 

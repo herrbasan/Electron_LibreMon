@@ -4,7 +4,7 @@ const {app, Menu, Tray, ipcMain, protocol, globalShortcut, screen} = require('el
 const helper = require('./electron_helper/helper_new.js');
 const squirrel_startup = require('./squirrel_startup.js');
 const update = require('./electron_helper/update.js');
-const pawnio = require('./electron_helper/pawnio.js');
+const pawnio = require('./pawnio.js');
 const si = require('systeminformation');
 
 const {spawn, execSync} = require("child_process");
